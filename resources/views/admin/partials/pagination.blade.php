@@ -1,4 +1,10 @@
 @if ($paginator->hasPages())
+    @php
+        $current = $paginator->currentPage();
+        $last = $paginator->lastPage();
+        $start = max(1, $current - 2);
+        $end = min($last, $current + 2);
+    @endphp
     <div class="admin-pagination">
         @if ($paginator->onFirstPage())
             <span class="admin-btn small ghost disabled">&laquo;</span>
@@ -6,20 +12,27 @@
             <a href="{{ $paginator->previousPageUrl() }}" class="admin-btn small ghost">&laquo;</a>
         @endif
 
-        @foreach ($paginator->elements() as $element)
-            @if (is_string($element))
-                <span class="admin-page-dots">{{ $element }}</span>
+        @if ($start > 1)
+            <a href="{{ $paginator->url(1) }}" class="admin-btn small ghost">1</a>
+            @if ($start > 2)
+                <span class="admin-page-dots">...</span>
             @endif
-            @if (is_array($element))
-                @foreach ($element as $page => $url)
-                    @if ($page == $paginator->currentPage())
-                        <span class="admin-btn small page-current">{{ $page }}</span>
-                    @else
-                        <a href="{{ $url }}" class="admin-btn small ghost">{{ $page }}</a>
-                    @endif
-                @endforeach
+        @endif
+
+        @for ($i = $start; $i <= $end; $i++)
+            @if ($i == $current)
+                <span class="admin-btn small page-current">{{ $i }}</span>
+            @else
+                <a href="{{ $paginator->url($i) }}" class="admin-btn small ghost">{{ $i }}</a>
             @endif
-        @endforeach
+        @endfor
+
+        @if ($end < $last)
+            @if ($end < $last - 1)
+                <span class="admin-page-dots">...</span>
+            @endif
+            <a href="{{ $paginator->url($last) }}" class="admin-btn small ghost">{{ $last }}</a>
+        @endif
 
         @if ($paginator->hasMorePages())
             <a href="{{ $paginator->nextPageUrl() }}" class="admin-btn small ghost">&raquo;</a>
