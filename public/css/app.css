@@ -1086,10 +1086,27 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
     .admin-sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); transition: transform .22s ease; height: 100vh; }
     .admin-sidebar.open { transform: translateX(0); }
     .admin-burger { display: inline-block; }
-    .admin-header { padding: .75rem 1rem; }
+    .admin-header { padding: .5rem .65rem; flex-wrap: nowrap; gap: .5rem; }
+    .admin-header-left { flex: 1; min-width: 0; gap: .5rem; }
+    .admin-header-title h1 { font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .admin-header-title p { display: none; }
+    .admin-header-right { flex-wrap: nowrap; gap: .4rem; margin-left: 0; }
+    .admin-visitor-chips { width: auto; gap: .35rem; }
+    .admin-visitor-chip { padding: .22rem .45rem; gap: .3rem; border-radius: 9px; }
+    .admin-visitor-ico { font-size: .85rem; }
+    .admin-visitor-chip strong { font-size: .78rem; }
+    .admin-visitor-chip small { display: none; }
+    .admin-header-ico { width: 1.9rem; height: 1.9rem; font-size: .85rem; border-radius: 9px; }
+    .admin-header-badge { top: -5px; right: -5px; font-size: .58rem; padding: .05rem .3rem; }
+    .admin-header .lang-switch { padding: .12rem; }
+    .admin-header .lang-switch a { padding: .16rem .4rem; font-size: .68rem; }
+    .admin-avatar { width: 2rem; height: 2rem; }
     .admin-main { padding: 1.1rem 1rem; }
     .admin-footer { padding: .8rem 1rem; flex-wrap: wrap; }
-    .admin-visitor-chips { width: 100%; justify-content: flex-start; }
     .admin-grid2, .admin-grid3, .admin-grid4 { grid-template-columns: 1fr; }
     .admin-matchrow-side { margin-left: 0; width: 100%; justify-content: space-between; }
+}
+
+@media (max-width: 400px) {
+    .admin-visitor-chip.alt { display: none; }
 }
