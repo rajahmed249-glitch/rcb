@@ -13,6 +13,16 @@ class Player extends Model
         'role',
         'date_of_birth',
         'role_icon_id',
+        'district_id',
+        'thana_id',
+        'village',
+        'post_office',
+        'religion',
+        'blood_group',
+        'nationality',
+        'debut',
+        'player_tag',
+        'status',
         'jersey_number',
         'photo',
         'is_captain',
@@ -31,6 +41,8 @@ class Player extends Model
         'is_captain' => 'boolean',
         'is_vice_captain' => 'boolean',
         'date_of_birth' => 'date',
+        'debut' => 'date',
+        'status' => 'boolean',
     ];
 
     public function team()
@@ -41,6 +53,16 @@ class Player extends Model
     public function roleIcon()
     {
         return $this->belongsTo(RoleIcon::class);
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(Location::class, 'district_id');
+    }
+
+    public function thana()
+    {
+        return $this->belongsTo(Location::class, 'thana_id');
     }
 
     public function getDisplayNameAttribute(): string

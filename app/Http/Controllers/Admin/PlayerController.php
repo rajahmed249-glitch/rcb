@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Location;
 use App\Models\Player;
 use App\Models\RoleIcon;
 use App\Models\Team;
@@ -30,7 +31,7 @@ class PlayerController extends Controller
         }
 
         if (($status = $request->query('status')) !== null && $status !== '') {
-            $status === '1' ? $query->whereNotNull('team_id') : $query->whereNull('team_id');
+            $query->where('status', $status === '1' ? 1 : 0);
         }
 
         $limit = in_array((int) $request->query('limit'), [10, 25, 50, 100], true)
@@ -38,7 +39,7 @@ class PlayerController extends Controller
             : 10;
 
         return view('admin.players.index', [
-            'players' => $query->paginate($limit)->appends($request->query()),
+            'players' => $query->with(['team', 'thana'])->paginate($limit)->appends($request->query()),
             'filterSearch' => $search,
             'filterRole' => trim((string) $request->query('role')),
             'filterStatus' => (string) $request->query('status'),
@@ -52,6 +53,8 @@ class PlayerController extends Controller
             'player' => new Player(),
             'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
             'roleIcons' => RoleIcon::orderBy('sort_order')->orderBy('id')->get(),
+            'districts' => Location::where('type', 'district')->orderBy('sort_order')->orderBy('name')->get(),
+            'thanas' => Location::where('type', 'thana')->orderBy('sort_order')->orderBy('name')->get(),
         ]);
     }
 
@@ -71,6 +74,8 @@ class PlayerController extends Controller
             'player' => $player,
             'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
             'roleIcons' => RoleIcon::orderBy('sort_order')->orderBy('id')->get(),
+            'districts' => Location::where('type', 'district')->orderBy('sort_order')->orderBy('name')->get(),
+            'thanas' => Location::where('type', 'thana')->orderBy('sort_order')->orderBy('name')->get(),
         ]);
     }
 
@@ -101,6 +106,16 @@ class PlayerController extends Controller
             'role' => ['required', 'string'],
             'date_of_birth' => ['nullable', 'date'],
             'role_icon_id' => ['nullable', 'integer', 'exists:role_icons,id'],
+            'district_id' => ['nullable', 'integer', 'exists:locations,id'],
+            'thana_id' => ['nullable', 'integer', 'exists:locations,id'],
+            'village' => ['nullable', 'string', 'max:255'],
+            'post_office' => ['nullable', 'string', 'max:255'],
+            'religion' => ['nullable', 'string', 'max:50'],
+            'blood_group' => ['nullable', 'string', 'max:10'],
+            'nationality' => ['nullable', 'string', 'max:100'],
+            'debut' => ['nullable', 'date'],
+            'player_tag' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', 'boolean'],
             'jersey_number' => ['nullable', 'integer'],
             'is_captain' => ['nullable', 'boolean'],
             'is_vice_captain' => ['nullable', 'boolean'],
@@ -114,6 +129,7 @@ class PlayerController extends Controller
         ]) + [
             'is_captain' => $request->boolean('is_captain'),
             'is_vice_captain' => $request->boolean('is_vice_captain'),
+            'status' => $request->boolean('status'),
         ];
     }
 

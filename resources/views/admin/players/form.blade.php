@@ -74,30 +74,82 @@
 
         <div class="apf-row">
             <div class="apf-group">
-                <label>{{ __('site.admin.name_en') }} <span class="apf-required">*</span></label>
-                <input type="text" name="name" value="{{ old('name', $player->name) }}" placeholder="Enter name in English" required>
+                <label>{{ __('site.admin.first_name_en') }} <span class="apf-required">*</span></label>
+                <input type="text" name="name" value="{{ old('name', $player->name) }}" placeholder="Enter first name in English" required>
             </div>
             <div class="apf-group">
-                <label>{{ __('site.admin.name_bn') }}</label>
+                <label>{{ __('site.admin.first_name_bn') }}</label>
                 <input type="text" name="name_bn" value="{{ old('name_bn', $player->name_bn) }}" placeholder="বাংলায় নাম লিখুন">
             </div>
         </div>
 
         <div class="apf-row">
             <div class="apf-group">
-                <label>{{ __('site.admin.team') }} *</label>
-                <select name="team_id" required>
-                    <option value="">--</option>
-                    @foreach ($teams as $team)
-                        <option value="{{ $team->id }}" @selected(old('team_id', $player->team_id) == $team->id)>{{ $team->name }}@if($team->name_bn) / {{ $team->name_bn }}@endif</option>
+                <label>{{ __('site.admin.district') }}</label>
+                <select name="district_id" id="districtSelect" onchange="filterThanas(this.value)">
+                    <option value="">-- {{ __('site.admin.select_district') }} --</option>
+                    @foreach ($districts as $district)
+                        <option value="{{ $district->id }}" @selected(old('district_id', $player->district_id) == $district->id)>{{ $district->display_name }}</option>
                     @endforeach
                 </select>
             </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.thana') }}</label>
+                <select name="thana_id" id="thanaSelect">
+                    <option value="">-- {{ __('site.admin.select_thana') }} --</option>
+                    @foreach ($thanas as $thana)
+                        <option value="{{ $thana->id }}" data-district="{{ $thana->parent_id }}" @selected(old('thana_id', $player->thana_id) == $thana->id)>{{ $thana->display_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="apf-row">
+            <div class="apf-group">
+                <label>{{ __('site.admin.village') }}</label>
+                <input type="text" name="village" value="{{ old('village', $player->village) }}" placeholder="Enter village name">
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.post_office') }}</label>
+                <input type="text" name="post_office" value="{{ old('post_office', $player->post_office) }}" placeholder="Enter post office name">
+            </div>
+        </div>
+
+        <div class="apf-row">
+            <div class="apf-group">
+                <label>{{ __('site.admin.religion') }}</label>
+                <select name="religion">
+                    @foreach (['Islam', 'Hinduism', 'Christianity', 'Buddhism', 'Other'] as $opt)
+                        <option value="{{ $opt }}" @selected(old('religion', $player->religion ?? 'Islam') === $opt)>{{ $opt }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.blood_group') }}</label>
+                <select name="blood_group">
+                    <option value="">-- {{ __('site.admin.select_blood_group') }} --</option>
+                    @foreach (['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $opt)
+                        <option value="{{ $opt }}" @selected(old('blood_group', $player->blood_group) === $opt)>{{ $opt }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="apf-row">
             <div class="apf-group">
                 <label>{{ __('site.admin.playing_role') }} <span class="apf-required">*</span></label>
                 <select name="role" required>
                     @foreach (['Batsman', 'Bowler', 'All-rounder', 'Wicketkeeper'] as $role)
                         <option value="{{ $role }}" @selected(old('role', $player->role) === $role)>{{ __('site.roles.' . str_replace(['-', ' '], '_', strtolower($role))) }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.team') }} *</label>
+                <select name="team_id" required>
+                    <option value="">--</option>
+                    @foreach ($teams as $team)
+                        <option value="{{ $team->id }}" @selected(old('team_id', $player->team_id) == $team->id)>{{ $team->name }}@if($team->name_bn) / {{ $team->name_bn }}@endif</option>
                     @endforeach
                 </select>
             </div>
@@ -109,8 +161,59 @@
                 <input type="date" name="date_of_birth" value="{{ old('date_of_birth', $player->date_of_birth?->format('Y-m-d')) }}">
             </div>
             <div class="apf-group">
+                <label>{{ __('site.admin.nationality') }}</label>
+                <input type="text" name="nationality" value="{{ old('nationality', $player->nationality ?? 'Bangladesh') }}" placeholder="Enter nationality">
+            </div>
+        </div>
+
+        <div class="apf-row">
+            <div class="apf-group">
+                <label>{{ __('site.admin.batting_style') }}</label>
+                @php
+                    $battingOptions = ['Right Handed', 'Left Handed'];
+                    $currentBatting = old('batting_style', $player->batting_style);
+                @endphp
+                <select name="batting_style">
+                    <option value="">--</option>
+                    @foreach (array_merge($battingOptions, ($currentBatting && ! in_array($currentBatting, $battingOptions)) ? [$currentBatting] : []) as $opt)
+                        <option value="{{ $opt }}" @selected($currentBatting === $opt)>{{ $opt }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.bowling_style') }}</label>
+                @php
+                    $bowlingOptions = ['Right Arm Fast', 'Right Arm Medium', 'Left Arm Fast', 'Left Arm Medium', 'Right Arm Off Break', 'Right Arm Leg Break', 'Left Arm Orthodox Spin', 'Left Arm Wrist Spin'];
+                    $currentBowling = old('bowling_style', $player->bowling_style);
+                @endphp
+                <select name="bowling_style">
+                    <option value="">-- {{ __('site.admin.select_bowling_style') }} --</option>
+                    @foreach (array_merge($bowlingOptions, ($currentBowling && ! in_array($currentBowling, $bowlingOptions)) ? [$currentBowling] : []) as $opt)
+                        <option value="{{ $opt }}" @selected($currentBowling === $opt)>{{ $opt }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="apf-row">
+            <div class="apf-group">
+                <label>{{ __('site.admin.debut') }}</label>
+                <input type="date" name="debut" value="{{ old('debut', $player->debut?->format('Y-m-d')) }}">
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.player_tag') }}</label>
+                <input type="text" name="player_tag" value="{{ old('player_tag', $player->player_tag) }}" placeholder="e.g., The Wall, Master Blaster">
+            </div>
+        </div>
+
+        <div class="apf-row">
+            <div class="apf-group">
                 <label>{{ __('site.admin.jersey_number') }}</label>
                 <input type="number" name="jersey_number" value="{{ old('jersey_number', $player->jersey_number) }}">
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.matches_played') }}</label>
+                <input type="number" name="matches_played" value="{{ old('matches_played', $player->matches_played) }}">
             </div>
         </div>
 
@@ -145,16 +248,27 @@
 
         <div class="apf-row apf-row-3">
             <div class="apf-group">
-                <label>{{ __('site.admin.matches_played') }}</label>
-                <input type="number" name="matches_played" value="{{ old('matches_played', $player->matches_played) }}">
-            </div>
-            <div class="apf-group">
                 <label>{{ __('site.admin.runs') }}</label>
                 <input type="number" name="runs" value="{{ old('runs', $player->runs) }}">
             </div>
             <div class="apf-group">
                 <label>{{ __('site.admin.wickets') }}</label>
                 <input type="number" name="wickets" value="{{ old('wickets', $player->wickets) }}">
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.status') }}</label>
+                <div class="apf-toggle">
+                    <label class="apf-toggle-option {{ old('status', $player->status ?? true) ? 'active' : '' }}" id="statusActiveLabel">
+                        <input type="radio" name="status" value="1" @checked(old('status', $player->status ?? true)) onchange="toggleStatus(true)">
+                        <span class="apf-toggle-icon">✅</span>
+                        <span>{{ __('site.admin.active') }}</span>
+                    </label>
+                    <label class="apf-toggle-option {{ old('status', $player->status ?? true) ? '' : 'active' }}" id="statusInactiveLabel">
+                        <input type="radio" name="status" value="0" @checked(! old('status', $player->status ?? true)) onchange="toggleStatus(false)">
+                        <span class="apf-toggle-icon">⛔</span>
+                        <span>{{ __('site.admin.inactive') }}</span>
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -183,14 +297,14 @@
 
         <div class="apf-row">
             <div class="apf-group">
-                <label>{{ __('site.admin.bio') }}</label>
+                <label>{{ __('site.admin.description_en') }}</label>
                 <textarea name="bio" placeholder="Enter player description in English">{{ old('bio', $player->bio) }}</textarea>
             </div>
         </div>
 
         <div class="apf-row">
             <div class="apf-group">
-                <label>{{ __('site.admin.bio_bn') }}</label>
+                <label>{{ __('site.admin.description_bn') }}</label>
                 <textarea name="bio_bn" placeholder="বাংলায় প্লেয়ারের বর্ণনা লিখুন">{{ old('bio_bn', $player->bio_bn) }}</textarea>
             </div>
         </div>
@@ -210,6 +324,33 @@
 </div>
 
 <script>
+function filterThanas(districtId) {
+    var thanaSelect = document.getElementById('thanaSelect');
+    if (!thanaSelect) return;
+    var options = thanaSelect.querySelectorAll('option[data-district]');
+    options.forEach(function (opt) {
+        opt.style.display = (!districtId || opt.getAttribute('data-district') === districtId) ? '' : 'none';
+    });
+    if (districtId) {
+        var current = thanaSelect.selectedOptions[0];
+        if (current && current.getAttribute('data-district') && current.getAttribute('data-district') !== districtId) {
+            thanaSelect.value = '';
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var districtSelect = document.getElementById('districtSelect');
+    if (districtSelect && districtSelect.value) filterThanas(districtSelect.value);
+});
+
+function toggleStatus(active) {
+    var a = document.getElementById('statusActiveLabel');
+    var i = document.getElementById('statusInactiveLabel');
+    if (a) a.classList.toggle('active', active);
+    if (i) i.classList.toggle('active', !active);
+}
+
 function previewImage(event) {
     var preview = document.getElementById('imagePreview');
     var fileNameDisplay = document.getElementById('photoFileName');

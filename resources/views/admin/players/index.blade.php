@@ -94,7 +94,9 @@
                             </td>
                             <td>
                                 <div class="apl-pname">{{ $player->name }}</div>
-                                @if ($player->jersey_number)
+                                @if ($player->player_tag)
+                                    <div class="apl-psub">{{ $player->player_tag }}</div>
+                                @elseif ($player->jersey_number)
                                     <div class="apl-psub">#{{ $player->jersey_number }}</div>
                                 @endif
                             </td>
@@ -102,8 +104,8 @@
                             <td class="apl-muted">{{ $player->date_of_birth?->format('d M Y') ?: '—' }}</td>
                             <td><span class="apl-role-badge">{{ $player->role }}</span></td>
                             <td>
-                                <span class="apl-status-badge {{ $player->team_id ? 'active' : 'inactive' }}">
-                                    {{ $player->team_id ? __('site.admin.active') : __('site.admin.inactive') }}
+                                <span class="apl-status-badge {{ $player->status ? 'active' : 'inactive' }}">
+                                    {{ $player->status ? __('site.admin.active') : __('site.admin.inactive') }}
                                 </span>
                             </td>
                             <td>
