@@ -9,6 +9,8 @@ class NewsSeeder extends Seeder
 {
     public function run(): void
     {
+        NewsPost::query()->delete();
+
         $posts = [
             [
                 'title' => '🏏❤️ আলহামদুলিল্লাহ! ❤️🏏 #বিগ_ম্যাচ_উইন 🔥 বড় দলের বিপক্ষে দুর্দান্ত এক বিশাল জয়! 💪❤️',

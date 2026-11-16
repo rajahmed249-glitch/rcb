@@ -9,6 +9,8 @@ class MatchSeeder extends Seeder
 {
     public function run(): void
     {
+        CricketMatch::query()->delete();
+
         $matches = [
             [
                 'match_number' => 15,

@@ -9,6 +9,8 @@ class PlayerSeeder extends Seeder
 {
     public function run(): void
     {
+        Player::query()->delete();
+
         $players = [
             ['name' => 'Raj Ahmed', 'role' => 'Captain', 'is_captain' => true, 'batting_style' => 'Right-hand bat', 'bowling_style' => 'Right-arm medium'],
             ['name' => 'Fazle Rabbi Nayan', 'role' => 'Vice Captain', 'is_vice_captain' => true, 'batting_style' => 'Right-hand bat', 'bowling_style' => 'Right-arm offbreak'],
