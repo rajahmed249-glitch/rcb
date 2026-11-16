@@ -25,7 +25,7 @@
 
             @if ($latestResult)
                 <div class="match-grid">
-                    <div class="match-card">
+                    <a href="{{ route('matches.show', $latestResult) }}" class="match-card">
                         <span class="badge badge-matchno">Match {{ $latestResult->match_number }}</span>
                         <span class="badge badge-completed">completed</span>
                         <div class="match-date-pill">{{ $latestResult->match_date->format('d M Y') }}</div>
@@ -45,7 +45,8 @@
                             <span>{{ $latestResult->opponent_name }}</span>
                         </div>
                         <div class="match-footer {{ $latestResult->won ? '' : 'lost' }}">{{ $latestResult->result_label }}</div>
-                    </div>
+                        <span class="match-details-link">Match Details →</span>
+                    </a>
                 </div>
             @else
                 <div class="card"><p class="muted">No completed matches yet.</p></div>
@@ -62,7 +63,7 @@
 
             <div class="match-grid">
                 @forelse ($upcomingMatches as $match)
-                    <div class="match-card">
+                    <a href="{{ route('matches.show', $match) }}" class="match-card">
                         <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
                         <span class="badge badge-upcoming">upcoming</span>
                         <div class="match-date-pill">{{ $match->match_date->format('d M Y') }}</div>
@@ -82,7 +83,8 @@
                             <span>{{ $match->opponent_name }}</span>
                         </div>
                         <div class="match-footer">📍 {{ $match->venue }}</div>
-                    </div>
+                        <span class="match-details-link">Match Details →</span>
+                    </a>
                 @empty
                     <div class="card"><p class="muted">No upcoming fixtures scheduled.</p></div>
                 @endforelse
@@ -101,8 +103,12 @@
                 @forelse ($latestNews as $post)
                     <a href="{{ route('news.show', $post) }}" class="news-card">
                         <div class="news-thumb">
-                            <div class="news-thumb-placeholder">📰</div>
-                            <span class="news-date-pill">{{ $post->published_at?->format('d M Y') }}</span>
+                            @if ($post->image)
+                                <img src="{{ asset($post->image) }}" alt="{{ $post->title }}" loading="lazy">
+                            @else
+                                <div class="news-thumb-placeholder">📰</div>
+                            @endif
+                            <span class="news-date-pill">📅 {{ $post->published_at?->format('d M Y') }}</span>
                         </div>
                         <div class="news-body">
                             <h3>{{ $post->title }}</h3>

@@ -11,12 +11,24 @@
 
         <div class="news-grid">
             @forelse ($posts as $post)
-                <article class="card news-card">
-                    <p class="news-date">📅 {{ $post->published_at?->format('d M Y') }}</p>
-                    <h3>{{ $post->title }}</h3>
-                    <p>{{ $post->excerpt }}</p>
-                    <a href="{{ route('news.show', $post) }}" class="read-more">Read More →</a>
-                </article>
+                <a href="{{ route('news.show', $post) }}" class="news-card">
+                    <div class="news-thumb">
+                        @if ($post->image)
+                            <img src="{{ asset($post->image) }}" alt="{{ $post->title }}" loading="lazy">
+                        @else
+                            <div class="news-thumb-placeholder">📰</div>
+                        @endif
+                        <span class="news-date-pill">📅 {{ $post->published_at?->format('d M Y') }}</span>
+                    </div>
+                    <div class="news-body">
+                        <h3>{{ $post->title }}</h3>
+                        <p>{{ \Illuminate\Support\Str::limit($post->excerpt, 120) }}</p>
+                        <div class="news-foot">
+                            <span>Read More</span>
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </div>
+                    </div>
+                </a>
             @empty
                 <div class="card"><p class="muted">No news published yet.</p></div>
             @endforelse

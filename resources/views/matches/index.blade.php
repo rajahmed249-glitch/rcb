@@ -17,7 +17,7 @@
 
         <div class="match-grid">
             @forelse ($matches as $match)
-                <div class="match-card">
+                <a href="{{ route('matches.show', $match) }}" class="match-card">
                     <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
                     <span class="badge badge-{{ $match->status }}">{{ $match->status }}</span>
                     <div class="match-date-pill">{{ $match->match_date->format('d M Y') }}</div>
@@ -41,8 +41,8 @@
                     @else
                         <div class="match-footer">📍 {{ $match->venue }}</div>
                     @endif
-                    <a href="{{ route('matches.show', $match) }}" class="match-details-link">Match Details →</a>
-                </div>
+                    <span class="match-details-link">Match Details →</span>
+                </a>
             @empty
                 <div class="card"><p class="muted">No matches found.</p></div>
             @endforelse

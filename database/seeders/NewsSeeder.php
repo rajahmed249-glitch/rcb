@@ -31,6 +31,7 @@ class NewsSeeder extends Seeder
                 'slug' => 'big-win-after-eid',
                 'excerpt' => 'Alhamdulillah ❤️ Started with a big match win after Eid ❤️❤️❤️🏏 Everyone in the team performed very well.',
                 'content' => "Alhamdulillah ❤️ Started with a big match win after Eid ❤️❤️❤️🏏\n\nEveryone in the team performed very well. It was a complete team effort — from the openers giving a flying start to the bowlers finishing things off in style.\n\nWe aim to keep this momentum going through the rest of the season. Keep supporting REAL CHALLENGER BOYS! 💪",
+                'image' => 'images/news/10-apr-2026.webp',
                 'published_at' => '2026-04-10 18:45:00',
             ],
             [

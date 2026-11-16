@@ -37,7 +37,7 @@
                 <div class="section-head"><h2>Matches</h2></div>
                 <div class="match-grid">
                     @foreach ($matches as $match)
-                        <div class="match-card">
+                        <a href="{{ route('matches.show', $match) }}" class="match-card">
                             <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
                             <span class="badge badge-{{ $match->status }}">{{ $match->status }}</span>
                             <div class="match-date-pill">{{ $match->match_date->format('d M Y') }}</div>
@@ -57,8 +57,8 @@
                                 <span>{{ $match->opponent_name }}</span>
                             </div>
                             <div class="match-footer">📍 {{ $match->venue }}</div>
-                            <a href="{{ route('matches.show', $match) }}" class="match-details-link">Match Details →</a>
-                        </div>
+                            <span class="match-details-link">Match Details →</span>
+                        </a>
                     @endforeach
                 </div>
             </section>

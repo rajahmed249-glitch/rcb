@@ -51,15 +51,36 @@ document.addEventListener('DOMContentLoaded', function () {
             playerTrack.scrollBy({ left: step, behavior: 'smooth' });
         });
 
-        var autoScroll = setInterval(function () {
-            if (playerTrack.scrollLeft + playerTrack.clientWidth >= playerTrack.scrollWidth - 4) {
-                playerTrack.scrollTo({ left: 0, behavior: 'smooth' });
-            } else {
-                playerTrack.scrollBy({ left: step, behavior: 'smooth' });
-            }
-        }, 4000);
+        var autoScroll = null;
 
-        playerTrack.addEventListener('mouseenter', function () { clearInterval(autoScroll); });
+        function startAutoScroll() {
+            if (autoScroll) return;
+            autoScroll = setInterval(function () {
+                if (playerTrack.scrollLeft + playerTrack.clientWidth >= playerTrack.scrollWidth - 4) {
+                    playerTrack.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    playerTrack.scrollBy({ left: step, behavior: 'smooth' });
+                }
+            }, 4000);
+        }
+
+        function stopAutoScroll() {
+            clearInterval(autoScroll);
+            autoScroll = null;
+        }
+
+        startAutoScroll();
+
+        playerTrack.addEventListener('mouseenter', stopAutoScroll);
+        playerTrack.addEventListener('mouseleave', startAutoScroll);
+        playerPrev.addEventListener('click', function () {
+            stopAutoScroll();
+            startAutoScroll();
+        });
+        playerNext.addEventListener('click', function () {
+            stopAutoScroll();
+            startAutoScroll();
+        });
     }
 
     var backToTop = document.getElementById('backToTop');
