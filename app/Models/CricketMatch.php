@@ -13,6 +13,7 @@ class CricketMatch extends Model
         'match_number',
         'opponent_name',
         'opponent_short_name',
+        'opponent_logo',
         'venue',
         'match_date',
         'status',

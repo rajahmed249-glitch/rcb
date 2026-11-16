@@ -35,7 +35,7 @@
             <div class="sb-columns">
                 <div class="sb-team">
                     <div class="sb-logo-row">
-                        <img src="{{ asset('images/logo.png') }}" alt="Real Challenger Boys" class="sb-logo">
+                        <img src="{{ asset('images/teams/real-challenger-boys.webp') }}" alt="Real Challenger Boys" class="sb-logo">
                     </div>
                     <div class="sb-teamname">REAL CHALLENGER BOYS</div>
                     <div class="sb-score">
@@ -64,7 +64,11 @@
 
                 <div class="sb-team">
                     <div class="sb-logo-row">
-                        <div class="sb-logo-fallback">{{ strtoupper(substr($match->opponent_short_name ?: $match->opponent_name, 0, 2)) }}</div>
+                        @if ($match->opponent_logo)
+                            <img src="{{ asset($match->opponent_logo) }}" alt="{{ $match->opponent_name }}" class="sb-logo">
+                        @else
+                            <div class="sb-logo-fallback">{{ strtoupper(substr($match->opponent_short_name ?: $match->opponent_name, 0, 2)) }}</div>
+                        @endif
                     </div>
                     <div class="sb-teamname">{{ strtoupper($match->opponent_name) }}</div>
                     <div class="sb-score">

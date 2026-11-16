@@ -549,3 +549,4 @@ a.match-card:hover { text-decoration: none; }
     .sb-vs { margin: 0; }
     .sb-info-row { flex-direction: column; gap: .15rem; }
 }
+img.team-logo.opponent { background: #fff; }

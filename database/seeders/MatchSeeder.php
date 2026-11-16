@@ -15,6 +15,7 @@ class MatchSeeder extends Seeder
             [
                 'match_number' => 15,
                 'opponent_name' => 'Armed Police Battalion',
+                'opponent_logo' => 'images/teams/armed-police-battalion.webp',
                 'opponent_short_name' => 'APB',
                 'venue' => 'Patuakhali Govt. College Ground, Patuakhali',
                 'match_date' => '2025-08-26 09:30:00',
@@ -30,6 +31,7 @@ class MatchSeeder extends Seeder
             [
                 'match_number' => 14,
                 'opponent_name' => 'Duronto Sporting Xi',
+                'opponent_logo' => 'images/teams/duronto-sporting-xi.webp',
                 'opponent_short_name' => 'DSXI',
                 'venue' => 'Shyamoli Shishu Park Maath, Shyamoli, Dhaka',
                 'match_date' => '2025-07-12 09:30:00',
@@ -45,6 +47,7 @@ class MatchSeeder extends Seeder
             [
                 'match_number' => 17,
                 'opponent_name' => 'Patuakhali Govt. College',
+                'opponent_logo' => 'images/teams/patuakhali-govt-college.webp',
                 'opponent_short_name' => 'PGC',
                 'venue' => 'Patuakhali Govt. College Ground, Patuakhali',
                 'match_date' => '2026-01-24 09:30:00',
@@ -54,6 +57,7 @@ class MatchSeeder extends Seeder
             [
                 'match_number' => 18,
                 'opponent_name' => 'Dynamic Falcon',
+                'opponent_logo' => 'images/teams/dynamic-falcon.webp',
                 'opponent_short_name' => 'DF',
                 'venue' => 'Shyamoli Shishu Park Maath, Shyamoli, Dhaka',
                 'match_date' => '2026-04-10 09:30:00',
@@ -63,6 +67,7 @@ class MatchSeeder extends Seeder
             [
                 'match_number' => 16,
                 'opponent_name' => 'Duronto Sporting Xi',
+                'opponent_logo' => 'images/teams/duronto-sporting-xi.webp',
                 'opponent_short_name' => 'DSXI',
                 'venue' => 'Patuakhali Govt. College Ground, Patuakhali',
                 'match_date' => '2026-12-23 09:30:00',

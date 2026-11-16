@@ -23,13 +23,17 @@
                     <div class="match-date-pill">{{ $match->match_date->format('d M Y') }}</div>
                     <div class="match-teams">
                         <div class="match-team">
-                            <img class="team-logo" src="{{ asset('images/logo.png') }}" alt="Real Challenger Boys">
+                            <img class="team-logo" src="{{ asset('images/teams/real-challenger-boys.webp') }}" alt="Real Challenger Boys">
                             <div class="match-score">{{ $match->status === 'completed' ? $match->rcb_score : '-' }} <small>({{ $match->status === 'completed' ? $match->rcb_overs : '-' }})</small></div>
                         </div>
                         <span class="vs-badge">vs</span>
                         <div class="match-team right">
                             <div class="match-score">{{ $match->status === 'completed' ? $match->opponent_score : '-' }} <small>({{ $match->status === 'completed' ? $match->opponent_overs : '-' }})</small></div>
-                            <span class="team-logo opponent">{{ mb_strtoupper(mb_substr($match->opponent_name, 0, 2)) }}</span>
+                            @if ($match->opponent_logo)
+                                <img class="team-logo opponent" src="{{ asset($match->opponent_logo) }}" alt="{{ $match->opponent_name }}">
+                            @else
+                                <span class="team-logo opponent">{{ mb_strtoupper(mb_substr($match->opponent_name, 0, 2)) }}</span>
+                            @endif
                         </div>
                     </div>
                     <div class="match-names">
@@ -41,7 +45,6 @@
                     @else
                         <div class="match-footer">📍 {{ $match->venue }}</div>
                     @endif
-                    <span class="match-details-link">Match Details →</span>
                 </a>
             @empty
                 <div class="card"><p class="muted">No matches found.</p></div>
