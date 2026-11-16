@@ -39,9 +39,9 @@
                     @foreach ($matches as $match)
                         <div class="card match-card">
                             <div class="match-meta">
-                                <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
                                 <span class="badge badge-{{ $match->status }}">{{ $match->status }}</span>
-                                <span>{{ $match->match_date->format('d M Y') }}</span>
+                                <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
+                                <span class="match-date">{{ $match->match_date->format('d M Y') }}</span>
                             </div>
                             <p><strong>RCB vs {{ $match->opponent_name }}</strong></p>
                             <a href="{{ route('matches.show', $match) }}" class="read-more">Match Details →</a>

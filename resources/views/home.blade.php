@@ -4,11 +4,14 @@
 
 @section('content')
     <section class="hero">
-        <div class="container">
+        <img src="{{ asset('images/banner1.png') }}" class="hero-banner" alt="Real Challenger Boys team">
+        <div class="hero-overlay">
             <h1>🏏 REAL CHALLENGER BOYS</h1>
             <p>Play with passion, win with honor. Follow every match, every player and every moment of the RCB journey.</p>
-            <a href="{{ route('matches.index') }}" class="btn btn-primary">VIEW MATCHES</a>
-            <a href="{{ route('be-a-player.create') }}" class="btn btn-outline">BE A PLAYER</a>
+            <div class="hero-actions">
+                <a href="{{ route('matches.index') }}" class="btn-hero btn-hero-primary">VIEW MATCHES</a>
+                <a href="{{ route('be-a-player.create') }}" class="btn-hero btn-hero-light">BE A PLAYER</a>
+            </div>
         </div>
     </section>
 
@@ -22,9 +25,9 @@
             @if ($latestResult)
                 <div class="card match-card">
                     <div class="match-meta">
-                        <span class="badge badge-matchno">Match {{ $latestResult->match_number }}</span>
                         <span class="badge badge-completed">completed</span>
-                        <span>{{ $latestResult->match_date->format('d M Y') }}</span>
+                        <span class="badge badge-matchno">Match {{ $latestResult->match_number }}</span>
+                        <span class="match-date">{{ $latestResult->match_date->format('d M Y') }}</span>
                     </div>
                     <div class="scoreboard">
                         <div class="team">
@@ -55,9 +58,9 @@
                 @forelse ($upcomingMatches as $match)
                     <div class="card match-card">
                         <div class="match-meta">
-                            <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
                             <span class="badge badge-upcoming">upcoming</span>
-                            <span>{{ $match->match_date->format('d M Y') }}</span>
+                            <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
+                            <span class="match-date">{{ $match->match_date->format('d M Y') }}</span>
                         </div>
                         <div class="scoreboard">
                             <div class="team">REAL CHALLENGER BOYS<div class="score">-</div></div>
