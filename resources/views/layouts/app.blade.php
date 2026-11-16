@@ -54,6 +54,8 @@
     <!-- ==================== Header (logo + search + CTA) ==================== -->
     <div class="header-row">
         <div class="container header-main">
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">&#9776;</button>
+
             <a href="{{ route('home') }}" class="brand">
                 <img src="{{ asset('images/logo.png') }}" alt="Real Challenger Boys" class="brand-logo-img">
             </a>
@@ -67,12 +69,29 @@
                 </form>
             </div>
 
+            <div class="lang-switch header-lang">
+                <a href="#" class="active">ENG</a>
+                <a href="#">BAN</a>
+            </div>
+
+            <button class="search-toggle" id="searchToggle" aria-label="Search">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/></svg>
+            </button>
+
             <a href="{{ route('be-a-player.create') }}" class="btn-cta">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.105 18.79l-1 .992a4.159 4.159 0 0 1 -6.038 -5.715l.157 -.166l8.282 -8.401l1.5 1.5l3.45 -3.391a2.08 2.08 0 0 1 3.057 2.815l-.116 .126l-3.391 3.45l1.5 1.5l-3.668 3.617"/><path d="M10.5 7.5l6 6"/><path d="M14 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/></svg>
                 BE A PLAYER
             </a>
-            <button class="menu-toggle" id="menuToggle" aria-label="Menu">&#9776;</button>
         </div>
+    </div>
+
+    <div class="mobile-search" id="mobileSearch">
+        <form action="{{ route('search') }}" method="GET" class="search-form" role="search">
+            <input type="search" name="q" value="{{ request('q') }}" placeholder="Search players, teams, matches..." aria-label="Search">
+            <button type="submit" aria-label="Search">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/></svg>
+            </button>
+        </form>
     </div>
 
     <!-- ==================== Navbar (sticky teal) ==================== -->
@@ -88,6 +107,10 @@
                 <a href="{{ route('pages.teams') }}" class="nav-link {{ request()->routeIs('pages.teams') ? 'active' : '' }}">Team</a>
                 <a href="{{ route('pages.records') }}" class="nav-link {{ request()->routeIs('pages.records') ? 'active' : '' }}">Records</a>
                 <a href="{{ route('pages.contact') }}" class="nav-link {{ request()->routeIs('pages.contact') ? 'active' : '' }}">Contact Us</a>
+                <a href="{{ route('be-a-player.create') }}" class="nav-cta-mobile">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.105 18.79l-1 .992a4.159 4.159 0 0 1 -6.038 -5.715l.157 -.166l8.282 -8.401l1.5 1.5l3.45 -3.391a2.08 2.08 0 0 1 3.057 2.815l-.116 .126l-3.391 3.45l1.5 1.5l-3.668 3.617"/><path d="M10.5 7.5l6 6"/><path d="M14 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/></svg>
+                    BE A PLAYER
+                </a>
             </nav>
         </div>
     </div>

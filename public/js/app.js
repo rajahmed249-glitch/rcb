@@ -128,3 +128,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    var searchToggle = document.getElementById('searchToggle');
+    var mobileSearch = document.getElementById('mobileSearch');
+    if (searchToggle && mobileSearch) {
+        searchToggle.addEventListener('click', function () {
+            mobileSearch.classList.toggle('open');
+            if (mobileSearch.classList.contains('open')) {
+                var input = mobileSearch.querySelector('input');
+                if (input) { input.focus(); }
+            }
+        });
+    }
+});

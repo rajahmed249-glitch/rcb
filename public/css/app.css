@@ -109,6 +109,11 @@ img { max-width: 100%; display: block; }
 .btn-cta:hover { transform: scale(1.05); box-shadow: 0 10px 22px rgba(13,148,136,.4); }
 
 .menu-toggle { display: none; background: #fff; border: 1px solid var(--border); color: var(--text); font-size: 1.3rem; border-radius: 8px; padding: .3rem .7rem; cursor: pointer; }
+.header-lang { display: none; }
+.search-toggle { display: none; background: #fff; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: .35rem .55rem; cursor: pointer; }
+.search-toggle svg { width: 1.1rem; height: 1.1rem; display: block; }
+.mobile-search { display: none; }
+.nav-cta-mobile { display: none; }
 
 /* ================= Navbar ================= */
 .mainnav {
@@ -474,8 +479,20 @@ a.match-card:hover { text-decoration: none; }
     .nav-link { padding: .6rem 1rem; }
     .nav-link::after { display: none; }
     .nav-link.active { background: rgba(255,255,255,.12); border-radius: 8px; }
-    .menu-toggle { display: block; }
+    .menu-toggle { display: block; order: 1; }
+    .brand { order: 2; margin-right: auto; }
+    .header-lang { display: flex; order: 3; }
+    .header-lang a { padding: .25rem .6rem; }
+    .search-toggle { display: block; order: 4; }
     .search-wrap { display: none; }
+    .btn-cta { display: none; }
+    .topbar .lang-switch, .topbar .socials { display: none; }
+    .topbar-inner { justify-content: center; }
+    .nav-cta-mobile { display: inline-flex; align-items: center; gap: .5rem; margin: .6rem 1rem; padding: .55rem 1.25rem; border-radius: 999px; background: linear-gradient(to right, #14b8a6, #10b981); color: #fff; font-size: .85rem; font-weight: 700; box-shadow: 0 4px 12px rgba(13,148,136,.35); }
+    .nav-cta-mobile svg { width: 1rem; height: 1rem; }
+    .mobile-search.open { display: block; padding: .6rem 0; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.9); }
+    .mobile-search .search-form { display: flex; gap: .5rem; }
+    .mobile-search input { flex: 1; }
     .footer-grid { grid-template-columns: 1fr; }
     .hero-slider { height: 300px; }
 }
@@ -484,8 +501,6 @@ a.match-card:hover { text-decoration: none; }
     .footer-grid { grid-template-columns: 1fr; }
     .about-columns { grid-template-columns: 1fr; }
     .player-slide { flex: 0 0 240px; }
-    .lang-switch { display: none; }
-    .socials { display: none; }
     .brand-logo-img { height: 36px; }
     .btn-cta { padding: .5rem 1rem; font-size: .8rem; }
     .hero-slider { height: 220px; }
