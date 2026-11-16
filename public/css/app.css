@@ -474,6 +474,8 @@ a.match-card:hover { text-decoration: none; }
 }
 
 @media (max-width: 900px) {
+    .topbar { display: none; }
+    .header-row { position: sticky; top: 0; z-index: 60; box-shadow: 0 2px 12px rgba(15,23,42,.08); }
     .mainnav .nav { display: none; flex-direction: column; gap: 0; padding: .5rem 0; }
     .mainnav .nav.open { display: flex; }
     .nav-link { padding: .6rem 1rem; }
@@ -487,7 +489,6 @@ a.match-card:hover { text-decoration: none; }
     .search-wrap { display: none; }
     .btn-cta { display: none; }
     .topbar .lang-switch, .topbar .socials { display: none; }
-    .topbar-inner { justify-content: center; }
     .nav-cta-mobile { display: inline-flex; align-items: center; gap: .5rem; margin: .6rem 1rem; padding: .55rem 1.25rem; border-radius: 999px; background: linear-gradient(to right, #14b8a6, #10b981); color: #fff; font-size: .85rem; font-weight: 700; box-shadow: 0 4px 12px rgba(13,148,136,.35); }
     .nav-cta-mobile svg { width: 1rem; height: 1rem; }
     .mobile-search.open { display: block; padding: .6rem 0; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.9); }
@@ -495,6 +496,7 @@ a.match-card:hover { text-decoration: none; }
     .mobile-search input { flex: 1; }
     .footer-grid { grid-template-columns: 1fr; }
     .hero-slider { height: 300px; }
+    .hero-slide img { object-fit: contain; object-position: center; background: #fff; }
 }
 
 @media (max-width: 560px) {
@@ -504,6 +506,7 @@ a.match-card:hover { text-decoration: none; }
     .brand-logo-img { height: 36px; }
     .btn-cta { padding: .5rem 1rem; font-size: .8rem; }
     .hero-slider { height: 220px; }
+    .hero-slide img { object-fit: contain; object-position: center; background: #fff; }
 }
 
 /* ===== Match Detail / Scoreboard ===== */
