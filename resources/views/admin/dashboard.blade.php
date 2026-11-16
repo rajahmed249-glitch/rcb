@@ -146,7 +146,7 @@
                                 @else
                                     <span class="rm-fallback">{{ Str::upper(Str::substr($match->display_opponent_name, 0, 2)) }}</span>
                                 @endif
-                                <a href="{{ $match->opponent_team_id ? route('pages.teamProfile', $match->opponentTeam->slug) : '#' }}" @unless($match->opponent_team_id) onclick="return false;" @endunless title="{{ $match->display_opponent_name }}">{{ $match->display_opponent_name }}</a>
+                                <a href="{{ $match->opponent_team_id ? route('pages.team-profile', $match->opponentTeam->slug) : '#' }}" @unless($match->opponent_team_id) onclick="return false;" @endunless title="{{ $match->display_opponent_name }}">{{ $match->display_opponent_name }}</a>
                             </div>
                         </div>
                     </div>
