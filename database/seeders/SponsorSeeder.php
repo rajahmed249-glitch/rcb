@@ -9,6 +9,8 @@ class SponsorSeeder extends Seeder
 {
     public function run(): void
     {
+        Sponsor::query()->delete();
+
         $sponsors = [
             ['name' => 'RCB Sports Club', 'sort_order' => 1],
             ['name' => 'Patuakhali Cricket Academy', 'sort_order' => 2],
