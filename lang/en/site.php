@@ -307,6 +307,8 @@ return [
         'actions' => 'Actions',
         'name' => 'Name (English)',
         'name_bn' => 'Name (Bangla)',
+        'name_en' => 'Name (EN)',
+        'dob' => 'DOB',
         'short_name' => 'Short Name',
         'role' => 'Role',
         'jersey_number' => 'Jersey Number',

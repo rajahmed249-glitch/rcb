@@ -70,9 +70,9 @@
                 <tr>
                     <th>#</th>
                     <th>{{ __('site.admin.image') }}</th>
-                    <th>{{ __('site.admin.full_name') }}</th>
+                    <th>{{ __('site.admin.name_en') }}</th>
                     <th>{{ __('site.admin.name_bn') }}</th>
-                    <th>{{ __('site.admin.team') }}</th>
+                    <th>{{ __('site.admin.dob') }}</th>
                     <th>{{ __('site.admin.playing_role') }}</th>
                     <th>{{ __('site.admin.status') }}</th>
                     <th>{{ __('site.admin.action') }}</th>
@@ -99,7 +99,7 @@
                                 @endif
                             </td>
                             <td class="apl-muted">{{ $player->name_bn ?: '—' }}</td>
-                            <td class="apl-muted">{{ $player->team?->name ?? '—' }}</td>
+                            <td class="apl-muted">{{ $player->date_of_birth?->format('d M Y') ?: '—' }}</td>
                             <td><span class="apl-role-badge">{{ $player->role }}</span></td>
                             <td>
                                 <span class="apl-status-badge {{ $player->team_id ? 'active' : 'inactive' }}">

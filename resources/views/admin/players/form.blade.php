@@ -46,6 +46,10 @@
                 @endforeach
             </select>
         </div>
+        <div>
+            <label>{{ __('site.admin.dob') }}</label>
+            <input type="date" name="date_of_birth" value="{{ old('date_of_birth', $player->date_of_birth?->format('Y-m-d')) }}">
+        </div>
     </div>
 
     <div class="admin-grid2">

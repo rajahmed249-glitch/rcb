@@ -96,6 +96,7 @@ class PlayerController extends Controller
             'name_bn' => ['nullable', 'string', 'max:255'],
             'short_name' => ['nullable', 'string', 'max:10'],
             'role' => ['required', 'string'],
+            'date_of_birth' => ['nullable', 'date'],
             'jersey_number' => ['nullable', 'integer'],
             'is_captain' => ['nullable', 'boolean'],
             'is_vice_captain' => ['nullable', 'boolean'],

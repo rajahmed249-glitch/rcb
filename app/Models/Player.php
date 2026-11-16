@@ -11,6 +11,7 @@ class Player extends Model
         'name',
         'short_name',
         'role',
+        'date_of_birth',
         'jersey_number',
         'photo',
         'is_captain',
@@ -28,6 +29,7 @@ class Player extends Model
     protected $casts = [
         'is_captain' => 'boolean',
         'is_vice_captain' => 'boolean',
+        'date_of_birth' => 'date',
     ];
 
     public function team()
