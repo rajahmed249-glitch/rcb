@@ -9,7 +9,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SponsorController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', HomeController::class)->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/be-a-player', [PlayerApplicationController::class, 'create'])->name('be-a-player.create');
 Route::post('/be-a-player', [PlayerApplicationController::class, 'store'])->name('be-a-player.store');
