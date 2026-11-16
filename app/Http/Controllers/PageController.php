@@ -63,18 +63,30 @@ class PageController extends Controller
         }
 
         $team = $teams[$slug];
+        $dbTeam = Team::where('slug', $slug)->first();
 
         $players = collect();
         $topRuns = collect();
         $topWickets = collect();
 
         if ($team['is_rcb']) {
-            $players = Player::orderByDesc('is_captain')
-                ->orderByDesc('is_vice_captain')
-                ->orderBy('id')
-                ->get();
+            $players = $dbTeam
+                ? Player::where('team_id', $dbTeam->id)
+                    ->orderByDesc('is_captain')
+                    ->orderByDesc('is_vice_captain')
+                    ->orderBy('id')
+                    ->get()
+                : Player::orderByDesc('is_captain')
+                    ->orderByDesc('is_vice_captain')
+                    ->orderBy('id')
+                    ->get();
             $topRuns = Player::orderByDesc('runs')->take(5)->get();
             $topWickets = Player::orderByDesc('wickets')->take(5)->get();
+        } elseif ($dbTeam) {
+            $players = Player::where('team_id', $dbTeam->id)
+                ->orderByDesc('is_captain')
+                ->orderBy('id')
+                ->get();
         }
 
         $teamMatches = CricketMatch::query()

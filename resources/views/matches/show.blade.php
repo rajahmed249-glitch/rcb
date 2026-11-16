@@ -173,6 +173,9 @@
                             </div>
                             <div class="sb-sum-row"><span>{{ __('site.scorecard.overs') }}</span><span>{{ $match->rcb_overs ?? '-' }}</span></div>
                             <div class="sb-sum-row"><span>{{ __('site.match_info.match') }}</span><span>{{ $match->format }}</span></div>
+                            @if ($match->tournament)
+                                <div class="sb-sum-row"><span>{{ __('site.match_info.tournament') }}</span><span>{{ $match->tournament->display_name }}</span></div>
+                            @endif
                         </div>
                         <div class="sb-sum-block">
                             <div class="sb-sum-head">

@@ -33,6 +33,9 @@
                 <a href="{{ route('admin.teams.index') }}" class="{{ request()->routeIs('admin.teams.*') ? 'active' : '' }}">
                     <span class="admin-ico">👕</span> {{ __('site.admin.total_teams') }}
                 </a>
+                <a href="{{ route('admin.tournaments.index') }}" class="{{ request()->routeIs('admin.tournaments.*') ? 'active' : '' }}">
+                    <span class="admin-ico">🏟️</span> {{ __('site.admin.tournaments') }}
+                </a>
                 <a href="{{ route('pages.records') }}" target="_blank">
                     <span class="admin-ico">🏆</span> {{ __('site.nav.records') }}
                     <span class="admin-nav-ext">↗</span>

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Player extends Model
 {
     protected $fillable = [
+        'team_id',
         'name',
         'short_name',
         'role',
@@ -28,6 +29,11 @@ class Player extends Model
         'is_captain' => 'boolean',
         'is_vice_captain' => 'boolean',
     ];
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 
     public function getDisplayNameAttribute(): string
     {

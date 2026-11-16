@@ -11,6 +11,8 @@ class CricketMatch extends Model
 
     protected $fillable = [
         'match_number',
+        'tournament_id',
+        'opponent_team_id',
         'opponent_name',
         'opponent_name_bn',
         'opponent_short_name',
@@ -31,6 +33,21 @@ class CricketMatch extends Model
         'match_date' => 'datetime',
         'won' => 'boolean',
     ];
+
+    public function tournament()
+    {
+        return $this->belongsTo(Tournament::class);
+    }
+
+    public function opponentTeam()
+    {
+        return $this->belongsTo(Team::class, 'opponent_team_id');
+    }
+
+    public function squad()
+    {
+        return $this->belongsToMany(Player::class, 'match_squad')->withTimestamps();
+    }
 
     public function scopeCompleted(Builder $query): Builder
     {

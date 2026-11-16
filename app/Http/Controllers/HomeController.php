@@ -15,7 +15,12 @@ class HomeController extends Controller
             'latestResult' => CricketMatch::completed()->first(),
             'upcomingMatches' => CricketMatch::upcoming()->take(3)->get(),
             'latestNews' => NewsPost::orderByDesc('published_at')->take(3)->get(),
-            'players' => Player::orderByDesc('is_captain')->orderByDesc('is_vice_captain')->orderBy('id')->take(12)->get(),
+            'players' => Player::whereNotNull('team_id')
+                ->orderByDesc('is_captain')
+                ->orderByDesc('is_vice_captain')
+                ->orderBy('id')
+                ->take(12)
+                ->get(),
             'sponsors' => Sponsor::orderBy('sort_order')->get(),
         ]);
     }

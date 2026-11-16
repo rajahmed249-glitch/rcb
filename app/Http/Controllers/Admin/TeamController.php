@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Player;
 use App\Models\Team;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,10 @@ class TeamController extends Controller
 
     public function create()
     {
-        return view('admin.teams.form', ['team' => new Team()]);
+        return view('admin.teams.form', [
+            'team' => new Team(),
+            'players' => Player::orderBy('name')->get(),
+        ]);
     }
 
     public function store(Request $request)
@@ -26,14 +30,18 @@ class TeamController extends Controller
         $data['slug'] = Team::uniqueSlug($request->input('slug') ?: $request->input('name'));
         $data['logo'] = $this->upload($request);
 
-        Team::create($data);
+        $team = Team::create($data);
+        $this->syncPlayers($request, $team, true);
 
         return redirect()->route('admin.teams.index')->with('success', __('site.admin.saved'));
     }
 
     public function edit(Team $team)
     {
-        return view('admin.teams.form', ['team' => $team]);
+        return view('admin.teams.form', [
+            'team' => $team,
+            'players' => Player::orderBy('name')->get(),
+        ]);
     }
 
     public function update(Request $request, Team $team)
@@ -46,6 +54,7 @@ class TeamController extends Controller
         }
 
         $team->update($data);
+        $this->syncPlayers($request, $team, false);
 
         return redirect()->route('admin.teams.index')->with('success', __('site.admin.saved'));
     }
@@ -55,6 +64,24 @@ class TeamController extends Controller
         $team->delete();
 
         return redirect()->route('admin.teams.index')->with('success', __('site.admin.deleted'));
+    }
+
+    private function syncPlayers(Request $request, Team $team, bool $creating): void
+    {
+        if (! $request->has('player_ids')) {
+            return;
+        }
+
+        $ids = collect($request->input('player_ids', []))
+            ->map(fn ($id) => (int) $id)
+            ->filter()
+            ->all();
+
+        Player::whereIn('id', $ids)->update(['team_id' => $team->id]);
+
+        if (! $creating) {
+            Player::where('team_id', $team->id)->whereNotIn('id', $ids)->update(['team_id' => null]);
+        }
     }
 
     private function validated(Request $request): array

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Player;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -18,7 +19,10 @@ class PlayerController extends Controller
 
     public function create()
     {
-        return view('admin.players.form', ['player' => new Player()]);
+        return view('admin.players.form', [
+            'player' => new Player(),
+            'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
+        ]);
     }
 
     public function store(Request $request)
@@ -33,7 +37,10 @@ class PlayerController extends Controller
 
     public function edit(Player $player)
     {
-        return view('admin.players.form', ['player' => $player]);
+        return view('admin.players.form', [
+            'player' => $player,
+            'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
+        ]);
     }
 
     public function update(Request $request, Player $player)
@@ -56,6 +63,7 @@ class PlayerController extends Controller
     private function validated(Request $request): array
     {
         return $request->validate([
+            'team_id' => ['nullable', 'integer', 'exists:teams,id'],
             'name' => ['required', 'string', 'max:255'],
             'name_bn' => ['nullable', 'string', 'max:255'],
             'short_name' => ['nullable', 'string', 'max:10'],

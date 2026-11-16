@@ -125,6 +125,7 @@ return [
         'date' => 'Date',
         'status' => 'Status',
         'match' => 'Match',
+        'tournament' => 'Tournament',
     ],
 
     'team_profile' => [
@@ -376,6 +377,13 @@ return [
         'welcome_text' => 'Manage your team content from one place.',
         'footer_text' => 'Real Challenger Boys (RCB) — Admin Panel',
         'quick_actions' => 'Quick Actions',
+        'team' => 'Team',
+        'tournaments' => 'Tournaments',
+        'season' => 'Season',
+        'description' => 'Description',
+        'active' => 'Active',
+        'squad_select' => 'Squad Players',
+        'opponent_team' => 'Opponent Team',
     ],
 ];
 

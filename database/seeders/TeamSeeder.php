@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\CricketMatch;
+use App\Models\Player;
 use App\Models\Team;
 use Illuminate\Database\Seeder;
 
@@ -23,5 +25,19 @@ class TeamSeeder extends Seeder
         foreach ($teams as $team) {
             Team::create($team);
         }
+
+        $rcb = Team::where('slug', 'real-challenger-boys')->first();
+
+        if ($rcb) {
+            Player::query()->update(['team_id' => $rcb->id]);
+        }
+
+        $byName = Team::pluck('id', 'name');
+
+        CricketMatch::query()->get()->each(function (CricketMatch $match) use ($byName) {
+            if ($byName->has($match->opponent_name)) {
+                $match->update(['opponent_team_id' => $byName[$match->opponent_name]]);
+            }
+        });
     }
 }

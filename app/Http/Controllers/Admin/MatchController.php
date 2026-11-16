@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CricketMatch;
+use App\Models\Player;
+use App\Models\Team;
+use App\Models\Tournament;
 use Illuminate\Http\Request;
 
 class MatchController extends Controller
@@ -17,30 +20,46 @@ class MatchController extends Controller
 
     public function create()
     {
-        return view('admin.matches.form', ['match' => new CricketMatch()]);
+        return view('admin.matches.form', [
+            'match' => new CricketMatch(),
+            'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
+            'tournaments' => Tournament::orderBy('sort_order')->orderBy('id')->get(),
+            'squadPlayers' => $this->squadPlayers(),
+        ]);
     }
 
     public function store(Request $request)
     {
         $data = $this->validated($request);
-        $data['opponent_logo'] = $this->upload($request);
+        $data['opponent_logo'] = $this->upload($request)
+            ?? optional(Team::find($data['opponent_team_id'] ?? null))->logo;
 
-        CricketMatch::create($data);
+        $match = CricketMatch::create($data);
+        $this->syncSquad($request, $match);
 
         return redirect()->route('admin.matches.index')->with('success', __('site.admin.saved'));
     }
 
     public function edit(CricketMatch $match)
     {
-        return view('admin.matches.form', ['match' => $match]);
+        return view('admin.matches.form', [
+            'match' => $match,
+            'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
+            'tournaments' => Tournament::orderBy('sort_order')->orderBy('id')->get(),
+            'squadPlayers' => $this->squadPlayers(),
+        ]);
     }
 
     public function update(Request $request, CricketMatch $match)
     {
         $data = $this->validated($request);
-        $data['opponent_logo'] = $this->upload($request) ?? $match->opponent_logo;
+        $data['opponent_logo'] = $this->upload($request)
+            ?? (isset($data['opponent_team_id']) && $data['opponent_team_id']
+                ? (optional(Team::find($data['opponent_team_id']))->logo ?? $match->opponent_logo)
+                : $match->opponent_logo);
 
         $match->update($data);
+        $this->syncSquad($request, $match);
 
         return redirect()->route('admin.matches.index')->with('success', __('site.admin.saved'));
     }
@@ -52,10 +71,36 @@ class MatchController extends Controller
         return redirect()->route('admin.matches.index')->with('success', __('site.admin.deleted'));
     }
 
+    private function squadPlayers()
+    {
+        return Player::whereNotNull('team_id')
+            ->with('team')
+            ->orderByDesc('is_captain')
+            ->orderByDesc('is_vice_captain')
+            ->orderBy('id')
+            ->get();
+    }
+
+    private function syncSquad(Request $request, CricketMatch $match): void
+    {
+        if (! $request->has('squad')) {
+            return;
+        }
+
+        $ids = collect($request->input('squad', []))
+            ->map(fn ($id) => (int) $id)
+            ->filter()
+            ->all();
+
+        $match->squad()->sync($ids);
+    }
+
     private function validated(Request $request): array
     {
         return $request->validate([
             'match_number' => ['required', 'integer'],
+            'tournament_id' => ['nullable', 'integer', 'exists:tournaments,id'],
+            'opponent_team_id' => ['nullable', 'integer', 'exists:teams,id'],
             'opponent_name' => ['required', 'string', 'max:255'],
             'opponent_name_bn' => ['nullable', 'string', 'max:255'],
             'opponent_short_name' => ['nullable', 'string', 'max:10'],
@@ -72,6 +117,18 @@ class MatchController extends Controller
         ]) + [
             'won' => $request->boolean('won'),
         ];
+
+        if (! empty($data['opponent_team_id'])) {
+            $team = Team::find($data['opponent_team_id']);
+
+            if ($team) {
+                $data['opponent_name'] = $team->name;
+                $data['opponent_name_bn'] = $team->name_bn;
+                $data['opponent_short_name'] = $team->short_name;
+            }
+        }
+
+        return $data;
     }
 
     private function upload(Request $request): ?string

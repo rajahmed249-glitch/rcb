@@ -12,20 +12,32 @@
 
     <div class="admin-grid2">
         <div>
-            <label>{{ __('site.admin.name') }} *</label>
-            <input type="text" name="name" value="{{ old('name', $player->name) }}" required>
+            <label>{{ __('site.admin.team') }} *</label>
+            <select name="team_id" required>
+                <option value="">--</option>
+                @foreach ($teams as $team)
+                    <option value="{{ $team->id }}" {{ old('team_id', $player->team_id) == $team->id ? 'selected' : '' }}>{{ $team->name }}@if($team->name_bn) / {{ $team->name_bn }}@endif</option>
+                @endforeach
+            </select>
         </div>
         <div>
-            <label>{{ __('site.admin.name_bn') }}</label>
-            <input type="text" name="name_bn" value="{{ old('name_bn', $player->name_bn) }}">
+            <label>{{ __('site.admin.name') }} *</label>
+            <input type="text" name="name" value="{{ old('name', $player->name) }}" required>
         </div>
     </div>
 
     <div class="admin-grid2">
         <div>
+            <label>{{ __('site.admin.name_bn') }}</label>
+            <input type="text" name="name_bn" value="{{ old('name_bn', $player->name_bn) }}">
+        </div>
+        <div>
             <label>{{ __('site.admin.short_name') }}</label>
             <input type="text" name="short_name" value="{{ old('short_name', $player->short_name) }}">
         </div>
+    </div>
+
+    <div class="admin-grid2">
         <div>
             <label>{{ __('site.admin.role') }} *</label>
             <select name="role" required>

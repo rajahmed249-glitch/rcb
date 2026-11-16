@@ -10,10 +10,19 @@
         @method('PUT')
     @endif
 
-    <div class="admin-grid2">
+    <div class="admin-grid3">
         <div>
             <label>{{ __('site.admin.match_number') }} *</label>
             <input type="number" name="match_number" value="{{ old('match_number', $match->match_number) }}" required>
+        </div>
+        <div>
+            <label>{{ __('site.admin.tournaments') }}</label>
+            <select name="tournament_id">
+                <option value="">--</option>
+                @foreach ($tournaments as $tournament)
+                    <option value="{{ $tournament->id }}" {{ old('tournament_id', $match->tournament_id) == $tournament->id ? 'selected' : '' }}>{{ $tournament->display_name }}@if($tournament->season) ({{ $tournament->season }})@endif</option>
+                @endforeach
+            </select>
         </div>
         <div>
             <label>{{ __('site.admin.format') }}</label>
@@ -23,25 +32,38 @@
 
     <div class="admin-grid2">
         <div>
-            <label>{{ __('site.admin.opponent_name') }} *</label>
-            <input type="text" name="opponent_name" value="{{ old('opponent_name', $match->opponent_name) }}" required>
+            <label>{{ __('site.admin.opponent_team') }}</label>
+            <select name="opponent_team_id">
+                <option value="">--</option>
+                @foreach ($teams as $team)
+                    @unless ($team->is_rcb)
+                        <option value="{{ $team->id }}" {{ old('opponent_team_id', $match->opponent_team_id) == $team->id ? 'selected' : '' }}>{{ $team->name }}@if($team->name_bn) / {{ $team->name_bn }}@endif</option>
+                    @endunless
+                @endforeach
+            </select>
         </div>
         <div>
-            <label>{{ __('site.admin.opponent_name_bn') }}</label>
-            <input type="text" name="opponent_name_bn" value="{{ old('opponent_name_bn', $match->opponent_name_bn) }}">
+            <label>{{ __('site.admin.opponent_name') }} *</label>
+            <input type="text" name="opponent_name" value="{{ old('opponent_name', $match->opponent_name) }}" required>
         </div>
     </div>
 
     <div class="admin-grid2">
         <div>
+            <label>{{ __('site.admin.opponent_name_bn') }}</label>
+            <input type="text" name="opponent_name_bn" value="{{ old('opponent_name_bn', $match->opponent_name_bn) }}">
+        </div>
+        <div>
             <label>{{ __('site.admin.opponent_short_name') }}</label>
             <input type="text" name="opponent_short_name" value="{{ old('opponent_short_name', $match->opponent_short_name) }}">
         </div>
+    </div>
+
+    <div class="admin-grid2">
         <div>
             <label>{{ __('site.admin.venue') }}</label>
             <input type="text" name="venue" value="{{ old('venue', $match->venue) }}">
         </div>
-    </div>
 
     <div class="admin-grid2">
         <div>
@@ -54,6 +76,7 @@
                 <option value="upcoming" {{ old('status', $match->status) === 'upcoming' ? 'selected' : '' }}>{{ __('site.admin.upcoming') }}</option>
                 <option value="completed" {{ old('status', $match->status) === 'completed' ? 'selected' : '' }}>{{ __('site.admin.completed') }}</option>
             </select>
+        </div>
         <div>
             <label>{{ __('site.admin.opponent_logo') }}</label>
             <input type="file" name="opponent_logo" accept="image/*">
@@ -89,6 +112,18 @@
 
     <div class="admin-checks">
         <label><input type="checkbox" name="won" value="1" {{ old('won', $match->won) ? 'checked' : '' }}> {{ __('site.admin.won') }}</label>
+    </div>
+
+    <div>
+        <label>{{ __('site.admin.squad_select') }}</label>
+        <div class="admin-checks">
+            @foreach ($squadPlayers as $player)
+                <label>
+                    <input type="checkbox" name="squad[]" value="{{ $player->id }}" {{ in_array($player->id, old('squad', $match->squad->pluck('id')->all())) ? 'checked' : '' }}>
+                    {{ $player->name }}@if($player->team) <small class="admin-bn">({{ $player->team->name }})</small>@endif
+                </label>
+            @endforeach
+        </div>
     </div>
 
     <div class="admin-form-actions">

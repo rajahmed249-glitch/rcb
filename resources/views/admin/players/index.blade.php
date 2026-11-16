@@ -13,6 +13,7 @@
                 <th>#</th>
                 <th>{{ __('site.admin.photo') }}</th>
                 <th>{{ __('site.admin.name') }}</th>
+                <th>{{ __('site.admin.team') }}</th>
                 <th>{{ __('site.admin.role') }}</th>
                 <th>{{ __('site.admin.runs') }}</th>
                 <th>{{ __('site.admin.wickets') }}</th>
@@ -29,6 +30,7 @@
                         @endif
                     </td>
                     <td>{{ $player->name }}@if($player->name_bn) <small class="admin-bn">/{{ $player->name_bn }}</small>@endif</td>
+                    <td>{{ $player->team?->name }}</td>
                     <td>{{ $player->role }}</td>
                     <td>{{ $player->runs }}</td>
                     <td>{{ $player->wickets }}</td>

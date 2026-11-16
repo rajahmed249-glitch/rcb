@@ -12,6 +12,7 @@ class PlayerController extends Controller
         $role = $request->query('role');
 
         $query = Player::query()
+            ->whereNotNull('team_id')
             ->orderByDesc('is_captain')
             ->orderByDesc('is_vice_captain')
             ->orderBy('id');

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\MatchController as AdminMatchController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\PlayerController as AdminPlayerController;
 use App\Http\Controllers\Admin\SponsorController as AdminSponsorController;
+use App\Http\Controllers\Admin\TournamentController;
 use App\Http\Controllers\Admin\TeamController as AdminTeamController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MatchController;
@@ -59,6 +60,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('news', AdminNewsController::class)->except(['show']);
         Route::resource('sponsors', AdminSponsorController::class)->except(['show']);
         Route::resource('teams', AdminTeamController::class)->except(['show']);
+        Route::resource('tournaments', TournamentController::class)->except(['show']);
         Route::resource('gallery', AdminGalleryController::class)->except(['show']);
 
         Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');

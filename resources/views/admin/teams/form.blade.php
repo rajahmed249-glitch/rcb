@@ -56,6 +56,18 @@
         </div>
     </div>
 
+    <div>
+        <label>{{ __('site.admin.squad_select') }}</label>
+        <div class="admin-checks">
+            @foreach ($players as $player)
+                <label>
+                    <input type="checkbox" name="player_ids[]" value="{{ $player->id }}" {{ $player->team_id === $team->id ? 'checked' : '' }}>
+                    {{ $player->name }}@if($player->team && $player->team_id !== $team->id) <small class="admin-bn">({{ $player->team->name }})</small>@endif
+                </label>
+            @endforeach
+        </div>
+    </div>
+
     <div class="admin-form-actions">
         <button type="submit" class="admin-btn">{{ __('site.admin.save') }}</button>
         <a href="{{ route('admin.teams.index') }}" class="admin-btn ghost">{{ __('site.admin.cancel') }}</a>

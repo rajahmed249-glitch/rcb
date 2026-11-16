@@ -80,10 +80,18 @@ class MatchController extends Controller
         [$rcbRuns, $rcbWkts] = $this->parseScore($match->rcb_score);
         [$oppRuns, $oppWkts] = $this->parseScore($match->opponent_score);
 
-        $rcbPlayers = Player::orderByDesc('is_captain')
-            ->orderByDesc('is_vice_captain')
-            ->orderBy('id')
-            ->get();
+        $squadIds = $match->squad()->pluck('players.id')->all();
+
+        $rcbPlayers = $squadIds
+            ? Player::whereIn('id', $squadIds)
+                ->orderByDesc('is_captain')
+                ->orderByDesc('is_vice_captain')
+                ->orderBy('id')
+                ->get()
+            : Player::orderByDesc('is_captain')
+                ->orderByDesc('is_vice_captain')
+                ->orderBy('id')
+                ->get();
 
         $opponentNames = [
             'Tanvir Hasan', 'Mehedi Hasan', 'Rakibul Islam', 'Sabbir Ahmed',
