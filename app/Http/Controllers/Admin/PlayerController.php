@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Player;
+use App\Models\RoleIcon;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -50,6 +51,7 @@ class PlayerController extends Controller
         return view('admin.players.form', [
             'player' => new Player(),
             'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
+            'roleIcons' => RoleIcon::orderBy('sort_order')->orderBy('id')->get(),
         ]);
     }
 
@@ -68,6 +70,7 @@ class PlayerController extends Controller
         return view('admin.players.form', [
             'player' => $player,
             'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
+            'roleIcons' => RoleIcon::orderBy('sort_order')->orderBy('id')->get(),
         ]);
     }
 
@@ -97,6 +100,7 @@ class PlayerController extends Controller
             'short_name' => ['nullable', 'string', 'max:10'],
             'role' => ['required', 'string'],
             'date_of_birth' => ['nullable', 'date'],
+            'role_icon_id' => ['nullable', 'integer', 'exists:role_icons,id'],
             'jersey_number' => ['nullable', 'integer'],
             'is_captain' => ['nullable', 'boolean'],
             'is_vice_captain' => ['nullable', 'boolean'],

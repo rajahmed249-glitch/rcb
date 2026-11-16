@@ -12,6 +12,7 @@ class Player extends Model
         'short_name',
         'role',
         'date_of_birth',
+        'role_icon_id',
         'jersey_number',
         'photo',
         'is_captain',
@@ -35,6 +36,11 @@ class Player extends Model
     public function team()
     {
         return $this->belongsTo(Team::class);
+    }
+
+    public function roleIcon()
+    {
+        return $this->belongsTo(RoleIcon::class);
     }
 
     public function getDisplayNameAttribute(): string

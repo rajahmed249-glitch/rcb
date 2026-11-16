@@ -1326,6 +1326,49 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
 .apl-info { font-size: 13px; color: #374151; margin: 0; }
 .apl-info span { font-weight: 600; }
 
+/* ---------- Admin Player Form (reference design) ---------- */
+.apf-card { background: #fff; border-radius: 16px; padding: 24px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); }
+.apf-heading { font-size: 16px; font-weight: 600; color: #1f2937; margin: 0 0 20px; display: flex; align-items: center; gap: 10px; }
+.apf-heading-ico { color: #0d9488; }
+.apf-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 16px; }
+.apf-row-3 { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.apf-group { display: flex; flex-direction: column; gap: 6px; }
+.apf-group label { font-size: 13px; font-weight: 500; color: #0d9488; margin-bottom: 6px; }
+.apf-required { color: #ef4444; margin-left: 2px; }
+.apf-group select, .apf-group input, .apf-group textarea { padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: all .2s; background: #fff; color: #1f2937; width: 100%; box-sizing: border-box; font-family: inherit; }
+.apf-group select:focus, .apf-group input:focus, .apf-group textarea:focus { outline: none; border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13, 148, 136, .1); }
+.apf-group textarea { min-height: 100px; resize: vertical; }
+.apf-upload { display: flex; align-items: center; gap: 16px; width: 100%; flex-wrap: wrap; }
+.apf-upload-btn-wrap { position: relative; overflow: hidden; }
+.apf-upload-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 24px; background: #f3f4f6; border: 2px dashed #d1d5db; border-radius: 8px; color: #6b7280; font-size: 13px; font-weight: 500; transition: all .2s; min-height: 60px; min-width: 160px; white-space: nowrap; }
+.apf-upload-btn-wrap:hover .apf-upload-btn { border-color: #0d9488; color: #0d9488; background: #f0fdfa; }
+.apf-upload-btn-wrap input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.apf-preview-wrap { flex-shrink: 0; }
+.apf-preview { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; border: 2px solid #e2e8f0; background: #f8fafc; }
+.apf-file-name { font-size: 12px; color: #6b7280; margin-top: 4px; }
+.apf-icon-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 8px; }
+.apf-icon-option { display: flex; align-items: center; gap: 6px; cursor: pointer; position: relative; padding: 4px 6px; border-radius: 6px; transition: all .2s ease; }
+.apf-icon-option input[type="radio"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 10; margin: 0; left: 0; top: 0; }
+.apf-radio { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #94a3b8; background: #fff; display: flex; align-items: center; justify-content: center; transition: all .3s ease; flex-shrink: 0; position: relative; z-index: 5; box-sizing: border-box; }
+.apf-radio::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: transparent; transition: all .3s ease; }
+.apf-icon-option input[type="radio"]:checked + .apf-radio { border-color: #2563eb; background: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, .25); }
+.apf-icon-option input[type="radio"]:checked + .apf-radio::after { background: #fff; }
+.apf-icon-option.selected { background: #eff6ff; }
+.apf-icon-box { width: 36px; height: 36px; border-radius: 50%; background: #f1f5f9; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #0d9488; font-size: 15px; flex-shrink: 0; }
+.apf-empty-note { font-size: 13px; color: #9ca3af; grid-column: 1 / -1; margin: 0; }
+.apf-toggle { display: flex; gap: 10px; flex-wrap: wrap; }
+.apf-toggle-option { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 16px; border-radius: 30px; background: #f1f5f9; transition: all .2s ease; color: #475569; font-size: 14px; }
+.apf-toggle-option input[type="checkbox"] { accent-color: #0d9488; width: 16px; height: 16px; margin: 0; }
+.apf-toggle-option.active { background: #d1fae5; color: #065f46; }
+.apf-toggle-icon { font-size: 14px; }
+.apf-actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid #e5e7eb; }
+.apf-cancel { padding: 10px 28px; background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+.apf-cancel:hover { background: #e5e7eb; color: #1f2937; }
+.apf-reset { padding: 10px 28px; background: #fee2e2; color: #dc2626; border: none; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; }
+.apf-reset:hover { background: #fecaca; }
+.apf-submit { padding: 10px 32px; background: linear-gradient(135deg, #0d9488, #0f766e); color: #fff; border: none; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; }
+.apf-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 148, 136, .3); }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
     .admin-body { padding-top: 60px; }
@@ -1357,6 +1400,9 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
     .apl-act { width: 30px; height: 30px; }
     .apl-act svg { width: 14px; height: 14px; }
     .apl-status-badge { font-size: 11px; padding: 3px 10px; }
+    .apf-card { padding: 16px 12px; }
+    .apf-icon-grid { grid-template-columns: repeat(4, 1fr); }
+    .apf-actions .apf-cancel, .apf-actions .apf-reset, .apf-actions .apf-submit { flex: 1; justify-content: center; padding: 10px 14px; font-size: 13px; }
 }
 @media (max-width: 576px) {
     .admin-body { padding-top: 55px; }
