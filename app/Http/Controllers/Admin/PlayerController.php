@@ -116,15 +116,11 @@ class PlayerController extends Controller
             'player_tag' => ['nullable', 'string', 'max:100'],
             'status' => ['nullable', 'boolean'],
             'jersey_number' => ['nullable', 'integer'],
-            'is_captain' => ['nullable', 'boolean'],
-            'is_vice_captain' => ['nullable', 'boolean'],
             'batting_style' => ['nullable', 'string', 'max:255'],
             'bowling_style' => ['nullable', 'string', 'max:255'],
             'bio' => ['nullable', 'string'],
             'bio_bn' => ['nullable', 'string'],
         ]) + [
-            'is_captain' => $request->boolean('is_captain'),
-            'is_vice_captain' => $request->boolean('is_vice_captain'),
             'status' => $request->boolean('status'),
         ];
     }

@@ -209,6 +209,20 @@
 
         <div class="apf-row">
             <div class="apf-group">
+                <label>{{ __('site.admin.description_en') }}</label>
+                <textarea name="bio" placeholder="Enter player description in English">{{ old('bio', $player->bio) }}</textarea>
+            </div>
+        </div>
+
+        <div class="apf-row">
+            <div class="apf-group">
+                <label>{{ __('site.admin.description_bn') }}</label>
+                <textarea name="bio_bn" placeholder="বাংলায় প্লেয়ারের বর্ণনা লিখুন">{{ old('bio_bn', $player->bio_bn) }}</textarea>
+            </div>
+        </div>
+
+        <div class="apf-row">
+            <div class="apf-group">
                 <label>{{ __('site.admin.status') }}</label>
                 <div class="apf-toggle">
                     <label class="apf-toggle-option {{ old('status', $player->status ?? true) ? 'active' : '' }}" id="statusActiveLabel">
@@ -222,43 +236,6 @@
                         <span>{{ __('site.admin.inactive') }}</span>
                     </label>
                 </div>
-            </div>
-        </div>
-
-        <div class="apf-row">
-            <div class="apf-group">
-                <label>{{ __('site.admin.is_captain') }}</label>
-                <div class="apf-toggle">
-                    <label class="apf-toggle-option {{ old('is_captain', $player->is_captain) ? 'active' : '' }}" id="captainLabel">
-                        <input type="checkbox" name="is_captain" value="1" @checked(old('is_captain', $player->is_captain)) onchange="document.getElementById('captainLabel').classList.toggle('active', this.checked)">
-                        <span class="apf-toggle-icon">✅</span>
-                        <span>{{ __('site.admin.yes') }}</span>
-                    </label>
-                </div>
-            </div>
-            <div class="apf-group">
-                <label>{{ __('site.admin.is_vice_captain') }}</label>
-                <div class="apf-toggle">
-                    <label class="apf-toggle-option {{ old('is_vice_captain', $player->is_vice_captain) ? 'active' : '' }}" id="viceCaptainLabel">
-                        <input type="checkbox" name="is_vice_captain" value="1" @checked(old('is_vice_captain', $player->is_vice_captain)) onchange="document.getElementById('viceCaptainLabel').classList.toggle('active', this.checked)">
-                        <span class="apf-toggle-icon">⭐</span>
-                        <span>{{ __('site.admin.yes') }}</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <div class="apf-row">
-            <div class="apf-group">
-                <label>{{ __('site.admin.description_en') }}</label>
-                <textarea name="bio" placeholder="Enter player description in English">{{ old('bio', $player->bio) }}</textarea>
-            </div>
-        </div>
-
-        <div class="apf-row">
-            <div class="apf-group">
-                <label>{{ __('site.admin.description_bn') }}</label>
-                <textarea name="bio_bn" placeholder="বাংলায় প্লেয়ারের বর্ণনা লিখুন">{{ old('bio_bn', $player->bio_bn) }}</textarea>
             </div>
         </div>
 
