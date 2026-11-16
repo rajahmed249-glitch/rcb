@@ -19,6 +19,12 @@
             <a href="{{ asset('images/banner3.webp') }}" target="_blank" class="gallery-item">
                 <img src="{{ asset('images/banner3.webp') }}" alt="RCB celebration" loading="lazy">
             </a>
+            <a href="{{ asset('images/team-photo-2.webp') }}" target="_blank" class="gallery-item">
+                <img src="{{ asset('images/team-photo-2.webp') }}" alt="RCB team group photo" loading="lazy">
+            </a>
+            <a href="{{ asset('images/team-photo-3.webp') }}" target="_blank" class="gallery-item">
+                <img src="{{ asset('images/team-photo-3.webp') }}" alt="RCB team group photo" loading="lazy">
+            </a>
             <a href="{{ asset('images/logo.png') }}" target="_blank" class="gallery-item">
                 <img src="{{ asset('images/logo.png') }}" alt="RCB logo" loading="lazy">
             </a>

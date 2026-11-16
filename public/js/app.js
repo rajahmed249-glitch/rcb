@@ -98,3 +98,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    var tabButtons = document.querySelectorAll('.sb-tab-btn');
+    if (tabButtons.length) {
+        tabButtons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                tabButtons.forEach(function (b) { b.classList.remove('active'); });
+                document.querySelectorAll('.sb-tab-content').forEach(function (c) { c.classList.remove('active'); });
+                btn.classList.add('active');
+                var panel = document.getElementById('sb-tab-' + btn.dataset.tab);
+                if (panel) { panel.classList.add('active'); }
+            });
+        });
+    }
+});
