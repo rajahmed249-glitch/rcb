@@ -4,39 +4,75 @@
 
 @section('content')
     <div class="container">
-        <div class="card" style="max-width: 720px;">
-            <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
-                <div class="player-avatar" style="width:110px;height:110px;font-size:2rem;">
-                    {{ $player->initials }}
-                    @if ($player->badge)
-                        <span class="badge-role">{{ $player->badge }}</span>
+        <div class="pprofile">
+            <div class="pprofile-grid">
+                <div class="pimg-wrap">
+                    <div class="pimg-glow"></div>
+                    <div class="pimg-box">
+                        @if ($player->photo_url)
+                            <img src="{{ $player->photo_url }}" alt="{{ $player->name }}">
+                        @else
+                            <div class="pimg-initials">{{ $player->initials }}</div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="pinfo-wrap">
+                    <div class="pname-wrap">
+                        <h1>{{ $player->name }}</h1>
+                        <div class="pname-underline"></div>
+                    </div>
+
+                    <div class="prole-badge"><span>{{ $player->role }}@if ($player->badge) ({{ strtoupper($player->badge) }})@endif</span></div>
+
+                    <div class="pstyle-badges">
+                        @if ($player->batting_style)<span class="pbadge pbadge-bat">&#127951; {{ $player->batting_style }}</span>@endif
+                        @if ($player->bowling_style)<span class="pbadge pbadge-bowl">&#127919; {{ $player->bowling_style }}</span>@endif
+                        @if ($player->jersey_number)<span class="pbadge pbadge-jersey">#{{ $player->jersey_number }}</span>@endif
+                    </div>
+
+                    <div class="pdetails-grid">
+                        <div class="pdetail-card">
+                            <div class="pdetail-label">Full Name</div>
+                            <div class="pdetail-value">{{ $player->name }}</div>
+                        </div>
+                        <div class="pdetail-card">
+                            <div class="pdetail-label">Team</div>
+                            <div class="pdetail-value">Real Challenger Boys</div>
+                        </div>
+                        <div class="pdetail-card">
+                            <div class="pdetail-label">Role</div>
+                            <div class="pdetail-value">{{ $player->role }}</div>
+                        </div>
+                    </div>
+
+                    <div class="pstats-grid">
+                        <div class="pstat-item">
+                            <div class="pstat-iconbox teal">&#128197;</div>
+                            <div class="pstat-number teal">{{ $player->matches_played }}</div>
+                            <div class="pstat-label">Matches</div>
+                        </div>
+                        <div class="pstat-item">
+                            <div class="pstat-iconbox red">&#128200;</div>
+                            <div class="pstat-number red">{{ $player->runs }}</div>
+                            <div class="pstat-label">Runs</div>
+                        </div>
+                        <div class="pstat-item">
+                            <div class="pstat-iconbox amber">&#11088;</div>
+                            <div class="pstat-number amber">{{ $player->wickets }}</div>
+                            <div class="pstat-label">Wickets</div>
+                        </div>
+                    </div>
+
+                    @if ($player->bio)
+                        <p class="pbio">{{ $player->bio }}</p>
                     @endif
                 </div>
-                <div>
-                    <h1>{{ $player->name }}@if ($player->badge) ({{ $player->badge }})@endif</h1>
-                    <p class="muted">{{ $player->role }} @if ($player->jersey_number) · #{{ $player->jersey_number }} @endif</p>
-                </div>
             </div>
-
-            <hr style="border-color: var(--border); margin: 1.5rem 0;">
-
-            <h2 style="margin-bottom: 1rem;">Player Stats</h2>
-            <div class="player-stats" style="justify-content:flex-start; gap:2rem; font-size:1rem;">
-                <span>Matches: <strong>{{ $player->matches_played }}</strong></span>
-                <span>Runs: <strong>{{ $player->runs }}</strong></span>
-                <span>Wickets: <strong>{{ $player->wickets }}</strong></span>
-            </div>
-
-            <ul class="footer-links" style="margin-top: 1.25rem;">
-                @if ($player->batting_style)<li>🏏 Batting: {{ $player->batting_style }}</li>@endif
-                @if ($player->bowling_style)<li>🎯 Bowling: {{ $player->bowling_style }}</li>@endif
-            </ul>
-
-            @if ($player->bio)
-                <p class="article-content muted" style="margin-top: 1.25rem;">{{ $player->bio }}</p>
-            @endif
         </div>
 
-        <p style="margin-top: 2rem;"><a href="{{ route('players.index') }}" class="btn btn-outline">← Back to Players</a></p>
+        <p style="margin-top: 2rem; text-align: center;">
+            <a href="{{ route('players.index') }}" class="btn btn-outline">&larr; Back to Players</a>
+        </p>
     </div>
 @endsection

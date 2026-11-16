@@ -95,10 +95,23 @@
 
         <div class="sb-content-card">
             <div class="sb-tab-content active" id="sb-tab-summary">
-                <div class="sb-coming">
-                    <div class="sb-coming-icon">&#127951;</div>
-                    <h3>Full Summary Coming Soon</h3>
-                    <p>Ball-by-ball summary for this match will be published here soon.</p>
+                <div class="sb-summary">
+                    <div class="sb-sum-block">
+                        <div class="sb-sum-head">
+                            <span>Real Challenger Boys</span>
+                            <span class="sb-sum-score">{{ $match->rcb_score ?? '-' }}{{ $match->rcb_overs ? ' (' . $match->rcb_overs . ')' : '' }}</span>
+                        </div>
+                        <div class="sb-sum-row"><span>Overs</span><span>{{ $match->rcb_overs ?? '-' }}</span></div>
+                        <div class="sb-sum-row"><span>Format</span><span>{{ $match->format }}</span></div>
+                    </div>
+                    <div class="sb-sum-block">
+                        <div class="sb-sum-head">
+                            <span>{{ $match->opponent_name }}</span>
+                            <span class="sb-sum-score">{{ $match->opponent_score ?? '-' }}{{ $match->opponent_overs ? ' (' . $match->opponent_overs . ')' : '' }}</span>
+                        </div>
+                        <div class="sb-sum-row"><span>Overs</span><span>{{ $match->opponent_overs ?? '-' }}</span></div>
+                        <div class="sb-sum-row"><span>Result</span><span>{{ $match->result_text ?? ucfirst($match->status) }}</span></div>
+                    </div>
                 </div>
             </div>
 
