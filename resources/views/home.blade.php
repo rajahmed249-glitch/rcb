@@ -3,15 +3,14 @@
 @section('title', 'Welcome to RCB')
 
 @section('content')
-    <section class="hero">
-        <img src="{{ asset('images/banner1.png') }}" class="hero-banner" alt="Real Challenger Boys team">
-        <div class="hero-overlay">
-            <h1>🏏 REAL CHALLENGER BOYS</h1>
-            <p>Play with passion, win with honor. Follow every match, every player and every moment of the RCB journey.</p>
-            <div class="hero-actions">
-                <a href="{{ route('matches.index') }}" class="btn-hero btn-hero-primary">VIEW MATCHES</a>
-                <a href="{{ route('be-a-player.create') }}" class="btn-hero btn-hero-light">BE A PLAYER</a>
-            </div>
+    <section class="hero-slider" id="heroSlider">
+        <div class="hero-slide active"><img src="{{ asset('images/banner1.png') }}" alt="Real Challenger Boys team"></div>
+        <div class="hero-slide"><img src="{{ asset('images/banner2.webp') }}" alt="Real Challenger Boys team photo" loading="lazy"></div>
+        <div class="hero-slide"><img src="{{ asset('images/banner3.webp') }}" alt="Real Challenger Boys celebration" loading="lazy"></div>
+        <div class="hero-dots">
+            <button class="hero-dot active" data-slide="0" aria-label="Slide 1"></button>
+            <button class="hero-dot" data-slide="1" aria-label="Slide 2"></button>
+            <button class="hero-dot" data-slide="2" aria-label="Slide 3"></button>
         </div>
     </section>
 
@@ -23,7 +22,8 @@
             </div>
 
             @if ($latestResult)
-                <div class="card match-card">
+                <div class="match-grid">
+                    <div class="card match-card">
                     <div class="match-meta">
                         <span class="badge badge-completed">completed</span>
                         <span class="badge badge-matchno">Match {{ $latestResult->match_number }}</span>
@@ -42,6 +42,7 @@
                     </div>
                     <p class="result-line {{ $latestResult->won ? '' : 'lost' }}">{{ $latestResult->result_label }}</p>
                     <a href="{{ route('matches.show', $latestResult) }}" class="read-more">Match Details →</a>
+                    </div>
                 </div>
             @else
                 <div class="card"><p class="muted">No completed matches yet.</p></div>
