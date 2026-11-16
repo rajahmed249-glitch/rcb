@@ -27,6 +27,11 @@ class Player extends Model
         'is_vice_captain' => 'boolean',
     ];
 
+    public function getPhotoUrlAttribute(): ?string
+    {
+        return $this->photo ? asset($this->photo) : null;
+    }
+
     public function getBadgeAttribute(): string
     {
         return match (true) {

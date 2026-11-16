@@ -13,7 +13,11 @@
             @forelse ($players as $player)
                 <div class="card player-card">
                     <div class="player-avatar">
-                        {{ $player->initials }}
+                        @if ($player->photo_url)
+                            <img src="{{ $player->photo_url }}" alt="{{ $player->name }}" loading="lazy">
+                        @else
+                            {{ $player->initials }}
+                        @endif
                         @if ($player->badge)
                             <span class="badge-role">{{ $player->badge }}</span>
                         @endif

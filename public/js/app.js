@@ -38,6 +38,30 @@ document.addEventListener('DOMContentLoaded', function () {
         play();
     }
 
+    var playerTrack = document.getElementById('playerTrack');
+    var playerPrev = document.getElementById('playerPrev');
+    var playerNext = document.getElementById('playerNext');
+
+    if (playerTrack && playerPrev && playerNext) {
+        var step = 300;
+        playerPrev.addEventListener('click', function () {
+            playerTrack.scrollBy({ left: -step, behavior: 'smooth' });
+        });
+        playerNext.addEventListener('click', function () {
+            playerTrack.scrollBy({ left: step, behavior: 'smooth' });
+        });
+
+        var autoScroll = setInterval(function () {
+            if (playerTrack.scrollLeft + playerTrack.clientWidth >= playerTrack.scrollWidth - 4) {
+                playerTrack.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                playerTrack.scrollBy({ left: step, behavior: 'smooth' });
+            }
+        }, 4000);
+
+        playerTrack.addEventListener('mouseenter', function () { clearInterval(autoScroll); });
+    }
+
     var backToTop = document.getElementById('backToTop');
     if (backToTop) {
         window.addEventListener('scroll', function () {

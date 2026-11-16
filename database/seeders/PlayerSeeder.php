@@ -12,10 +12,10 @@ class PlayerSeeder extends Seeder
         Player::query()->delete();
 
         $players = [
-            ['name' => 'Raj Ahmed', 'role' => 'Captain', 'is_captain' => true, 'batting_style' => 'Right-hand bat', 'bowling_style' => 'Right-arm medium'],
-            ['name' => 'Fazle Rabbi Nayan', 'role' => 'Vice Captain', 'is_vice_captain' => true, 'batting_style' => 'Right-hand bat', 'bowling_style' => 'Right-arm offbreak'],
-            ['name' => 'Soloyman Hossain', 'role' => 'Batsman', 'batting_style' => 'Right-hand bat'],
-            ['name' => 'Mohidul Haq Jony', 'role' => 'All-rounder', 'batting_style' => 'Right-hand bat', 'bowling_style' => 'Right-arm medium-fast'],
+            ['name' => 'Raj Ahmed', 'role' => 'Captain', 'is_captain' => true, 'photo' => 'images/players/raj-ahmed.webp', 'batting_style' => 'Right-hand bat', 'bowling_style' => 'Right-arm medium'],
+            ['name' => 'Fazle Rabbi Nayan', 'role' => 'Vice Captain', 'is_vice_captain' => true, 'photo' => 'images/players/fazle-rabbi-nayan.webp', 'batting_style' => 'Right-hand bat', 'bowling_style' => 'Right-arm offbreak'],
+            ['name' => 'Soloyman Hossain', 'role' => 'Batsman', 'photo' => 'images/players/soloyman-hossain.webp', 'batting_style' => 'Right-hand bat'],
+            ['name' => 'Mohidul Haq Jony', 'role' => 'All-rounder', 'photo' => 'images/players/mohidul-haq-jony.webp', 'batting_style' => 'Right-hand bat', 'bowling_style' => 'Right-arm medium-fast'],
             ['name' => 'Ebadul Sheikh', 'role' => 'Bowler', 'bowling_style' => 'Right-arm fast'],
             ['name' => 'NMS Sadi', 'role' => 'Wicketkeeper', 'batting_style' => 'Right-hand bat'],
             ['name' => 'Sufiyan Akash', 'role' => 'Bowler', 'bowling_style' => 'Left-arm orthodox'],

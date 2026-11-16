@@ -37,14 +37,27 @@
                 <div class="section-head"><h2>Matches</h2></div>
                 <div class="match-grid">
                     @foreach ($matches as $match)
-                        <div class="card match-card">
-                            <div class="match-meta">
-                                <span class="badge badge-{{ $match->status }}">{{ $match->status }}</span>
-                                <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
-                                <span class="match-date">{{ $match->match_date->format('d M Y') }}</span>
+                        <div class="match-card">
+                            <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
+                            <span class="badge badge-{{ $match->status }}">{{ $match->status }}</span>
+                            <div class="match-date-pill">{{ $match->match_date->format('d M Y') }}</div>
+                            <div class="match-teams">
+                                <div class="match-team">
+                                    <img class="team-logo" src="{{ asset('images/logo.png') }}" alt="Real Challenger Boys">
+                                    <div class="match-score">-</div>
+                                </div>
+                                <span class="vs-badge">vs</span>
+                                <div class="match-team right">
+                                    <div class="match-score">-</div>
+                                    <span class="team-logo opponent">{{ mb_strtoupper(mb_substr($match->opponent_name, 0, 2)) }}</span>
+                                </div>
                             </div>
-                            <p><strong>RCB vs {{ $match->opponent_name }}</strong></p>
-                            <a href="{{ route('matches.show', $match) }}" class="read-more">Match Details →</a>
+                            <div class="match-names">
+                                <span>REAL CHALLENGER BOYS</span>
+                                <span>{{ $match->opponent_name }}</span>
+                            </div>
+                            <div class="match-footer">📍 {{ $match->venue }}</div>
+                            <a href="{{ route('matches.show', $match) }}" class="match-details-link">Match Details →</a>
                         </div>
                     @endforeach
                 </div>

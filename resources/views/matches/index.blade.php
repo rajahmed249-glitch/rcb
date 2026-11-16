@@ -17,29 +17,31 @@
 
         <div class="match-grid">
             @forelse ($matches as $match)
-                <div class="card match-card">
-                    <div class="match-meta">
-                        <span class="badge badge-{{ $match->status }}">{{ $match->status }}</span>
-                        <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
-                        <span class="match-date">{{ $match->match_date->format('d M Y') }}</span>
+                <div class="match-card">
+                    <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
+                    <span class="badge badge-{{ $match->status }}">{{ $match->status }}</span>
+                    <div class="match-date-pill">{{ $match->match_date->format('d M Y') }}</div>
+                    <div class="match-teams">
+                        <div class="match-team">
+                            <img class="team-logo" src="{{ asset('images/logo.png') }}" alt="Real Challenger Boys">
+                            <div class="match-score">{{ $match->status === 'completed' ? $match->rcb_score : '-' }} <small>({{ $match->status === 'completed' ? $match->rcb_overs : '-' }})</small></div>
+                        </div>
+                        <span class="vs-badge">vs</span>
+                        <div class="match-team right">
+                            <div class="match-score">{{ $match->status === 'completed' ? $match->opponent_score : '-' }} <small>({{ $match->status === 'completed' ? $match->opponent_overs : '-' }})</small></div>
+                            <span class="team-logo opponent">{{ mb_strtoupper(mb_substr($match->opponent_name, 0, 2)) }}</span>
+                        </div>
                     </div>
-                    <div class="scoreboard">
-                        <div class="team">
-                            REAL CHALLENGER BOYS
-                            <div class="score">{{ $match->status === 'completed' ? $match->rcb_score : '-' }} <small>({{ $match->status === 'completed' ? $match->rcb_overs : '-' }})</small></div>
-                        </div>
-                        <div class="vs">vs</div>
-                        <div class="team">
-                            {{ $match->opponent_name }}
-                            <div class="score">{{ $match->status === 'completed' ? $match->opponent_score : '-' }} <small>({{ $match->status === 'completed' ? $match->opponent_overs : '-' }})</small></div>
-                        </div>
+                    <div class="match-names">
+                        <span>REAL CHALLENGER BOYS</span>
+                        <span>{{ $match->opponent_name }}</span>
                     </div>
                     @if ($match->status === 'completed' && $match->result_text)
-                        <p class="result-line {{ $match->won ? '' : 'lost' }}">{{ $match->result_text }}</p>
-                    @elseif ($match->venue)
-                        <p class="venue-line">📍 {{ $match->venue }}</p>
+                        <div class="match-footer {{ $match->won ? '' : 'lost' }}">{{ $match->result_text }}</div>
+                    @else
+                        <div class="match-footer">📍 {{ $match->venue }}</div>
                     @endif
-                    <a href="{{ route('matches.show', $match) }}" class="read-more">Match Details →</a>
+                    <a href="{{ route('matches.show', $match) }}" class="match-details-link">Match Details →</a>
                 </div>
             @empty
                 <div class="card"><p class="muted">No matches found.</p></div>
