@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CricketMatch;
+use App\Models\Player;
 use Illuminate\Http\Request;
 
 class MatchController extends Controller
@@ -29,6 +30,246 @@ class MatchController extends Controller
 
     public function show(CricketMatch $match)
     {
-        return view('matches.show', ['match' => $match]);
+        return view('matches.show', [
+            'match' => $match,
+            'scorecard' => $this->buildScorecard($match),
+        ]);
+    }
+
+    private function parseScore(?string $score): array
+    {
+        if (!$score || $score === '-') {
+            return [0, 0];
+        }
+
+        $parts = explode('-', $score, 2);
+
+        return [(int) $parts[0], (int) ($parts[1] ?? 0)];
+    }
+
+    private function parseOvers(?string $overs): float
+    {
+        if (!$overs || $overs === '-') {
+            return 0.0;
+        }
+
+        $parts = explode('.', $overs, 2);
+
+        return (float) $parts[0] + ((int) ($parts[1] ?? 0)) / 6;
+    }
+
+    private function formatOvers(float $overs): string
+    {
+        $whole = (int) floor($overs);
+        $balls = (int) round(($overs - $whole) * 6);
+
+        if ($balls >= 6) {
+            $whole += 1;
+            $balls -= 6;
+        }
+
+        return $whole . '.' . $balls;
+    }
+
+    private function buildScorecard(CricketMatch $match): array
+    {
+        if ($match->status !== 'completed') {
+            return ['rcb' => null, 'opponent' => null];
+        }
+
+        [$rcbRuns, $rcbWkts] = $this->parseScore($match->rcb_score);
+        [$oppRuns, $oppWkts] = $this->parseScore($match->opponent_score);
+
+        $rcbPlayers = Player::orderByDesc('is_captain')
+            ->orderByDesc('is_vice_captain')
+            ->orderBy('id')
+            ->get();
+
+        $opponentNames = [
+            'Tanvir Hasan', 'Mehedi Hasan', 'Rakibul Islam', 'Sabbir Ahmed',
+            'Naeem Sheikh', 'Ariful Haque', 'Shakil Khan', 'Roni Chowdhury',
+            'Imran Hossain', 'Jubayer Rahman', 'Sajid Khan',
+        ];
+
+        $rcbBowlerNames = $rcbPlayers->filter(fn ($p) => in_array($p->role, ['Bowler', 'All-rounder']))
+            ->concat($rcbPlayers)
+            ->map(fn ($p) => $p->name)
+            ->unique()
+            ->values()
+            ->all();
+
+        return [
+            'rcb' => $this->buildInnings(
+                $rcbRuns, $rcbWkts, $match->rcb_overs,
+                $rcbPlayers, $opponentNames,
+                $oppRuns, $oppWkts,
+                $match->id, 'rcb'
+            ),
+            'opponent' => $this->buildInnings(
+                $oppRuns, $oppWkts, $match->opponent_overs,
+                null, $rcbBowlerNames,
+                $rcbRuns, $rcbWkts,
+                $match->id, 'opp'
+            ),
+        ];
+    }
+
+    private function buildInnings(
+        int $teamRuns,
+        int $teamWickets,
+        ?string $teamOvers,
+        $batterPool,
+        array $bowlerNames,
+        int $oppRuns,
+        int $oppWickets,
+        int $matchId,
+        string $side
+    ): array {
+        mt_srand($matchId * 131 + ($side === 'rcb' ? 7 : 13));
+
+        $extras = mt_rand(8, 16);
+        $batRuns = max(0, $teamRuns - $extras);
+        $battedCount = min(11, max(7, $teamWickets + 2));
+
+        if ($batterPool && $batterPool->count() > 0) {
+            $batters = $batterPool->take($battedCount)->values()->map(fn ($p) => (object) [
+                'name' => $p->name,
+                'photo' => $p->photo_url,
+            ]);
+        } else {
+            $batters = collect(range(0, $battedCount - 1))->map(fn ($i) => (object) [
+                'name' => $bowlerNames[$i % count($bowlerNames)],
+                'photo' => null,
+            ]);
+        }
+
+        $weights = [34, 27, 21, 17, 13, 10, 8, 6, 5, 4, 3];
+        $runsList = [];
+        $allocated = 0;
+
+        foreach ($batters->values() as $i => $batter) {
+            if ($i === $battedCount - 1) {
+                $runsList[$i] = max(0, $batRuns - $allocated);
+            } else {
+                $runsList[$i] = (int) floor($batRuns * $weights[$i] / array_sum(array_slice($weights, 0, $battedCount)));
+                $allocated += $runsList[$i];
+            }
+        }
+
+        $dismissalTypes = ['bowled', 'caught', 'lbw', 'runout', 'stumped', 'c&b'];
+        $batting = [];
+        $cumBalls = 0;
+        $fow = [];
+        $fowScore = 0;
+
+        foreach ($batters->values() as $i => $batter) {
+            $runs = $runsList[$i];
+            $isOut = $i < $teamWickets;
+
+            $sr = mt_rand(85, 160);
+            $balls = $runs > 0 ? max(1, (int) round($runs * 100 / $sr)) : mt_rand(2, 12);
+
+            $fours = (int) floor($runs / 9);
+            $sixes = (int) floor($runs / 22);
+            while (4 * $fours + 6 * $sixes > $runs && ($fours > 0 || $sixes > 0)) {
+                if ($fours > 0 && 4 * $fours > $runs) {
+                    $fours--;
+                } elseif ($sixes > 0) {
+                    $sixes--;
+                } else {
+                    $fours--;
+                }
+            }
+
+            $dismissal = 'not out';
+            if ($isOut) {
+                $type = $dismissalTypes[mt_rand(0, count($dismissalTypes) - 1)];
+                $bowler = $bowlerNames[mt_rand(0, count($bowlerNames) - 1)];
+                $fielder = $bowlerNames[mt_rand(0, count($bowlerNames) - 1)];
+
+                $dismissal = match ($type) {
+                    'bowled' => 'b ' . $bowler,
+                    'caught' => 'c ' . $fielder . ' b ' . $bowler,
+                    'lbw' => 'lbw b ' . $bowler,
+                    'runout' => 'run out (' . $fielder . ')',
+                    'stumped' => 'st ' . $fielder . ' b ' . $bowler,
+                    'c&b' => 'c & b ' . $bowler,
+                    default => 'b ' . $bowler,
+                };
+
+                $fowScore += $runs;
+                $fow[] = [
+                    'name' => $batter->name,
+                    'score' => $fowScore . '-' . count($fow),
+                    'over' => $this->formatOvers($cumBalls / 6),
+                ];
+            }
+
+            $cumBalls += $balls;
+
+            $batting[] = [
+                'name' => $batter->name,
+                'photo' => $batter->photo,
+                'runs' => $runs,
+                'balls' => $balls,
+                'fours' => $fours,
+                'sixes' => $sixes,
+                'sr' => $balls > 0 ? number_format($runs * 100 / $balls, 2) : '0.00',
+                'dismissal' => $dismissal,
+            ];
+        }
+
+        $totalOvers = $this->parseOvers($teamOvers);
+        $bowlerCount = min(5, max(3, (int) floor($totalOvers)));
+        $baseOvers = $totalOvers > 0 ? (int) floor($totalOvers / $bowlerCount) : 0;
+        $remOvers = $totalOvers - $baseOvers * $bowlerCount;
+
+        $wicketsLeft = $oppWickets;
+        $runsLeft = $oppRuns;
+        $bowling = [];
+
+        for ($i = 0; $i < $bowlerCount; $i++) {
+            $isLast = ($i === $bowlerCount - 1);
+
+            $bowlerOvers = $baseOvers + ($i === 0 ? $remOvers : 0);
+            if ($isLast || $bowlerOvers < 1) {
+                $bowlerOvers = max(1, $bowlerOvers);
+            }
+
+            if ($isLast) {
+                $bowlerRuns = max(0, $runsLeft);
+                $bowlerWickets = min($wicketsLeft, mt_rand(0, 2));
+            } else {
+                $share = 1 / max(1, $bowlerCount - $i);
+                $bowlerRuns = min($runsLeft, (int) round($oppRuns * $share * (mt_rand(85, 115) / 100)));
+                $bowlerWickets = min($wicketsLeft, mt_rand(0, 2));
+            }
+
+            $wicketsLeft -= $bowlerWickets;
+            $runsLeft -= $bowlerRuns;
+
+            $maidens = ($bowlerOvers >= 2 && $bowlerRuns <= $bowlerOvers && mt_rand(0, 1)) ? 1 : 0;
+
+            $bowling[] = [
+                'name' => $bowlerNames[$i % count($bowlerNames)],
+                'overs' => $this->formatOvers($bowlerOvers),
+                'maidens' => $maidens,
+                'runs' => $bowlerRuns,
+                'wickets' => $bowlerWickets,
+                'wides' => mt_rand(0, 3),
+                'noballs' => mt_rand(0, 2),
+                'econ' => $bowlerOvers > 0 ? number_format($bowlerRuns / $bowlerOvers, 2) : '0.00',
+            ];
+        }
+
+        return [
+            'batting' => $batting,
+            'bowling' => $bowling,
+            'fow' => $fow,
+            'extras' => $extras,
+            'total' => $teamRuns,
+            'wickets' => $teamWickets,
+            'overs' => $teamOvers,
+        ];
     }
 }

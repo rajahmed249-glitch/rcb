@@ -142,3 +142,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    var subtabs = document.querySelectorAll('.score-subtab-btn');
+    if (subtabs.length) {
+        subtabs.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                subtabs.forEach(function (b) { b.classList.remove('active'); });
+                document.querySelectorAll('.scorecard-innings').forEach(function (p) { p.classList.remove('active'); });
+                btn.classList.add('active');
+                var panel = document.getElementById('innings-' + btn.dataset.innings);
+                if (panel) { panel.classList.add('active'); }
+            });
+        });
+    }
+});

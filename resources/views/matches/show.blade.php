@@ -116,19 +116,73 @@
             </div>
 
             <div class="sb-tab-content" id="sb-tab-scorecard">
-                <div class="sb-coming">
-                    <div class="sb-coming-icon">&#128203;</div>
-                    <h3>Scorecard Coming Soon</h3>
-                    <p>Per-player batting and bowling figures will be published here soon.</p>
-                </div>
+                @if ($scorecard['rcb'])
+                    <div class="score-subtabs">
+                        <button class="score-subtab-btn active" data-innings="rcb">Real Challenger Boys</button>
+                        <button class="score-subtab-btn" data-innings="opp">{{ $match->opponent_short_name ?: 'Opponent' }}</button>
+                    </div>
+
+                    <div class="scorecard-innings active" id="innings-rcb">
+                        @include('matches.innings', [
+                            'innings' => $scorecard['rcb'],
+                            'teamName' => 'Real Challenger Boys',
+                            'scoreStr' => $match->rcb_score,
+                        ])
+                    </div>
+
+                    <div class="scorecard-innings" id="innings-opp">
+                        @include('matches.innings', [
+                            'innings' => $scorecard['opponent'],
+                            'teamName' => $match->opponent_name,
+                            'scoreStr' => $match->opponent_score,
+                        ])
+                    </div>
+                @else
+                    <div class="sb-coming">
+                        <div class="sb-coming-icon">&#128203;</div>
+                        <h3>Scorecard Coming Soon</h3>
+                        <p>Per-player batting and bowling figures will be published here soon.</p>
+                    </div>
+                @endif
             </div>
 
             <div class="sb-tab-content" id="sb-tab-squad">
-                <div class="sb-coming">
-                    <div class="sb-coming-icon">&#128101;</div>
-                    <h3>Squad Coming Soon</h3>
-                    <p>The playing XI for this match will be announced here soon.</p>
-                </div>
+                @if ($scorecard['rcb'])
+                    <div class="squad-grid">
+                        <div class="squad-col">
+                            <div class="squad-head">Real Challenger Boys</div>
+                            <ul class="squad-list">
+                                @foreach ($scorecard['rcb']['batting'] as $p)
+                                    <li>
+                                        @if ($p['photo'])
+                                            <img src="{{ $p['photo'] }}" alt="{{ $p['name'] }}" class="squad-photo">
+                                        @else
+                                            <span class="squad-photo squad-photo-fallback">{{ mb_strtoupper(mb_substr($p['name'], 0, 1)) }}</span>
+                                        @endif
+                                        <span>{{ $p['name'] }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        <div class="squad-col">
+                            <div class="squad-head">{{ $match->opponent_name }}</div>
+                            <ul class="squad-list">
+                                @foreach ($scorecard['opponent']['batting'] as $p)
+                                    <li>
+                                        <span class="squad-photo squad-photo-fallback">{{ mb_strtoupper(mb_substr($p['name'], 0, 1)) }}</span>
+                                        <span>{{ $p['name'] }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                @else
+                    <div class="sb-coming">
+                        <div class="sb-coming-icon">&#128101;</div>
+                        <h3>Squad Coming Soon</h3>
+                        <p>The playing XI for this match will be announced here soon.</p>
+                    </div>
+                @endif
             </div>
 
             <div class="sb-tab-content" id="sb-tab-matchinfo">

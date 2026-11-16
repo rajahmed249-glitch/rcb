@@ -746,3 +746,57 @@ img.team-logo.opponent { background: #fff; }
     .pcard-grid { grid-template-columns: 1fr; }
     .pcard-img-wrap { height: 320px; }
 }
+
+/* ===== Full Scorecard ===== */
+.score-subtabs { display: flex; justify-content: center; margin-bottom: 1rem; }
+.score-subtab-btn { padding: .6rem 2rem; font-size: .85rem; font-weight: 600; border: 1px solid #e5e7eb; background: #f3f4f6; color: #374151; cursor: pointer; transition: all .2s ease; }
+.score-subtab-btn:first-child { border-radius: 999px 0 0 999px; }
+.score-subtab-btn:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
+.score-subtab-btn:hover { background: #e5e7eb; }
+.score-subtab-btn.active { background: #14b8a6; border-color: #14b8a6; color: #fff; }
+.scorecard-innings { display: none; }
+.scorecard-innings.active { display: block; }
+.bat-card { overflow: hidden; border: 1px solid #e5e7eb; border-radius: .75rem; background: #fff; }
+.bat-scroll { overflow-x: auto; }
+.bat-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: #14b8a6; color: #fff; padding: .75rem 1rem; font-weight: 600; flex-wrap: wrap; }
+.bat-cols, .bat-row { display: grid; grid-template-columns: minmax(180px, 1fr) 3rem 3rem 3rem 3rem 3.5rem; align-items: center; min-width: 560px; }
+.bat-cols { background: #f0fdfa; font-weight: 600; font-size: .8rem; color: #0f766e; }
+.bat-cols > div, .bat-row > div, .bowl-cols > div, .bowl-row > div { padding: .55rem .5rem; text-align: center; }
+.bat-cols > div:first-child, .bat-row > div:first-child, .bowl-cols > div:first-child, .bowl-row > div:first-child { text-align: left; padding-left: 1rem; }
+.bat-row { border-top: 1px solid #f3f4f6; font-size: .88rem; }
+.bat-player { display: flex; align-items: center; gap: .6rem; }
+.bat-photo { width: 32px; height: 32px; border-radius: 999px; object-fit: cover; flex-shrink: 0; }
+.bat-photo-fallback { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #2dd4bf, #0d9488); color: #fff; font-size: .8rem; font-weight: 700; }
+.bat-name { color: #0d9488; font-weight: 600; font-size: .88rem; }
+.bat-dismissal { color: #9ca3af; font-size: 12px; }
+.bat-runs { font-weight: 700; color: #111827; }
+.bat-totalrow { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .6rem 1rem; border-top: 1px solid #e5e7eb; font-size: .88rem; }
+.bat-totalrow span:first-child { font-weight: 700; color: #111827; }
+.bat-totalrow span:last-child { color: #4b5563; }
+.fow { margin: .75rem 1rem 0; border: 1px solid #f3f4f6; border-radius: .5rem; overflow: hidden; }
+.fow-title { background: #f0fdfa; font-weight: 600; font-size: .82rem; color: #0f766e; padding: .5rem .75rem; }
+.fow-cols, .fow-row { display: grid; grid-template-columns: 2fr 1fr 1fr; font-size: .82rem; }
+.fow-cols { font-weight: 600; color: #374151; border-bottom: 1px solid #f3f4f6; }
+.fow-cols > div, .fow-row > div { padding: .45rem .75rem; }
+.fow-cols > div:nth-child(2), .fow-row > div:nth-child(2), .fow-cols > div:nth-child(3), .fow-row > div:nth-child(3) { text-align: center; }
+.fow-row { border-top: 1px solid #f9fafb; color: #374151; }
+.bowl-block { margin: .75rem 1rem 1rem; border: 1px solid #f3f4f6; border-radius: .5rem; overflow: hidden; }
+.bowl-cols, .bowl-row { display: grid; grid-template-columns: minmax(140px, 1fr) 2.8rem 2.8rem 2.8rem 2.8rem 2.5rem 2.5rem 3.2rem; align-items: center; min-width: 540px; }
+.bowl-cols { background: #f0fdfa; font-weight: 600; font-size: .8rem; color: #0f766e; border-bottom: 1px solid #e5e7eb; }
+.bowl-row { border-top: 1px solid #f9fafb; font-size: .85rem; color: #1f2937; }
+.bowl-name { color: #0d9488; font-weight: 600; }
+.bowl-wickets { font-weight: 700; }
+
+/* ===== Squad tab ===== */
+.squad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.squad-col { border: 1px solid #e5e7eb; border-radius: .75rem; overflow: hidden; background: #fff; }
+.squad-head { background: #14b8a6; color: #fff; font-weight: 600; padding: .6rem 1rem; font-size: .9rem; }
+.squad-list { list-style: none; }
+.squad-list li { display: flex; align-items: center; gap: .6rem; padding: .5rem 1rem; border-top: 1px solid #f3f4f6; font-size: .88rem; color: #1f2937; }
+.squad-photo { width: 28px; height: 28px; border-radius: 999px; object-fit: cover; flex-shrink: 0; }
+.squad-photo-fallback { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #2dd4bf, #0d9488); color: #fff; font-size: .72rem; font-weight: 700; }
+
+@media (max-width: 760px) {
+    .squad-grid { grid-template-columns: 1fr; }
+    .score-subtab-btn { padding: .5rem 1.25rem; font-size: .78rem; }
+}
