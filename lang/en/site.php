@@ -391,6 +391,14 @@ return [
         'active' => 'Active',
         'squad_select' => 'Squad Players',
         'opponent_team' => 'Opponent Team',
+        'today' => 'Today',
+        'visit_site' => 'Visit Site',
+        'add_team' => 'Add Team',
+        'schedule_match' => 'Schedule Match',
+        'recent_news' => 'Recent News',
+        'recent_players' => 'Recent Players',
+        'no_news' => 'No news published yet.',
+        'no_players' => 'No players added yet.',
     ],
 ];
 

@@ -8,6 +8,7 @@ use App\Models\NewsPost;
 use App\Models\Player;
 use App\Models\PlayerApplication;
 use App\Models\Sponsor;
+use App\Models\Team;
 
 class DashboardController extends Controller
 {
@@ -23,13 +24,15 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', [
             'playersCount' => Player::count(),
-            'teamsCount' => CricketMatch::query()->distinct()->count('opponent_name') + 1,
+            'teamsCount' => Team::count(),
             'matchesCount' => CricketMatch::count(),
             'newsCount' => NewsPost::count(),
             'sponsorsCount' => Sponsor::count(),
             'applicationsCount' => PlayerApplication::count(),
             'stats' => $stats,
-            'recentMatches' => CricketMatch::orderByDesc('match_date')->take(5)->get(),
+            'recentMatches' => CricketMatch::orderByDesc('match_date')->take(6)->get(),
+            'recentNews' => NewsPost::orderByDesc('published_at')->take(4)->get(),
+            'recentPlayers' => Player::orderByDesc('created_at')->take(4)->get(),
             'recentApplications' => PlayerApplication::orderByDesc('created_at')->take(5)->get(),
         ]);
     }
