@@ -112,6 +112,18 @@ rcb-website/
 | `/be-a-player` | প্লেয়ার আবেদন ফর্ম |
 | `/search?q=...` | সার্চ |
 
+## Railway-এ ডিপ্লয় (ফ্রি লাইভ লিংক পেতে)
+
+1. [railway.app](https://railway.app)-এ GitHub দিয়ে সাইন আপ করুন।
+2. **New Project → Deploy from GitHub repo** → `rcb` রিপোটি সিলেক্ট করুন।
+3. সার্ভিসের **Variables** ট্যাবে যোগ করুন:
+   - `DB_CONNECTION` = `sqlite`
+   - `APP_ENV` = `production`
+   - `APP_DEBUG` = `false`
+4. **Settings → Networking → Generate Domain** চাপুন — লাইভ লিংক পেয়ে যাবেন! 🎉
+
+(প্রজেক্টে `railway.json` ও `Procfile` আগেই যোগ করা আছে — ডিপ্লয়ের সময় মাইগ্রেশন ও সিডিং নিজে থেকেই হবে। ডিপ্লয়ের সময় root directory হিসেবে রিপোর যে ফোল্ডারে Laravel কোড আছে সেটি সিলেক্ট করতে হতে পারে।)
+
 ## cPanel/হোস্টিং-এ ডিপ্লয়
 
 1. পুরো প্রজেক্ট আপলোড করুন (vendor ছাড়া)।
