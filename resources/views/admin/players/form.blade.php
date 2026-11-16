@@ -63,7 +63,13 @@
                         <label class="apf-icon-option {{ old('role_icon_id', $player->role_icon_id) == $icon->id ? 'selected' : '' }}">
                             <input type="radio" name="role_icon_id" value="{{ $icon->id }}" @checked(old('role_icon_id', $player->role_icon_id) == $icon->id)>
                             <span class="apf-radio"></span>
-                            <span class="apf-icon-box"><i class="{{ $icon->icon ?: 'fas fa-user-tie' }}"></i></span>
+                            <span class="apf-icon-box">
+                                @if ($icon->is_image)
+                                    <img src="{{ asset($icon->icon) }}" alt="{{ $icon->display_name }}">
+                                @else
+                                    <i class="{{ $icon->icon ?: 'fas fa-user-tie' }}"></i>
+                                @endif
+                            </span>
                         </label>
                     @empty
                         <p class="apf-empty-note">{{ __('site.admin.no_data') }}</p>

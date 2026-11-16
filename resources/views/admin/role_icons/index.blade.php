@@ -22,7 +22,13 @@
                 <tr>
                     <td>{{ $icon->id }}</td>
                     <td>{{ $icon->name }}@if($icon->name_bn) <small class="admin-bn">/{{ $icon->name_bn }}</small>@endif</td>
-                    <td><i class="{{ $icon->icon }}"></i> <code>{{ $icon->icon }}</code></td>
+                    <td>
+                        @if ($icon->is_image)
+                            <img src="{{ asset($icon->icon) }}" alt="{{ $icon->name }}" class="admin-icon-img"> <code>{{ $icon->icon }}</code>
+                        @else
+                            <i class="{{ $icon->icon }}"></i> <code>{{ $icon->icon }}</code>
+                        @endif
+                    </td>
                     <td>{{ $icon->sort_order }}</td>
                     <td class="admin-actions">
                         <a href="{{ route('admin.role_icons.edit', $icon) }}" class="admin-btn small">{{ __('site.admin.edit') }}</a>
