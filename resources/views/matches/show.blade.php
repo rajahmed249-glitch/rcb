@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Match ' . $match->match_number . ' vs ' . $match->opponent_name)
+@section('title', __('site.match') . ' ' . $match->match_number . ' vs ' . $match->display_opponent_name)
 
 @php
     function sbSplitScore(?string $score): array
@@ -26,7 +26,7 @@
     if ($hasScorecard) {
         $summaryTeams = [
             ['key' => 'rcb', 'name' => 'Real Challenger Boys'],
-            ['key' => 'opponent', 'name' => $match->opponent_name],
+            ['key' => 'opponent', 'name' => $match->display_opponent_name],
         ];
 
         foreach ($summaryTeams as $t) {
@@ -60,8 +60,8 @@
     <div class="container">
         <div class="sb-card">
             <div class="sb-topline"><span class="sb-matchname">Match {{ $match->match_number }}</span></div>
-            <div class="sb-topline"><span class="sb-date">{{ $match->match_date->format('M d, Y') }} &bull; {{ $match->match_date->format('h:i A') }}</span></div>
-            <div class="sb-topline"><span class="sb-venue">{{ $match->venue ?: 'Venue Not Set Yet' }}</span></div>
+            <div class="sb-topline"><span class="sb-date">{{ $match->match_date->translatedFormat('M d, Y') }} &bull; {{ $match->match_date->translatedFormat('h:i A') }}</span></div>
+            <div class="sb-topline"><span class="sb-venue">{{ $match->venue ?: __('site.match_info.venue_not_set') }}</span></div>
             <div class="sb-topline"><span class="sb-toss">{{ $match->format }} &bull; {{ ucfirst($match->status) }}</span></div>
 
             <div class="sb-names">
@@ -83,11 +83,11 @@
                             -
                         @endif
                     </div>
-                    <div class="sb-overs">{{ $match->rcb_overs ? $match->rcb_overs . ' overs' : '&nbsp;' }}</div>
+                    <div class="sb-overs">{{ $match->rcb_overs ? $match->rcb_overs . ' ' . __('site.scorecard.overs_short') : '&nbsp;' }}</div>
                 </div>
 
                 <div class="sb-result">
-                    <div class="sb-result-label">Result</div>
+                    <div class="sb-result-label">{{ __('site.match_info.result') }}</div>
                     @if ($match->status === 'completed' && $match->result_text)
                         <div class="sb-result-text {{ $match->won ? '' : 'sb-result-lost' }}">{{ $match->result_text }}</div>
                     @else
@@ -99,12 +99,12 @@
                 <div class="sb-team">
                     <div class="sb-logo-row">
                         @if ($match->opponent_logo)
-                            <img src="{{ asset($match->opponent_logo) }}" alt="{{ $match->opponent_name }}" class="sb-logo">
+                            <img src="{{ asset($match->opponent_logo) }}" alt="{{ $match->display_opponent_name }}" class="sb-logo">
                         @else
                             <div class="sb-logo-fallback">{{ strtoupper(substr($match->opponent_short_name ?: $match->opponent_name, 0, 2)) }}</div>
                         @endif
                     </div>
-                    <a class="sb-teamname" href="{{ route('pages.team-profile', $oppTeamSlug) }}">{{ strtoupper($match->opponent_name) }}</a>
+                    <a class="sb-teamname" href="{{ route('pages.team-profile', $oppTeamSlug) }}">{{ strtoupper($match->display_opponent_name) }}</a>
                     <div class="sb-score">
                         @if ($oppRuns !== null)
                             {{ $oppRuns }}@if ($oppWickets !== null)<span class="sb-score-w">-{{ $oppWickets }}</span>@endif
@@ -112,18 +112,18 @@
                             -
                         @endif
                     </div>
-                    <div class="sb-overs">{{ $match->opponent_overs ? $match->opponent_overs . ' overs' : '&nbsp;' }}</div>
+                    <div class="sb-overs">{{ $match->opponent_overs ? $match->opponent_overs . ' ' . __('site.scorecard.overs_short') : '&nbsp;' }}</div>
                 </div>
             </div>
         </div>
 
         <div class="sb-tabs-card">
             <div class="sb-tabs">
-                <button class="sb-tab-btn active" data-tab="summary">&#128202; Summary</button>
-                <button class="sb-tab-btn" data-tab="scorecard">&#128203; Scorecard</button>
-                <button class="sb-tab-btn" data-tab="squad">&#128101; Squad</button>
-                <button class="sb-tab-btn" data-tab="matchinfo">&#8505;&#65039; Match Info</button>
-                <button class="sb-tab-btn" data-tab="commentary">&#127951; Commentary</button>
+                <button class="sb-tab-btn active" data-tab="summary">&#128202; {{ __('site.tabs.summary') }}</button>
+                <button class="sb-tab-btn" data-tab="scorecard">&#128203; {{ __('site.tabs.scorecard') }}</button>
+                <button class="sb-tab-btn" data-tab="squad">&#128101; {{ __('site.tabs.squad') }}</button>
+                <button class="sb-tab-btn" data-tab="matchinfo">&#8505;&#65039; {{ __('site.tabs.match_info') }}</button>
+                <button class="sb-tab-btn" data-tab="commentary">&#127951; {{ __('site.tabs.commentary') }}</button>
             </div>
         </div>
 
@@ -134,7 +134,7 @@
                         <div class="sum-card">
                             <div class="sum-head">
                                 <a class="sum-team" href="{{ route('pages.team-profile', $card['slug']) }}">{{ $card['name'] }}</a>
-                                <span class="sum-score">{{ $card['score'] }}-{{ $card['wickets'] }} <small>({{ $card['overs'] }} overs)</small></span>
+                                <span class="sum-score">{{ $card['score'] }}-{{ $card['wickets'] }} <small>({{ $card['overs'] }} {{ __('site.scorecard.overs_short') }})</small></span>
                             </div>
                             <div class="sum-body">
                                 <div>
@@ -171,16 +171,16 @@
                                 <span>Real Challenger Boys</span>
                                 <span class="sb-sum-score">{{ $match->rcb_score ?? '-' }}{{ $match->rcb_overs ? ' (' . $match->rcb_overs . ')' : '' }}</span>
                             </div>
-                            <div class="sb-sum-row"><span>Overs</span><span>{{ $match->rcb_overs ?? '-' }}</span></div>
-                            <div class="sb-sum-row"><span>Format</span><span>{{ $match->format }}</span></div>
+                            <div class="sb-sum-row"><span>{{ __('site.scorecard.overs') }}</span><span>{{ $match->rcb_overs ?? '-' }}</span></div>
+                            <div class="sb-sum-row"><span>{{ __('site.match_info.match') }}</span><span>{{ $match->format }}</span></div>
                         </div>
                         <div class="sb-sum-block">
                             <div class="sb-sum-head">
-                                <span>{{ $match->opponent_name }}</span>
+                                <span>{{ $match->display_opponent_name }}</span>
                                 <span class="sb-sum-score">{{ $match->opponent_score ?? '-' }}{{ $match->opponent_overs ? ' (' . $match->opponent_overs . ')' : '' }}</span>
                             </div>
-                            <div class="sb-sum-row"><span>Overs</span><span>{{ $match->opponent_overs ?? '-' }}</span></div>
-                            <div class="sb-sum-row"><span>Result</span><span>{{ $match->result_text ?? ucfirst($match->status) }}</span></div>
+                            <div class="sb-sum-row"><span>{{ __('site.scorecard.overs') }}</span><span>{{ $match->opponent_overs ?? '-' }}</span></div>
+                            <div class="sb-sum-row"><span>{{ __('site.match_info.result') }}</span><span>{{ $match->result_text ?? ucfirst($match->status) }}</span></div>
                         </div>
                     </div>
                 @endif
@@ -191,7 +191,7 @@
                     <div class="score-subtabs">
                         <div class="subtab-pair">
                             <button class="score-subtab-btn active" data-innings="rcb">Real Challenger Boys</button>
-                            <button class="score-subtab-btn" data-innings="opp">{{ $match->opponent_name }}</button>
+                            <button class="score-subtab-btn" data-innings="opp">{{ $match->display_opponent_name }}</button>
                         </div>
                     </div>
 
@@ -206,15 +206,15 @@
                     <div class="scorecard-innings" id="innings-opp">
                         @include('matches.innings', [
                             'innings' => $scorecard['opponent'],
-                            'teamName' => $match->opponent_name,
+                            'teamName' => $match->display_opponent_name,
                             'teamSlug' => $oppTeamSlug,
                         ])
                     </div>
                 @else
                     <div class="sb-coming">
                         <div class="sb-coming-icon">&#128203;</div>
-                        <h3>Scorecard Coming Soon</h3>
-                        <p>Per-player batting and bowling figures will be published here soon.</p>
+                        <h3>{{ __('site.coming.scorecard_title') }}</h3>
+                        <p>{{ __('site.coming.scorecard_text') }}</p>
                     </div>
                 @endif
             </div>
@@ -224,7 +224,7 @@
                     <div class="squad-subtabs">
                         <div class="subtab-pair">
                             <button class="squad-subtab-btn active" data-squad="rcb">Real Challenger Boys</button>
-                            <button class="squad-subtab-btn" data-squad="opp">{{ $match->opponent_name }}</button>
+                            <button class="squad-subtab-btn" data-squad="opp">{{ $match->display_opponent_name }}</button>
                         </div>
                     </div>
 
@@ -233,17 +233,17 @@
                             <table class="squad-table">
                                 <thead>
                                     <tr>
-                                        <th>Player</th>
-                                        <th>Matches</th>
-                                        <th>Innings</th>
-                                        <th>Runs</th>
-                                        <th>Average</th>
-                                        <th>Highest Score</th>
-                                        <th>SR</th>
-                                        <th>50s</th>
-                                        <th>100s</th>
-                                        <th>Wickets</th>
-                                        <th>Economy</th>
+                                        <th>{{ __('site.squad.player') }}</th>
+                                        <th>{{ __('site.matches') }}</th>
+                                        <th>{{ __('site.squad.innings') }}</th>
+                                        <th>{{ __('site.runs') }}</th>
+                                        <th>{{ __('site.squad.average') }}</th>
+                                        <th>{{ __('site.squad.highest_score') }}</th>
+                                        <th>{{ __('site.squad.sr') }}</th>
+                                        <th>{{ __('site.squad.fifties') }}</th>
+                                        <th>{{ __('site.squad.hundreds') }}</th>
+                                        <th>{{ __('site.scorecard.wickets') }}</th>
+                                        <th>{{ __('site.squad.economy') }}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -285,17 +285,17 @@
                             <table class="squad-table">
                                 <thead>
                                     <tr>
-                                        <th>Player</th>
-                                        <th>Matches</th>
-                                        <th>Innings</th>
-                                        <th>Runs</th>
-                                        <th>Average</th>
-                                        <th>Highest Score</th>
-                                        <th>SR</th>
-                                        <th>50s</th>
-                                        <th>100s</th>
-                                        <th>Wickets</th>
-                                        <th>Economy</th>
+                                        <th>{{ __('site.squad.player') }}</th>
+                                        <th>{{ __('site.matches') }}</th>
+                                        <th>{{ __('site.squad.innings') }}</th>
+                                        <th>{{ __('site.runs') }}</th>
+                                        <th>{{ __('site.squad.average') }}</th>
+                                        <th>{{ __('site.squad.highest_score') }}</th>
+                                        <th>{{ __('site.squad.sr') }}</th>
+                                        <th>{{ __('site.squad.fifties') }}</th>
+                                        <th>{{ __('site.squad.hundreds') }}</th>
+                                        <th>{{ __('site.scorecard.wickets') }}</th>
+                                        <th>{{ __('site.squad.economy') }}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -326,8 +326,8 @@
                 @else
                     <div class="sb-coming">
                         <div class="sb-coming-icon">&#128101;</div>
-                        <h3>Squad Coming Soon</h3>
-                        <p>The playing XI for this match will be announced here soon.</p>
+                        <h3>{{ __('site.coming.squad_title') }}</h3>
+                        <p>{{ __('site.coming.squad_text') }}</p>
                     </div>
                 @endif
             </div>
@@ -335,24 +335,24 @@
             <div class="sb-tab-content" id="sb-tab-matchinfo">
                 <div class="sb-info">
                     <div class="sb-info-row">
-                        <div class="sb-info-label">Match</div>
+                        <div class="sb-info-label">{{ __('site.match') }}</div>
                         <div class="sb-info-value">Match {{ $match->match_number }} &bull; {{ $match->format }}</div>
                     </div>
                     <div class="sb-info-row">
-                        <div class="sb-info-label">Date</div>
-                        <div class="sb-info-value">{{ $match->match_date->format('l, M d, Y') }} &bull; {{ $match->match_date->format('h:i A') }}</div>
+                        <div class="sb-info-label">{{ __('site.match_info.date') }}</div>
+                        <div class="sb-info-value">{{ $match->match_date->translatedFormat('l, M d, Y') }} &bull; {{ $match->match_date->translatedFormat('h:i A') }}</div>
                     </div>
                     <div class="sb-info-row">
-                        <div class="sb-info-label">Venue</div>
-                        <div class="sb-info-value">{{ $match->venue ?: 'Venue Not Set Yet' }}</div>
+                        <div class="sb-info-label">{{ __('site.match_info.venue') }}</div>
+                        <div class="sb-info-value">{{ $match->venue ?: __('site.match_info.venue_not_set') }}</div>
                     </div>
                     <div class="sb-info-row">
-                        <div class="sb-info-label">Status</div>
+                        <div class="sb-info-label">{{ __('site.match_info.status') }}</div>
                         <div class="sb-info-value">{{ ucfirst($match->status) }}</div>
                     </div>
                     @if ($match->result_text)
                         <div class="sb-info-row">
-                            <div class="sb-info-label">Result</div>
+                            <div class="sb-info-label">{{ __('site.match_info.result') }}</div>
                             <div class="sb-info-value">{{ $match->result_text }}</div>
                         </div>
                     @endif
@@ -362,14 +362,14 @@
             <div class="sb-tab-content" id="sb-tab-commentary">
                 <div class="sb-coming">
                     <div class="sb-coming-icon">&#128483;&#65039;</div>
-                    <h3>Commentary Coming Soon</h3>
-                    <p>Over-by-over commentary for this match will be published here soon.</p>
+                    <h3>{{ __('site.coming.commentary_title') }}</h3>
+                    <p>{{ __('site.coming.commentary_text') }}</p>
                 </div>
             </div>
         </div>
 
         <p style="margin-top: 2rem; text-align: center;">
-            <a href="{{ route('matches.index') }}" class="btn btn-outline">&larr; Back to Matches</a>
+            <a href="{{ route('matches.index') }}" class="btn btn-outline">{{ __('site.back_to_matches') }}</a>
         </p>
     </div>
 @endsection

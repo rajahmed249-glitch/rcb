@@ -5,15 +5,15 @@
 @section('content')
     <div class="container">
         <div class="players-head">
-            <h1 class="players-title">Players</h1>
+            <h1 class="players-title">{{ __('site.players') }}</h1>
             <div class="player-filters">
-                <a href="{{ route('players.index') }}" class="filter-btn {{ $role ? '' : 'active' }}">All</a>
-                <a href="{{ route('players.index', ['role' => 'Batsman']) }}" class="filter-btn {{ $role === 'Batsman' ? 'active' : '' }}">&#127951; Batsman</a>
-                <a href="{{ route('players.index', ['role' => 'Bowler']) }}" class="filter-btn {{ $role === 'Bowler' ? 'active' : '' }}">&#127919; Bowler</a>
-                <a href="{{ route('players.index', ['role' => 'All-rounder']) }}" class="filter-btn {{ $role === 'All-rounder' ? 'active' : '' }}">&#9889; All-rounder</a>
-                <a href="{{ route('players.index', ['role' => 'Wicketkeeper']) }}" class="filter-btn {{ $role === 'Wicketkeeper' ? 'active' : '' }}">&#129524; Wicketkeeper</a>
+                <a href="{{ route('players.index') }}" class="filter-btn {{ $role ? '' : 'active' }}">{{ __('site.all') }}</a>
+                <a href="{{ route('players.index', ['role' => 'Batsman']) }}" class="filter-btn {{ $role === 'Batsman' ? 'active' : '' }}">&#127951; {{ __('site.roles.batsman') }}</a>
+                <a href="{{ route('players.index', ['role' => 'Bowler']) }}" class="filter-btn {{ $role === 'Bowler' ? 'active' : '' }}">&#127919; {{ __('site.roles.bowler') }}</a>
+                <a href="{{ route('players.index', ['role' => 'All-rounder']) }}" class="filter-btn {{ $role === 'All-rounder' ? 'active' : '' }}">&#9889; {{ __('site.roles.all_rounder') }}</a>
+                <a href="{{ route('players.index', ['role' => 'Wicketkeeper']) }}" class="filter-btn {{ $role === 'Wicketkeeper' ? 'active' : '' }}">&#129524; {{ __('site.roles.wicketkeeper') }}</a>
                 @if ($role)
-                    <a href="{{ route('players.index') }}" class="filter-btn clear-btn">&#10005; Clear</a>
+                    <a href="{{ route('players.index') }}" class="filter-btn clear-btn">&#10005; {{ __('site.clear') }}</a>
                 @endif
             </div>
         </div>
@@ -23,7 +23,7 @@
                 <div class="pcard">
                     <div class="pcard-img-wrap">
                         @if ($player->badge)
-                            <span class="pcard-tag">{{ $player->badge === 'c' ? 'Captain' : 'Vice Captain' }}</span>
+                            <span class="pcard-tag">{{ $player->badge === 'c' ? __('site.captain') : __('site.vice_captain') }}</span>
                         @endif
                         @if ($player->photo_url)
                             <img src="{{ $player->photo_url }}" alt="{{ $player->name }}" loading="lazy">
@@ -31,23 +31,23 @@
                             <div class="pcard-initials">{{ $player->initials }}</div>
                         @endif
                         <div class="pcard-overlay">
-                            <h4>Player Stats</h4>
+                            <h4>{{ __('site.player_stats') }}</h4>
                             <div class="pcard-stats">
-                                <div class="pcard-stat"><span class="pcard-statnum">{{ $player->matches_played }}</span><span class="pcard-statlabel">Matches</span></div>
-                                <div class="pcard-stat"><span class="pcard-statnum">{{ $player->runs }}</span><span class="pcard-statlabel">Runs</span></div>
-                                <div class="pcard-stat"><span class="pcard-statnum">{{ $player->wickets }}</span><span class="pcard-statlabel">Wickets</span></div>
+                                <div class="pcard-stat"><span class="pcard-statnum">{{ $player->matches_played }}</span><span class="pcard-statlabel">{{ __('site.matches') }}</span></div>
+                                <div class="pcard-stat"><span class="pcard-statnum">{{ $player->runs }}</span><span class="pcard-statlabel">{{ __('site.runs') }}</span></div>
+                                <div class="pcard-stat"><span class="pcard-statnum">{{ $player->wickets }}</span><span class="pcard-statlabel">{{ __('site.wickets') }}</span></div>
                             </div>
-                            <a href="{{ route('players.show', $player) }}" class="pcard-viewbtn">View Profile &rarr;</a>
+                            <a href="{{ route('players.show', $player) }}" class="pcard-viewbtn">{{ __('site.view_profile') }} &rarr;</a>
                         </div>
                     </div>
                     <div class="pcard-bottom">
                         <div class="pcard-roleicon">{{ $player->role === 'Bowler' ? '&#127919;' : ($player->role === 'Wicketkeeper' ? '&#129524;' : ($player->role === 'All-rounder' ? '&#9889;' : '&#127951;')) }}</div>
-                        <div class="pcard-name">{{ $player->name }}@if ($player->badge === 'c') <span class="pcard-star">&#11088;</span>@endif</div>
-                        <span class="pcard-rolepill">{{ $player->role }}</span>
+                        <div class="pcard-name">{{ $player->display_name }}@if ($player->badge === 'c') <span class="pcard-star">&#11088;</span>@endif</div>
+                        <span class="pcard-rolepill">{{ $player->display_role }}</span>
                     </div>
                 </div>
             @empty
-                <div class="card"><p class="muted">No players found.</p></div>
+                <div class="card"><p class="muted">{{ __('site.no_players') }}</p></div>
             @endforelse
         </div>
 

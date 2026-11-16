@@ -15,6 +15,9 @@ class NewsSeeder extends Seeder
             [
                 'title' => '🏏❤️ আলহামদুলিল্লাহ! ❤️🏏 #বিগ_ম্যাচ_উইন 🔥 বড় দলের বিপক্ষে দুর্দান্ত এক বিশাল জয়! 💪❤️',
                 'slug' => 'big-match-win-against-strong-team',
+                'title_bn' => '🏏❤️ আলহামদুলিল্লাহ! ❤️🏏 #বিগ_ম্যাচ_উইন 🔥 বড় দলের বিপক্ষে দুর্দান্ত এক বিশাল জয়! 💪❤️',
+                'excerpt_bn' => 'বড় দলের বিপক্ষে দুর্দান্ত এক বিশাল জয়! 💪❤️ দলের প্রত্যেকে দুর্দান্ত পারফরম্যান্স দিয়েছে।',
+                'content_bn' => "আলহামদুলিল্লাহ! বড় দলের বিপক্ষে দুর্দান্ত এক বিশাল জয় পেয়েছে রিয়েল চ্যালেঞ্জার বয়েজ। 💪❤️",
                 'excerpt' => 'বড় দলের বিপক্ষে দুর্দান্ত এক বিশাল জয়! 💪❤️ দলের প্রত্যেকে দুর্দান্ত পারফরম্যান্স দিয়েছে।',
                 'image' => 'images/news/26-jun-2026.webp',
                 'content' => "আলহামদুলিল্লাহ! বড় দলের বিপক্ষে দুর্দান্ত এক বিশাল জয় পেয়েছে রিয়েল চ্যালেঞ্জার বয়েজ। 💪❤️\n\nম্যাচে দলের প্রত্যেকে দুর্দান্ত পারফরম্যান্স দিয়েছে। ব্যাটিং, বোলিং ও ফিল্ডিং — তিন বিভাগেই ছিল দুর্দান্ত সমন্বয়। ক্যাপ্টেনের দুর্দান্ত ইনিংস আর বোলারদের শৃঙ্খলা ম্যাচের মোড় ঘুরিয়ে দেয়।\n\nইনশাআল্লাহ, এভাবেই এগিয়ে যেতে থাকবে আমরা। সবার সাপোর্ট ও দোয়া চাই! 🏏❤️",
@@ -23,6 +26,8 @@ class NewsSeeder extends Seeder
             [
                 'title' => 'Alhamdulillah ❤️ After losing the last 2 matches, we ended up winning a big match before Eid.',
                 'slug' => 'big-win-before-eid',
+                'title_bn' => 'আলহামদুলিল্লাহ ❤️ শেষ ২টি ম্যাচ হারার পর ঈদের আগে বড় একটি ম্যাচে জয় করেছি।',
+                'excerpt_bn' => 'আলহামদুলিল্লাহ ❤️ শেষ ২টি ম্যাচ হারার পর ঈদের আগে বড় একটি ম্যাচে দুর্দান্ত জয় করেছি ❤️🏏',
                 'excerpt' => 'Alhamdulillah ❤️ After losing the last 2 matches, we ended with a big match win before Eid ❤️🏏',
                 'content' => "Alhamdulillah ❤️ After losing the last 2 matches, we ended with a big match win before Eid ❤️❤️❤️🏏\n\nThe whole team showed great character and bounced back strongly. Everyone in the team performed very well — the batsmen set a solid total and the bowlers defended it brilliantly.\n\nThanks to all our supporters for standing by the team. More wins coming soon, InshaAllah! 🏏",
                 'image' => 'images/news/22-may-2026.webp',
@@ -31,6 +36,8 @@ class NewsSeeder extends Seeder
             [
                 'title' => 'Alhamdulillah ❤️ Started with a big match win after Eid 🏏',
                 'slug' => 'big-win-after-eid',
+                'title_bn' => 'আলহামদুলিল্লাহ ❤️ ঈদের পর বড় একটি ম্যাচে জয় দিয়ে শুরু 🏏',
+                'excerpt_bn' => 'আলহামদুলিল্লাহ ❤️ ঈদের পর বড় একটি ম্যাচে জয় দিয়ে শুরু ❤️❤️❤️🏏 দলের প্রত্যেকে দুর্দান্ত পারফরম্যান্স দিয়েছে।',
                 'excerpt' => 'Alhamdulillah ❤️ Started with a big match win after Eid ❤️❤️❤️🏏 Everyone in the team performed very well.',
                 'content' => "Alhamdulillah ❤️ Started with a big match win after Eid ❤️❤️❤️🏏\n\nEveryone in the team performed very well. It was a complete team effort — from the openers giving a flying start to the bowlers finishing things off in style.\n\nWe aim to keep this momentum going through the rest of the season. Keep supporting REAL CHALLENGER BOYS! 💪",
                 'image' => 'images/news/10-apr-2026.webp',
@@ -39,6 +46,8 @@ class NewsSeeder extends Seeder
             [
                 'title' => 'Alhamdulillah; We won the 2nd match of the series by a big margin against a stronger team',
                 'slug' => 'second-series-win-big-margin',
+                'title_bn' => 'আলহামদুলিল্লাহ; সিরিজের ২য় ম্যাচে শক্তিশালী দলের বিপক্ষে বড় ব্যবধানে জয় আমাদের',
+                'excerpt_bn' => 'আলহামদুলিল্লাহ, সিরিজের প্রথম ম্যাচে শক্তিশালী দলের বিপক্ষে বড় ব্যবধানে জয়।',
                 'excerpt' => 'Alhamdulillah first match of the series win by big margin against a stronger team.',
                 'content' => "Alhamdulillah; We won the 2nd match of the series by a big margin against a stronger team.\n\nThe boys played with great energy and discipline. Special mention to our young bowlers who kept the pressure on from the very first over.\n\nAlhamdulillah for everything. On to the next one! 🏏❤️",
                 'image' => 'images/news/24-jan-2026.webp',

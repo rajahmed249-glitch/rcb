@@ -5,22 +5,22 @@
 @section('content')
     <div class="container">
         <div class="page-head">
-            <h1>Matches</h1>
-            <p>All fixtures and results of REAL CHALLENGER BOYS.</p>
+            <h1>{{ __('site.matches') }}</h1>
+            <p>{{ __('site.fixtures_subtitle') }}</p>
         </div>
 
         <div class="filter-tabs">
-            <a href="{{ route('matches.index') }}" class="{{ $status === 'all' ? 'active' : '' }}">All</a>
-            <a href="{{ route('matches.index', ['status' => 'completed']) }}" class="{{ $status === 'completed' ? 'active' : '' }}">Completed</a>
-            <a href="{{ route('matches.index', ['status' => 'upcoming']) }}" class="{{ $status === 'upcoming' ? 'active' : '' }}">Upcoming</a>
+            <a href="{{ route('matches.index') }}" class="{{ $status === 'all' ? 'active' : '' }}">{{ __('site.all') }}</a>
+            <a href="{{ route('matches.index', ['status' => 'completed']) }}" class="{{ $status === 'completed' ? 'active' : '' }}">{{ ucfirst(__('site.completed')) }}</a>
+            <a href="{{ route('matches.index', ['status' => 'upcoming']) }}" class="{{ $status === 'upcoming' ? 'active' : '' }}">{{ ucfirst(__('site.upcoming')) }}</a>
         </div>
 
         <div class="match-grid">
             @forelse ($matches as $match)
                 <div class="match-card" data-href="{{ route('matches.show', $match) }}">
                     <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
-                    <span class="badge badge-{{ $match->status }}">{{ $match->status }}</span>
-                    <div class="match-date-pill">{{ $match->match_date->format('d M Y') }}</div>
+                    <span class="badge badge-{{ $match->status }}">{{ __('site.' . $match->status) }}</span>
+                    <div class="match-date-pill">{{ $match->match_date->translatedFormat('d M Y') }}</div>
                     <div class="match-teams">
                         <div class="match-team">
                             <img class="team-logo" src="{{ asset('images/teams/real-challenger-boys.webp') }}" alt="Real Challenger Boys">
@@ -30,7 +30,7 @@
                         <div class="match-team right">
                             <div class="match-score">{{ $match->status === 'completed' ? $match->opponent_score : '-' }} <small>({{ $match->status === 'completed' ? $match->opponent_overs : '-' }})</small></div>
                             @if ($match->opponent_logo)
-                                <img class="team-logo opponent" src="{{ asset($match->opponent_logo) }}" alt="{{ $match->opponent_name }}">
+                                <img class="team-logo opponent" src="{{ asset($match->opponent_logo) }}" alt="{{ $match->display_opponent_name }}">
                             @else
                                 <span class="team-logo opponent">{{ mb_strtoupper(mb_substr($match->opponent_name, 0, 2)) }}</span>
                             @endif
@@ -38,7 +38,7 @@
                     </div>
                     <div class="match-names">
                         <a href="{{ route('pages.team-profile', 'real-challenger-boys') }}">REAL CHALLENGER BOYS</a>
-                        <a href="{{ route('pages.team-profile', \Illuminate\Support\Str::slug($match->opponent_name)) }}">{{ $match->opponent_name }}</a>
+                        <a href="{{ route('pages.team-profile', \Illuminate\Support\Str::slug($match->opponent_name)) }}">{{ $match->display_opponent_name }}</a>
                     </div>
                     @if ($match->status === 'completed' && $match->result_text)
                         <div class="match-footer {{ $match->won ? '' : 'lost' }}">{{ $match->result_text }}</div>
@@ -47,7 +47,7 @@
                     @endif
                 </div>
             @empty
-                <div class="card"><p class="muted">No matches found.</p></div>
+                <div class="card"><p class="muted">{{ __('site.no_matches') }}</p></div>
             @endforelse
         </div>
 

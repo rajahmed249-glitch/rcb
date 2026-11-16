@@ -94,6 +94,7 @@ class PageController extends Controller
         $teams['real-challenger-boys'] = [
             'slug' => 'real-challenger-boys',
             'name' => 'Real Challenger Boys',
+            'display_name' => app()->getLocale() === 'bn' ? 'রিয়েল চ্যালেঞ্জার বয়েজ' : 'Real Challenger Boys',
             'short_name' => 'RCB',
             'logo' => 'images/teams/real-challenger-boys.webp',
             'location' => 'Patuakhali, Bangladesh',
@@ -115,9 +116,12 @@ class PageController extends Controller
                 $done = $matches->where('status', 'completed');
                 $logo = optional($matches->first(fn ($m) => (bool) $m->opponent_logo))->opponent_logo;
 
+                $nameBn = $matches->first()->opponent_name_bn;
+
                 $teams[$slug] = [
                     'slug' => $slug,
                     'name' => $name,
+                    'display_name' => app()->getLocale() === 'bn' && $nameBn ? $nameBn : $name,
                     'short_name' => $matches->first()->opponent_short_name,
                     'logo' => $logo,
                     'location' => $matches->first()->venue,

@@ -27,6 +27,6 @@ class PlayerApplicationController extends Controller
 
         return redirect()
             ->route('be-a-player.create')
-            ->with('success', 'Thank you! Your application has been received. Our team will contact you soon. 🏏');
+            ->with('success', __('site.be_a_player_page.success'));
     }
 }

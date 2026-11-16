@@ -12,6 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
+        $middleware->web(append: [\App\Http\Middleware\SetLocale::class]);
+        $middleware->alias(['admin.auth' => \App\Http\Middleware\AdminAuth::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, \Illuminate\Http\Request $request) {

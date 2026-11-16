@@ -13,7 +13,7 @@
 
     <div class="bat-scroll">
         <div class="bat-cols">
-            <div>Batter</div><div>R</div><div>B</div><div>4s</div><div>6s</div><div>SR</div>
+            <div>{{ __('site.scorecard.batter') }}</div><div>{{ __('site.scorecard.r') }}</div><div>{{ __('site.scorecard.b') }}</div><div>{{ __('site.scorecard.fours') }}</div><div>{{ __('site.scorecard.sixes') }}</div><div>{{ __('site.scorecard.sr') }}</div>
         </div>
 
         @foreach ($innings['batting'] as $bat)
@@ -42,19 +42,19 @@
         @endforeach
 
         <div class="bat-totalrow">
-            <span class="t-bold">Extras</span>
+            <span class="t-bold">{{ __('site.scorecard.extras') }}</span>
             <span class="t-muted"><strong>{{ $innings['extras'] }}</strong> (b {{ $exB }}, lb {{ $exLb }}, w {{ $exW }}, nb {{ $exNb }})</span>
         </div>
 
         <div class="bat-totalrow">
-            <span class="t-bold">Total</span>
-            <span class="t-muted"><strong>{{ $innings['total'] }}</strong> ({{ $innings['wickets'] }} wickets, {{ $innings['overs'] }} overs)</span>
+            <span class="t-bold">{{ __('site.scorecard.total') }}</span>
+            <span class="t-muted"><strong>{{ $innings['total'] }}</strong> ({{ $innings['wickets'] }} {{ __('site.scorecard.wickets') }}, {{ $innings['overs'] }} {{ __('site.scorecard.overs_short') }})</span>
         </div>
     </div>
 
     @if (count($innings['fow']))
         <div class="fow">
-            <div class="fow-cols"><div>Fall of Wickets</div><div>Score</div><div>Overs</div></div>
+            <div class="fow-cols"><div>{{ __('site.scorecard.fall_of_wickets') }}</div><div>{{ __('site.scorecard.score') }}</div><div>{{ __('site.scorecard.overs') }}</div></div>
             @foreach ($innings['fow'] as $f)
                 <div class="fow-row">
                     <div>
@@ -76,14 +76,14 @@
             <table class="bowl-table">
                 <thead>
                     <tr>
-                        <th>Bowler</th>
-                        <th>Overs</th>
-                        <th>Maidens</th>
-                        <th>Runs</th>
-                        <th>Wickets</th>
-                        <th>Wides</th>
-                        <th>No Balls</th>
-                        <th>Economy</th>
+                        <th>{{ __('site.scorecard.bowler') }}</th>
+                        <th>{{ __('site.scorecard.overs') }}</th>
+                        <th>{{ __('site.scorecard.maidens') }}</th>
+                        <th>{{ __('site.runs') }}</th>
+                        <th>{{ __('site.scorecard.wickets') }}</th>
+                        <th>{{ __('site.scorecard.wides') }}</th>
+                        <th>{{ __('site.scorecard.no_balls') }}</th>
+                        <th>{{ __('site.scorecard.economy') }}</th>
                     </tr>
                 </thead>
                 <tbody>

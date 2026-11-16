@@ -12,6 +12,7 @@ class CricketMatch extends Model
     protected $fillable = [
         'match_number',
         'opponent_name',
+        'opponent_name_bn',
         'opponent_short_name',
         'opponent_logo',
         'venue',
@@ -39,6 +40,11 @@ class CricketMatch extends Model
     public function scopeUpcoming(Builder $query): Builder
     {
         return $query->where('status', 'upcoming')->orderBy('match_date');
+    }
+
+    public function getDisplayOpponentNameAttribute(): string
+    {
+        return app()->getLocale() === 'bn' && $this->opponent_name_bn ? $this->opponent_name_bn : $this->opponent_name;
     }
 
     public function getResultLabelAttribute(): string

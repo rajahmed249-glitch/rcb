@@ -5,8 +5,8 @@
 @section('content')
     <div class="container">
         <div class="page-head">
-            <h1>Gallery</h1>
-            <p>Moments from the field — RCB in action.</p>
+            <h1>{{ __('site.gallery.title') }}</h1>
+            <p>{{ __('site.gallery.subtitle') }}</p>
         </div>
 
         <div class="gallery-grid">

@@ -5,8 +5,8 @@
 @section('content')
     <div class="container">
         <div class="page-head">
-            <h1>Be a Player 🏏</h1>
-            <p>Want to join REAL CHALLENGER BOYS? Fill in the form and our team will contact you.</p>
+            <h1>{{ __('site.be_a_player_page.title') }}</h1>
+            <p>{{ __('site.be_a_player_page.subtitle') }}</p>
         </div>
 
         @if (session('success'))
@@ -17,48 +17,48 @@
             @csrf
 
             <div class="form-field">
-                <label for="name">Full Name *</label>
+                <label for="name">{{ __('site.be_a_player_page.full_name') }}</label>
                 <input type="text" id="name" name="name" value="{{ old('name') }}" required>
                 @error('name')<p class="form-error">{{ $message }}</p>@enderror
             </div>
 
             <div class="form-field">
-                <label for="phone">Phone Number *</label>
+                <label for="phone">{{ __('site.be_a_player_page.phone') }}</label>
                 <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" required>
                 @error('phone')<p class="form-error">{{ $message }}</p>@enderror
             </div>
 
             <div class="form-field">
-                <label for="email">Email (optional)</label>
+                <label for="email">{{ __('site.be_a_player_page.email') }}</label>
                 <input type="email" id="email" name="email" value="{{ old('email') }}">
                 @error('email')<p class="form-error">{{ $message }}</p>@enderror
             </div>
 
             <div class="form-field">
-                <label for="age">Age *</label>
+                <label for="age">{{ __('site.be_a_player_page.age') }}</label>
                 <input type="number" id="age" name="age" value="{{ old('age') }}" min="10" max="60" required>
                 @error('age')<p class="form-error">{{ $message }}</p>@enderror
             </div>
 
             <div class="form-field">
-                <label for="preferred_role">Preferred Role</label>
+                <label for="preferred_role">{{ __('site.be_a_player_page.preferred_role') }}</label>
                 <select id="preferred_role" name="preferred_role">
-                    <option value="">— Select —</option>
+                    <option value="">{{ __('site.select') }}</option>
                     @foreach (['Batsman', 'Bowler', 'All-rounder', 'Wicketkeeper'] as $role)
-                        <option value="{{ $role }}" {{ old('preferred_role') === $role ? 'selected' : '' }}>{{ $role }}</option>
+                        <option value="{{ $role }}" {{ old('preferred_role') === $role ? 'selected' : '' }}>{{ __('site.roles.' . str_replace(['-', ' '], '_', strtolower($role))) }}</option>
                     @endforeach
                 </select>
                 @error('preferred_role')<p class="form-error">{{ $message }}</p>@enderror
             </div>
 
             <div class="form-field">
-                <label for="message">Message (optional)</label>
-                <textarea id="message" name="message" rows="4" placeholder="Tell us about your cricket experience...">{{ old('message') }}</textarea>
+                <label for="message">{{ __('site.be_a_player_page.message') }}</label>
+                <textarea id="message" name="message" rows="4" placeholder="{{ __('site.be_a_player_page.message') }}">{{ old('message') }}</textarea>
                 @error('message')<p class="form-error">{{ $message }}</p>@enderror
             </div>
 
             <div>
-                <button type="submit" class="btn btn-primary">SUBMIT APPLICATION</button>
+                <button type="submit" class="btn btn-primary">{{ __('site.be_a_player_page.submit') }}</button>
             </div>
         </form>
     </div>

@@ -15,6 +15,7 @@ class MatchSeeder extends Seeder
             [
                 'match_number' => 15,
                 'opponent_name' => 'Armed Police Battalion',
+                'opponent_name_bn' => 'আর্মড পুলিশ ব্যাটালিয়ন',
                 'opponent_logo' => 'images/teams/armed-police-battalion.webp',
                 'opponent_short_name' => 'APB',
                 'venue' => 'Patuakhali Govt. College Ground, Patuakhali',
@@ -31,6 +32,7 @@ class MatchSeeder extends Seeder
             [
                 'match_number' => 14,
                 'opponent_name' => 'Duronto Sporting Xi',
+                'opponent_name_bn' => 'দুরন্ত স্পোর্টিং একাদশ',
                 'opponent_logo' => 'images/teams/duronto-sporting-xi.webp',
                 'opponent_short_name' => 'DSXI',
                 'venue' => 'Shyamoli Shishu Park Maath, Shyamoli, Dhaka',
@@ -47,6 +49,7 @@ class MatchSeeder extends Seeder
             [
                 'match_number' => 17,
                 'opponent_name' => 'Patuakhali Govt. College',
+                'opponent_name_bn' => 'পটুয়াখালী সরকারি কলেজ',
                 'opponent_logo' => 'images/teams/patuakhali-govt-college.webp',
                 'opponent_short_name' => 'PGC',
                 'venue' => 'Patuakhali Govt. College Ground, Patuakhali',
@@ -57,6 +60,7 @@ class MatchSeeder extends Seeder
             [
                 'match_number' => 18,
                 'opponent_name' => 'Dynamic Falcon',
+                'opponent_name_bn' => 'ডাইনামিক ফ্যালকন',
                 'opponent_logo' => 'images/teams/dynamic-falcon.webp',
                 'opponent_short_name' => 'DF',
                 'venue' => 'Shyamoli Shishu Park Maath, Shyamoli, Dhaka',
@@ -67,6 +71,7 @@ class MatchSeeder extends Seeder
             [
                 'match_number' => 16,
                 'opponent_name' => 'Duronto Sporting Xi',
+                'opponent_name_bn' => 'দুরন্ত স্পোর্টিং একাদশ',
                 'opponent_logo' => 'images/teams/duronto-sporting-xi.webp',
                 'opponent_short_name' => 'DSXI',
                 'venue' => 'Patuakhali Govt. College Ground, Patuakhali',

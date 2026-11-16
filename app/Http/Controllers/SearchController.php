@@ -36,18 +36,18 @@ class SearchController extends Controller
         return response()->json([
             'players' => $players->map(fn ($p) => [
                 'url' => route('players.show', $p),
-                'name' => $p->name,
-                'role' => $p->role,
+                'name' => $p->display_name,
+                'role' => $p->display_role,
                 'photo' => $p->photo_url,
             ]),
             'matches' => $matches->map(fn ($m) => [
                 'url' => route('matches.show', $m),
-                'label' => 'Match ' . $m->match_number . ' vs ' . $m->opponent_name,
+                'label' => __('site.match') . ' ' . $m->match_number . ' ' . __('site.vs') . ' ' . $m->display_opponent_name,
                 'date' => $m->match_date->format('d M Y'),
             ]),
             'news' => $news->map(fn ($n) => [
                 'url' => route('news.show', $n),
-                'title' => $n->title,
+                'title' => $n->display_title,
                 'date' => $n->published_at?->format('d M Y'),
             ]),
         ]);

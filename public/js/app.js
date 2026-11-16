@@ -197,13 +197,20 @@ document.addEventListener('DOMContentLoaded', function () {
         var panel = wrap.querySelector('.live-results');
         if (!panel) { return; }
 
+        var labels = {
+            players: panel.getAttribute('data-label-players') || 'Players',
+            matches: panel.getAttribute('data-label-matches') || 'Matches',
+            news: panel.getAttribute('data-label-news') || 'News',
+            empty: panel.getAttribute('data-label-empty') || 'No results found'
+        };
+
         var timer = null;
 
         function render(data) {
             var html = '';
 
             if (data.players.length) {
-                html += '<div class="live-group">Players</div>';
+                html += '<div class="live-group">' + labels.players + '</div>';
                 data.players.forEach(function (p) {
                     var img = p.photo
                         ? '<img src="' + p.photo + '" alt="">'
@@ -213,21 +220,21 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (data.matches.length) {
-                html += '<div class="live-group">Matches</div>';
+                html += '<div class="live-group">' + labels.matches + '</div>';
                 data.matches.forEach(function (m) {
                     html += '<a class="live-item" href="' + m.url + '"><span class="live-fallback">M</span><span>' + esc(m.label) + '</span><small>' + esc(m.date) + '</small></a>';
                 });
             }
 
             if (data.news.length) {
-                html += '<div class="live-group">News</div>';
+                html += '<div class="live-group">' + labels.news + '</div>';
                 data.news.forEach(function (n) {
                     html += '<a class="live-item" href="' + n.url + '"><span class="live-fallback">N</span><span>' + esc(n.title) + '</span><small>' + esc(n.date) + '</small></a>';
                 });
             }
 
             if (!html) {
-                html = '<div class="live-empty">No results found</div>';
+                html = '<div class="live-empty">' + labels.empty + '</div>';
             }
 
             panel.innerHTML = html;

@@ -30,8 +30,8 @@
 
             <div class="topbar-right">
                 <div class="lang-switch">
-                    <a href="#" class="active">ENG</a>
-                    <a href="#">BAN</a>
+                    <a href="{{ request()->fullUrlWithQuery(['lang' => 'en']) }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">ENG</a>
+                    <a href="{{ request()->fullUrlWithQuery(['lang' => 'bn']) }}" class="{{ app()->getLocale() === 'bn' ? 'active' : '' }}">BAN</a>
                 </div>
                 <div class="socials">
                     <a href="https://www.facebook.com/realchallengerboys" target="_blank" rel="noopener" class="social-fb" aria-label="Facebook">
@@ -62,17 +62,17 @@
 
             <div class="search-wrap">
                 <form action="{{ route('search') }}" method="GET" class="search-form" role="search">
-                    <input type="search" name="q" value="{{ request('q') }}" placeholder="Search players..." aria-label="Search">
+                    <input type="search" name="q" value="{{ request('q') }}" placeholder="{{ __('site.search_placeholder_short') }}" aria-label="Search">
                     <button type="submit" aria-label="Search">
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/></svg>
                     </button>
                 </form>
-                <div class="live-results" id="liveResults"></div>
+                <div class="live-results" id="liveResults" data-label-players="{{ __('site.live_search.players') }}" data-label-matches="{{ __('site.live_search.matches') }}" data-label-news="{{ __('site.live_search.news') }}" data-label-empty="{{ __('site.live_search.no_results') }}"></div>
             </div>
 
             <div class="lang-switch header-lang">
-                <a href="#" class="active">ENG</a>
-                <a href="#">BAN</a>
+                <a href="{{ request()->fullUrlWithQuery(['lang' => 'en']) }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">ENG</a>
+                <a href="{{ request()->fullUrlWithQuery(['lang' => 'bn']) }}" class="{{ app()->getLocale() === 'bn' ? 'active' : '' }}">BAN</a>
             </div>
 
             <button class="search-toggle" id="searchToggle" aria-label="Search">
@@ -81,37 +81,37 @@
 
             <a href="{{ route('be-a-player.create') }}" class="btn-cta">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.105 18.79l-1 .992a4.159 4.159 0 0 1 -6.038 -5.715l.157 -.166l8.282 -8.401l1.5 1.5l3.45 -3.391a2.08 2.08 0 0 1 3.057 2.815l-.116 .126l-3.391 3.45l1.5 1.5l-3.668 3.617"/><path d="M10.5 7.5l6 6"/><path d="M14 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/></svg>
-                BE A PLAYER
+                {{ __('site.be_a_player') }}
             </a>
         </div>
     </div>
 
     <div class="mobile-search" id="mobileSearch">
         <form action="{{ route('search') }}" method="GET" class="search-form" role="search">
-            <input type="search" name="q" value="{{ request('q') }}" placeholder="Search players, teams, matches..." aria-label="Search">
+            <input type="search" name="q" value="{{ request('q') }}" placeholder="{{ __('site.search_placeholder') }}" aria-label="Search">
             <button type="submit" aria-label="Search">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/></svg>
             </button>
         </form>
-        <div class="live-results" id="mobileLiveResults"></div>
+        <div class="live-results" id="mobileLiveResults" data-label-players="{{ __('site.live_search.players') }}" data-label-matches="{{ __('site.live_search.matches') }}" data-label-news="{{ __('site.live_search.news') }}" data-label-empty="{{ __('site.live_search.no_results') }}"></div>
     </div>
 
     <!-- ==================== Navbar (sticky teal) ==================== -->
     <div class="mainnav" id="mainnav">
         <div class="container">
             <nav class="nav">
-                <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
-                <a href="{{ route('pages.about') }}" class="nav-link {{ request()->routeIs('pages.about') ? 'active' : '' }}">About</a>
-                <a href="{{ route('pages.gallery') }}" class="nav-link {{ request()->routeIs('pages.gallery') ? 'active' : '' }}">Gallery</a>
-                <a href="{{ route('news.index') }}" class="nav-link {{ request()->routeIs('news.*') ? 'active' : '' }}">News</a>
-                <a href="{{ route('matches.index') }}" class="nav-link {{ request()->routeIs('matches.*') ? 'active' : '' }}">Fixtures</a>
-                <a href="{{ route('players.index') }}" class="nav-link {{ request()->routeIs('players.*') ? 'active' : '' }}">Players</a>
-                <a href="{{ route('pages.teams') }}" class="nav-link {{ request()->routeIs('pages.teams') ? 'active' : '' }}">Team</a>
-                <a href="{{ route('pages.records') }}" class="nav-link {{ request()->routeIs('pages.records') ? 'active' : '' }}">Records</a>
-                <a href="{{ route('pages.contact') }}" class="nav-link {{ request()->routeIs('pages.contact') ? 'active' : '' }}">Contact Us</a>
+                <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">{{ __('site.nav.home') }}</a>
+                <a href="{{ route('pages.about') }}" class="nav-link {{ request()->routeIs('pages.about') ? 'active' : '' }}">{{ __('site.nav.about') }}</a>
+                <a href="{{ route('pages.gallery') }}" class="nav-link {{ request()->routeIs('pages.gallery') ? 'active' : '' }}">{{ __('site.nav.gallery') }}</a>
+                <a href="{{ route('news.index') }}" class="nav-link {{ request()->routeIs('news.*') ? 'active' : '' }}">{{ __('site.nav.news') }}</a>
+                <a href="{{ route('matches.index') }}" class="nav-link {{ request()->routeIs('matches.*') ? 'active' : '' }}">{{ __('site.nav.fixtures') }}</a>
+                <a href="{{ route('players.index') }}" class="nav-link {{ request()->routeIs('players.*') ? 'active' : '' }}">{{ __('site.nav.players') }}</a>
+                <a href="{{ route('pages.teams') }}" class="nav-link {{ request()->routeIs('pages.teams') ? 'active' : '' }}">{{ __('site.nav.team') }}</a>
+                <a href="{{ route('pages.records') }}" class="nav-link {{ request()->routeIs('pages.records') ? 'active' : '' }}">{{ __('site.nav.records') }}</a>
+                <a href="{{ route('pages.contact') }}" class="nav-link {{ request()->routeIs('pages.contact') ? 'active' : '' }}">{{ __('site.nav.contact') }}</a>
                 <a href="{{ route('be-a-player.create') }}" class="nav-cta-mobile">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.105 18.79l-1 .992a4.159 4.159 0 0 1 -6.038 -5.715l.157 -.166l8.282 -8.401l1.5 1.5l3.45 -3.391a2.08 2.08 0 0 1 3.057 2.815l-.116 .126l-3.391 3.45l1.5 1.5l-3.668 3.617"/><path d="M10.5 7.5l6 6"/><path d="M14 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/></svg>
-                    BE A PLAYER
+                    {{ __('site.be_a_player') }}
                 </a>
             </nav>
         </div>
@@ -125,7 +125,7 @@
     <footer class="site-footer">
         <div class="container footer-grid">
             <div>
-                <h3>Support</h3>
+                <h3>{{ __('site.footer.support') }}</h3>
                 <div class="support-list">
                     <a href="tel:01674297522" class="support-pill">
                         <span class="support-icon">
@@ -142,27 +142,27 @@
                 </div>
             </div>
             <div>
-                <h3>Quick Link</h3>
+                <h3>{{ __('site.footer.quick_link') }}</h3>
                 <ul class="quick-links">
-                    <li><a href="{{ route('pages.about') }}">» About</a></li>
-                    <li><a href="{{ route('pages.teams') }}">» Team</a></li>
-                    <li><a href="{{ route('matches.index') }}">» Fixtures</a></li>
-                    <li><a href="{{ route('pages.gallery') }}">» Gallery</a></li>
-                    <li><a href="{{ route('pages.records') }}">» Records</a></li>
+                    <li><a href="{{ route('pages.about') }}">» {{ __('site.nav.about') }}</a></li>
+                    <li><a href="{{ route('pages.teams') }}">» {{ __('site.nav.team') }}</a></li>
+                    <li><a href="{{ route('matches.index') }}">» {{ __('site.nav.fixtures') }}</a></li>
+                    <li><a href="{{ route('pages.gallery') }}">» {{ __('site.nav.gallery') }}</a></li>
+                    <li><a href="{{ route('pages.records') }}">» {{ __('site.nav.records') }}</a></li>
                 </ul>
             </div>
             <div>
-                <h3>Facebook Page</h3>
+                <h3>{{ __('site.footer.facebook_page') }}</h3>
                 <div class="fb-wrap">
                     <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Frealchallengerboys&tabs=timeline&width=340&height=250&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=776730922422337" height="250" class="fb-iframe" title="RCB Facebook Page" loading="lazy"></iframe>
                 </div>
             </div>
             <div>
-                <h3>Contact Us</h3>
+                <h3>{{ __('site.footer.contact_us') }}</h3>
                 <ul class="contact-list">
                     <li>
                         <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>
-                        <span>Location: East Shewrapara, Begum Rokeya Sarani, Mirpur, Dhaka - 1216; Bangladesh</span>
+                        <span>{{ __('site.footer.location') }}</span>
                     </li>
                     <li>
                         <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18a2 2 0 002 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
@@ -191,7 +191,7 @@
         </div>
         <div class="footer-bottom">
             <div class="container">
-                <p>&copy; {{ date('Y') }} <strong>REAL CHALLENGER BOYS (RCB)</strong>. All Rights Reserved
+                <p>&copy; {{ date('Y') }} <strong>REAL CHALLENGER BOYS (RCB)</strong>. {{ __('site.footer.rights') }}
                 <span class="footer-dot">•</span>
                 <span>Designed by: <a href="https://rcb.com.bd/" target="_blank" rel="noopener" class="footer-credit">RCB</a></span></p>
             </div>

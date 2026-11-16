@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\ApplicationController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MatchController as AdminMatchController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\PlayerController as AdminPlayerController;
+use App\Http\Controllers\Admin\SponsorController as AdminSponsorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\NewsController;
@@ -35,3 +42,21 @@ Route::get('/contact', [PageController::class, 'contact'])->name('pages.contact'
 
 Route::get('/search/live', [SearchController::class, 'live'])->name('search.live');
 Route::get('/search', SearchController::class)->name('search');
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('login', [AuthController::class, 'login'])->name('login.post');
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::middleware('admin.auth')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        Route::resource('players', AdminPlayerController::class);
+        Route::resource('matches', AdminMatchController::class)->except(['show']);
+        Route::resource('news', AdminNewsController::class)->except(['show']);
+        Route::resource('sponsors', AdminSponsorController::class)->except(['show']);
+
+        Route::get('applications', [ApplicationController::class, 'index'])->name('applications.index');
+        Route::delete('applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
+    });
+});

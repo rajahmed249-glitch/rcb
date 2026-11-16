@@ -20,12 +20,31 @@ class Player extends Model
         'batting_style',
         'bowling_style',
         'bio',
+        'name_bn',
+        'bio_bn',
     ];
 
     protected $casts = [
         'is_captain' => 'boolean',
         'is_vice_captain' => 'boolean',
     ];
+
+    public function getDisplayNameAttribute(): string
+    {
+        return app()->getLocale() === 'bn' && $this->name_bn ? $this->name_bn : $this->name;
+    }
+
+    public function getDisplayRoleAttribute(): string
+    {
+        $key = 'site.roles.' . str_replace(['-', ' '], '_', strtolower($this->role));
+
+        return __($key) === $key ? $this->role : __($key);
+    }
+
+    public function getDisplayBioAttribute(): ?string
+    {
+        return app()->getLocale() === 'bn' && $this->bio_bn ? $this->bio_bn : $this->bio;
+    }
 
     public function getPhotoUrlAttribute(): ?string
     {

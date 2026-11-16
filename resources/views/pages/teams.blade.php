@@ -7,8 +7,8 @@
         <div class="teams-head">
             <span class="teams-headbar"></span>
             <div>
-                <h1 class="teams-title">All Teams</h1>
-                <p class="teams-sub">Squad overview &amp; team profiles</p>
+                <h1 class="teams-title">{{ __('site.teams_page.title') }}</h1>
+                <p class="teams-sub">{{ __('site.teams_page.subtitle') }}</p>
             </div>
         </div>
 
@@ -25,15 +25,15 @@
                         </div>
                     </div>
                     <div class="tcard-body">
-                        <h3 class="tcard-name">{{ $team['name'] }}</h3>
+                        <h3 class="tcard-name">{{ $team['display_name'] }}</h3>
                         @if ($team['short_name'])
                             <p class="tcard-short">{{ $team['short_name'] }}</p>
                         @endif
                         <div class="tcard-divider"></div>
                         <div class="tcard-pills">
-                            <span class="tpill tpill-gray">{{ $team['played'] }} Matches</span>
-                            <span class="tpill tpill-win">{{ $team['won'] }} Won</span>
-                            <span class="tpill tpill-loss">{{ $team['lost'] }} Lost</span>
+                            <span class="tpill tpill-gray">{{ $team['played'] }} {{ __('site.matches') }}</span>
+                            <span class="tpill tpill-win">{{ $team['won'] }} {{ __('site.won') }}</span>
+                            <span class="tpill tpill-loss">{{ $team['lost'] }} {{ __('site.lost') }}</span>
                         </div>
                     </div>
                 </a>
