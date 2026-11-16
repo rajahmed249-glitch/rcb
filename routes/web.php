@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\MatchController as AdminMatchController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\PlayerController as AdminPlayerController;
+use App\Http\Controllers\Admin\SquadController;
+use App\Http\Controllers\Admin\ScoreboardController;
 use App\Http\Controllers\Admin\SponsorController as AdminSponsorController;
 use App\Http\Controllers\Admin\TournamentController;
 use App\Http\Controllers\Admin\TeamController as AdminTeamController;
@@ -61,6 +63,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('sponsors', AdminSponsorController::class)->except(['show']);
         Route::resource('teams', AdminTeamController::class)->except(['show']);
         Route::resource('tournaments', TournamentController::class)->except(['show']);
+
+        Route::get('squads', [SquadController::class, 'index'])->name('squads.index');
+        Route::get('squads/{match}/edit', [SquadController::class, 'edit'])->name('squads.edit');
+        Route::put('squads/{match}', [SquadController::class, 'update'])->name('squads.update');
+
+        Route::get('scoreboards', [ScoreboardController::class, 'index'])->name('scoreboards.index');
+        Route::get('scoreboards/{match}/edit', [ScoreboardController::class, 'edit'])->name('scoreboards.edit');
+        Route::put('scoreboards/{match}', [ScoreboardController::class, 'update'])->name('scoreboards.update');
         Route::resource('gallery', AdminGalleryController::class)->except(['show']);
 
         Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');

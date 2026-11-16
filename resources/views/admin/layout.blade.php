@@ -25,16 +25,22 @@
 
                 <span class="admin-nav-label">{{ __('site.admin.group_cricket') }}</span>
                 <a href="{{ route('admin.players.index') }}" class="{{ request()->routeIs('admin.players.*') ? 'active' : '' }}">
-                    <span class="admin-ico">🏏</span> {{ __('site.admin.players') }}
-                </a>
-                <a href="{{ route('admin.matches.index') }}" class="{{ request()->routeIs('admin.matches.*') ? 'active' : '' }}">
-                    <span class="admin-ico">🗓️</span> {{ __('site.admin.matches') }}
+                    <span class="admin-ico">🏏</span> {{ __('site.admin.player') }}
                 </a>
                 <a href="{{ route('admin.teams.index') }}" class="{{ request()->routeIs('admin.teams.*') ? 'active' : '' }}">
-                    <span class="admin-ico">👕</span> {{ __('site.admin.total_teams') }}
+                    <span class="admin-ico">👕</span> {{ __('site.admin.team') }}
                 </a>
                 <a href="{{ route('admin.tournaments.index') }}" class="{{ request()->routeIs('admin.tournaments.*') ? 'active' : '' }}">
-                    <span class="admin-ico">🏟️</span> {{ __('site.admin.tournaments') }}
+                    <span class="admin-ico">🏟️</span> {{ __('site.admin.tournament') }}
+                </a>
+                <a href="{{ route('admin.matches.index') }}" class="{{ request()->routeIs('admin.matches.*') ? 'active' : '' }}">
+                    <span class="admin-ico">🗓️</span> {{ __('site.admin.match') }}
+                </a>
+                <a href="{{ route('admin.squads.index') }}" class="{{ request()->routeIs('admin.squads.*') ? 'active' : '' }}">
+                    <span class="admin-ico">👥</span> {{ __('site.admin.squad') }}
+                </a>
+                <a href="{{ route('admin.scoreboards.index') }}" class="{{ request()->routeIs('admin.scoreboards.*') ? 'active' : '' }}">
+                    <span class="admin-ico">🧮</span> {{ __('site.admin.scoreboard') }}
                 </a>
                 <a href="{{ route('pages.records') }}" target="_blank">
                     <span class="admin-ico">🏆</span> {{ __('site.nav.records') }}
