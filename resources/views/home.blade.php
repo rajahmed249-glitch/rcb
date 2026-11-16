@@ -16,13 +16,13 @@
         <section class="section">
             <div class="section-head">
                 <h2>Latest Result</h2>
-                <a href="{{ route('matches.index', ['status' => 'completed']) }}" class="btn btn-outline">View All</a>
+                <a href="{{ route('matches.index', ['status' => 'completed']) }}" class="btn btn-viewall">View All</a>
             </div>
 
             @if ($latestResult)
                 <div class="card match-card">
                     <div class="match-meta">
-                        <span>Match {{ $latestResult->match_number }}</span>
+                        <span class="badge badge-matchno">Match {{ $latestResult->match_number }}</span>
                         <span class="badge badge-completed">completed</span>
                         <span>{{ $latestResult->match_date->format('d M Y') }}</span>
                     </div>
@@ -48,14 +48,14 @@
         <section class="section">
             <div class="section-head">
                 <h2>Upcoming Fixtures</h2>
-                <a href="{{ route('matches.index', ['status' => 'upcoming']) }}" class="btn btn-outline">View All</a>
+                <a href="{{ route('matches.index', ['status' => 'upcoming']) }}" class="btn btn-viewall">View All</a>
             </div>
 
             <div class="match-grid">
                 @forelse ($upcomingMatches as $match)
                     <div class="card match-card">
                         <div class="match-meta">
-                            <span>Match {{ $match->match_number }}</span>
+                            <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
                             <span class="badge badge-upcoming">upcoming</span>
                             <span>{{ $match->match_date->format('d M Y') }}</span>
                         </div>
@@ -78,7 +78,7 @@
         <section class="section">
             <div class="section-head">
                 <h2>Latest News</h2>
-                <a href="{{ route('news.index') }}" class="btn btn-outline">View All</a>
+                <a href="{{ route('news.index') }}" class="btn btn-viewall">View All</a>
             </div>
 
             <div class="news-grid">
@@ -98,7 +98,7 @@
         <section class="section">
             <div class="section-head">
                 <h2>Players</h2>
-                <a href="{{ route('players.index') }}" class="btn btn-outline">View All</a>
+                <a href="{{ route('players.index') }}" class="btn btn-viewall">View All</a>
             </div>
 
             <div class="player-grid">
@@ -128,7 +128,7 @@
         <section class="section">
             <div class="section-head">
                 <h2>Our Sponsors</h2>
-                <a href="{{ route('sponsors.index') }}" class="btn btn-outline">View All</a>
+                <a href="{{ route('sponsors.index') }}" class="btn btn-viewall">View All</a>
             </div>
 
             <div class="sponsor-grid">
