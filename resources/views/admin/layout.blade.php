@@ -13,30 +13,58 @@
             <div class="admin-brand">
                 <img src="{{ asset('images/logo.png') }}" alt="RCB">
                 <div>
-                    <span class="admin-brand-name">{{ __('site.admin.panel') }}</span>
-                    <span class="admin-brand-sub">rcb.com.bd</span>
+                    <span class="admin-brand-name">RCB Dashboard</span>
+                    <span class="admin-brand-sub">{{ __('site.admin.panel') }}</span>
                 </div>
             </div>
             <nav class="admin-nav">
-                <span class="admin-nav-label">{{ __('site.admin.dashboard') }}</span>
+                <span class="admin-nav-label">{{ __('site.admin.group_main') }}</span>
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <span class="admin-ico">📊</span> {{ __('site.admin.dashboard') }}
                 </a>
-                <span class="admin-nav-label">{{ __('site.admin.quick_actions') }}</span>
+
+                <span class="admin-nav-label">{{ __('site.admin.group_cricket') }}</span>
                 <a href="{{ route('admin.players.index') }}" class="{{ request()->routeIs('admin.players.*') ? 'active' : '' }}">
                     <span class="admin-ico">🏏</span> {{ __('site.admin.players') }}
                 </a>
                 <a href="{{ route('admin.matches.index') }}" class="{{ request()->routeIs('admin.matches.*') ? 'active' : '' }}">
                     <span class="admin-ico">🗓️</span> {{ __('site.admin.matches') }}
                 </a>
+                <a href="{{ route('pages.teams') }}" target="_blank">
+                    <span class="admin-ico">👕</span> {{ __('site.admin.total_teams') }}
+                    <span class="admin-nav-ext">↗</span>
+                </a>
+                <a href="{{ route('pages.records') }}" target="_blank">
+                    <span class="admin-ico">🏆</span> {{ __('site.nav.records') }}
+                    <span class="admin-nav-ext">↗</span>
+                </a>
+
+                <span class="admin-nav-label">{{ __('site.admin.group_content') }}</span>
                 <a href="{{ route('admin.news.index') }}" class="{{ request()->routeIs('admin.news.*') ? 'active' : '' }}">
                     <span class="admin-ico">📰</span> {{ __('site.admin.news') }}
                 </a>
-                <a href="{{ route('admin.sponsors.index') }}" class="{{ request()->routeIs('admin.sponsors.*') ? 'active' : '' }}">
-                    <span class="admin-ico">🤝</span> {{ __('site.admin.sponsors') }}
+                <a href="{{ route('pages.gallery') }}" target="_blank">
+                    <span class="admin-ico">🖼️</span> {{ __('site.nav.gallery') }}
+                    <span class="admin-nav-ext">↗</span>
                 </a>
+                <a href="{{ route('pages.about') }}" target="_blank">
+                    <span class="admin-ico">ℹ️</span> {{ __('site.nav.about') }}
+                    <span class="admin-nav-ext">↗</span>
+                </a>
+                <a href="{{ route('pages.contact') }}" target="_blank">
+                    <span class="admin-ico">✉️</span> {{ __('site.nav.contact') }}
+                    <span class="admin-nav-ext">↗</span>
+                </a>
+
+                <span class="admin-nav-label">{{ __('site.admin.group_static') }}</span>
                 <a href="{{ route('admin.applications.index') }}" class="{{ request()->routeIs('admin.applications.*') ? 'active' : '' }}">
                     <span class="admin-ico">📝</span> {{ __('site.admin.applications') }}
+                    @if ($applicationsCount)
+                        <span class="admin-nav-badge">{{ $applicationsCount }}</span>
+                    @endif
+                </a>
+                <a href="{{ route('admin.sponsors.index') }}" class="{{ request()->routeIs('admin.sponsors.*') ? 'active' : '' }}">
+                    <span class="admin-ico">🤝</span> {{ __('site.admin.sponsors') }}
                 </a>
             </nav>
             <div class="admin-sidebar-footer">
@@ -47,6 +75,7 @@
                 </form>
             </div>
         </aside>
+        <div class="admin-sidebar-backdrop" id="adminBackdrop"></div>
 
         <div class="admin-wrapper">
             <header class="admin-header">
@@ -54,7 +83,7 @@
                     <button class="admin-burger" id="adminBurger" aria-label="Menu">&#9776;</button>
                     <div class="admin-header-title">
                         <h1>@yield('title', __('site.admin.dashboard'))</h1>
-                        <p>{{ __('site.admin.welcome_text') }}</p>
+                        <p>{{ __('site.admin.subtitle') }}</p>
                     </div>
                 </div>
                 <div class="admin-header-right">
@@ -74,9 +103,18 @@
                             </div>
                         </div>
                     </div>
+                    <a href="{{ route('admin.applications.index') }}" class="admin-header-ico" title="{{ __('site.admin.applications') }}">
+                        📝
+                        @if ($applicationsCount)
+                            <span class="admin-header-badge">{{ $applicationsCount }}</span>
+                        @endif
+                    </a>
                     <div class="lang-switch">
                         <a href="{{ request()->fullUrlWithQuery(['lang' => 'en']) }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">ENG</a>
                         <a href="{{ request()->fullUrlWithQuery(['lang' => 'bn']) }}" class="{{ app()->getLocale() === 'bn' ? 'active' : '' }}">BAN</a>
+                    </div>
+                    <div class="admin-avatar" title="{{ __('site.admin.panel') }}">
+                        <img src="{{ asset('images/logo.png') }}" alt="RCB">
                     </div>
                 </div>
             </header>
@@ -101,9 +139,17 @@
         (function () {
             var burger = document.getElementById('adminBurger');
             var sidebar = document.getElementById('adminSidebar');
+            var backdrop = document.getElementById('adminBackdrop');
             if (burger && sidebar) {
                 burger.addEventListener('click', function () {
                     sidebar.classList.toggle('open');
+                    if (backdrop) backdrop.classList.toggle('show');
+                });
+            }
+            if (backdrop) {
+                backdrop.addEventListener('click', function () {
+                    sidebar.classList.remove('open');
+                    backdrop.classList.remove('show');
                 });
             }
         })();
