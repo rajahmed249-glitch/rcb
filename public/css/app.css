@@ -200,8 +200,8 @@ a.match-card:hover { text-decoration: none; }
 .match-score small { display: block; font-size: .72rem; color: #6b7280; font-weight: 400; }
 .vs-badge { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; background: linear-gradient(to right, #ef4444, #e11d48); color: #fff; font-size: .68rem; font-weight: 800; padding: .15rem .55rem; border-radius: .25rem; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
 .match-names { display: flex; justify-content: space-between; gap: .5rem; padding: 0 1rem; margin-top: .5rem; font-size: .85rem; font-weight: 600; color: #1f2937; }
-.match-names span { width: 50%; }
-.match-names span:last-child { text-align: right; }
+.match-names a { width: 50%; }
+.match-names a:last-child { text-align: right; }
 .match-footer { margin-top: .75rem; border-top: 1px solid #e5e7eb; padding: .7rem 1rem; text-align: center; font-size: .85rem; font-weight: 500; color: var(--teal-dark); }
 .match-footer.lost { color: #dc2626; }
 .match-details-link { display: block; border-top: 1px solid #e5e7eb; padding: .6rem 1rem; text-align: center; font-size: .8rem; font-weight: 600; color: var(--muted); transition: .2s; }
@@ -882,3 +882,18 @@ a.player-name-link:hover { text-decoration: underline; }
     .bat-head .bat-team, .bat-head .bat-score { font-size: .82rem; }
     .bat-head .bat-score span { font-size: .72rem; }
 }
+
+/* ===== Clickable player and team names ===== */
+a.sb-name { color: #1f2937; text-decoration: none; }
+a.sb-name:hover { color: #0d9488; text-decoration: underline; }
+a.sb-teamname { color: inherit; text-decoration: none; }
+a.sb-teamname:hover { color: #0d9488; text-decoration: underline; }
+a.bat-team { color: #fff; text-decoration: none; }
+a.bat-team:hover { text-decoration: underline; }
+a.player-bar-name, a.pcard-name { color: #fff; text-decoration: none; }
+a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
+.player-card h3 a { color: inherit; text-decoration: none; }
+.player-card h3 a:hover { color: #0d9488; }
+.match-names a { color: inherit; text-decoration: none; }
+.match-names a:hover { color: #0d9488; }
+[data-href] { cursor: pointer; }

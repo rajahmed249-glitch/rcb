@@ -17,7 +17,7 @@
 
         <div class="match-grid">
             @forelse ($matches as $match)
-                <a href="{{ route('matches.show', $match) }}" class="match-card">
+                <div class="match-card" data-href="{{ route('matches.show', $match) }}">
                     <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
                     <span class="badge badge-{{ $match->status }}">{{ $match->status }}</span>
                     <div class="match-date-pill">{{ $match->match_date->format('d M Y') }}</div>
@@ -37,15 +37,15 @@
                         </div>
                     </div>
                     <div class="match-names">
-                        <span>REAL CHALLENGER BOYS</span>
-                        <span>{{ $match->opponent_name }}</span>
+                        <a href="{{ route('pages.team-profile', 'real-challenger-boys') }}">REAL CHALLENGER BOYS</a>
+                        <a href="{{ route('pages.team-profile', \Illuminate\Support\Str::slug($match->opponent_name)) }}">{{ $match->opponent_name }}</a>
                     </div>
                     @if ($match->status === 'completed' && $match->result_text)
                         <div class="match-footer {{ $match->won ? '' : 'lost' }}">{{ $match->result_text }}</div>
                     @else
                         <div class="match-footer">📍 {{ $match->venue }}</div>
                     @endif
-                </a>
+                </div>
             @empty
                 <div class="card"><p class="muted">No matches found.</p></div>
             @endforelse

@@ -19,6 +19,9 @@
 
     $hasScorecard = $match->status === 'completed' && !empty($scorecard['rcb']);
 
+    $rcbTeamSlug = 'real-challenger-boys';
+    $oppTeamSlug = \Illuminate\Support\Str::slug($match->opponent_name);
+
     $summaryCards = [];
     if ($hasScorecard) {
         $summaryTeams = [
@@ -42,6 +45,7 @@
 
             $summaryCards[] = [
                 'name' => $t['name'],
+                'slug' => $t['key'] === 'rcb' ? $rcbTeamSlug : $oppTeamSlug,
                 'score' => $inn['total'],
                 'wickets' => $inn['wickets'],
                 'overs' => $inn['overs'],
@@ -61,9 +65,9 @@
             <div class="sb-topline"><span class="sb-toss">{{ $match->format }} &bull; {{ ucfirst($match->status) }}</span></div>
 
             <div class="sb-names">
-                <div class="sb-name sb-name-right">REAL CHALLENGER BOYS</div>
+                <a href="{{ route('pages.team-profile', $rcbTeamSlug) }}" class="sb-name sb-name-right">REAL CHALLENGER BOYS</a>
                 <div class="sb-vs"><span>VS</span></div>
-                <div class="sb-name sb-name-left">{{ $match->opponent_name }}</div>
+                <a href="{{ route('pages.team-profile', $oppTeamSlug) }}" class="sb-name sb-name-left">{{ $match->opponent_name }}</a>
             </div>
 
             <div class="sb-columns">
@@ -71,7 +75,7 @@
                     <div class="sb-logo-row">
                         <img src="{{ asset('images/teams/real-challenger-boys.webp') }}" alt="Real Challenger Boys" class="sb-logo">
                     </div>
-                    <div class="sb-teamname">REAL CHALLENGER BOYS</div>
+                    <a class="sb-teamname" href="{{ route('pages.team-profile', $rcbTeamSlug) }}">REAL CHALLENGER BOYS</a>
                     <div class="sb-score">
                         @if ($rcbRuns !== null)
                             {{ $rcbRuns }}@if ($rcbWickets !== null)<span class="sb-score-w">-{{ $rcbWickets }}</span>@endif
@@ -100,7 +104,7 @@
                             <div class="sb-logo-fallback">{{ strtoupper(substr($match->opponent_short_name ?: $match->opponent_name, 0, 2)) }}</div>
                         @endif
                     </div>
-                    <div class="sb-teamname">{{ strtoupper($match->opponent_name) }}</div>
+                    <a class="sb-teamname" href="{{ route('pages.team-profile', $oppTeamSlug) }}">{{ strtoupper($match->opponent_name) }}</a>
                     <div class="sb-score">
                         @if ($oppRuns !== null)
                             {{ $oppRuns }}@if ($oppWickets !== null)<span class="sb-score-w">-{{ $oppWickets }}</span>@endif
@@ -129,7 +133,7 @@
                     @foreach ($summaryCards as $card)
                         <div class="sum-card">
                             <div class="sum-head">
-                                <span class="sum-team">{{ $card['name'] }}</span>
+                                <a class="sum-team" href="{{ route('pages.team-profile', $card['slug']) }}">{{ $card['name'] }}</a>
                                 <span class="sum-score">{{ $card['score'] }}-{{ $card['wickets'] }} <small>({{ $card['overs'] }} overs)</small></span>
                             </div>
                             <div class="sum-body">
@@ -148,7 +152,11 @@
                                 <div>
                                     @foreach ($card['bowling'] as $bo)
                                         <div class="sum-row">
-                                            <span class="sum-name">{{ $bo['name'] }}</span>
+                                            @if ($bo['id'])
+                                                <a href="{{ route('players.show', $bo['id']) }}" class="sum-name">{{ $bo['name'] }}</a>
+                                            @else
+                                                <span class="sum-name">{{ $bo['name'] }}</span>
+                                            @endif
                                             <span class="sum-fig">{{ $bo['wickets'] }}-{{ $bo['runs'] }}</span>
                                         </div>
                                     @endforeach
@@ -191,6 +199,7 @@
                         @include('matches.innings', [
                             'innings' => $scorecard['rcb'],
                             'teamName' => 'Real Challenger Boys',
+                            'teamSlug' => $rcbTeamSlug,
                         ])
                     </div>
 
@@ -198,6 +207,7 @@
                         @include('matches.innings', [
                             'innings' => $scorecard['opponent'],
                             'teamName' => $match->opponent_name,
+                            'teamSlug' => $oppTeamSlug,
                         ])
                     </div>
                 @else

@@ -109,7 +109,8 @@ class MatchController extends Controller
                 $oppRuns, $oppWkts, $match->opponent_overs,
                 null, $rcbBowlerNames,
                 $rcbRuns, $rcbWkts,
-                $match->id, 'opp'
+                $match->id, 'opp',
+                $rcbPlayers->pluck('id', 'name')->all()
             ),
             'squads' => [
                 'rcb' => $this->buildSquad($rcbPlayers->take(11)->values(), $match->id, 'rcb'),
@@ -127,7 +128,8 @@ class MatchController extends Controller
         int $oppRuns,
         int $oppWickets,
         int $matchId,
-        string $side
+        string $side,
+        array $bowlerIds = []
     ): array {
         mt_srand($matchId * 131 + ($side === 'rcb' ? 7 : 13));
 
@@ -137,11 +139,13 @@ class MatchController extends Controller
 
         if ($batterPool && $batterPool->count() > 0) {
             $batters = $batterPool->take($battedCount)->values()->map(fn ($p) => (object) [
+                'id' => $p->id,
                 'name' => $p->name,
                 'photo' => $p->photo_url,
             ]);
         } else {
             $batters = collect(range(0, $battedCount - 1))->map(fn ($i) => (object) [
+                'id' => null,
                 'name' => $bowlerNames[$i % count($bowlerNames)],
                 'photo' => null,
             ]);
@@ -203,6 +207,7 @@ class MatchController extends Controller
 
                 $fowScore += $runs;
                 $fow[] = [
+                    'id' => $batter->id,
                     'name' => $batter->name,
                     'score' => $fowScore . '-' . count($fow),
                     'over' => $this->formatOvers($cumBalls / 6),
@@ -212,6 +217,7 @@ class MatchController extends Controller
             $cumBalls += $balls;
 
             $batting[] = [
+                'id' => $batter->id,
                 'name' => $batter->name,
                 'photo' => $batter->photo,
                 'runs' => $runs,
@@ -254,8 +260,11 @@ class MatchController extends Controller
 
             $maidens = ($bowlerOvers >= 2 && $bowlerRuns <= $bowlerOvers && mt_rand(0, 1)) ? 1 : 0;
 
+            $bowlerName = $bowlerNames[$i % count($bowlerNames)];
+
             $bowling[] = [
-                'name' => $bowlerNames[$i % count($bowlerNames)],
+                'id' => $bowlerIds[$bowlerName] ?? null,
+                'name' => $bowlerName,
                 'overs' => $this->formatOvers($bowlerOvers),
                 'maidens' => $maidens,
                 'runs' => $bowlerRuns,

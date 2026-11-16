@@ -7,7 +7,7 @@
 
 <div class="bat-card">
     <div class="bat-head">
-        <span class="bat-team">{{ $teamName }}</span>
+        <a class="bat-team" href="{{ $teamSlug ? route('pages.team-profile', $teamSlug) : '#' }}">{{ $teamName }}</a>
         <span class="bat-score">{{ $innings['total'] }}-{{ $innings['wickets'] }} <span>({{ $innings['overs'] }} overs)</span></span>
     </div>
 
@@ -25,7 +25,11 @@
                         <span class="bat-photo bat-photo-fallback">{{ mb_strtoupper(mb_substr($bat['name'], 0, 1)) }}</span>
                     @endif
                     <div class="player-name-cell">
-                        <span class="player-name-link">{{ $bat['name'] }}</span>
+                        @if ($bat['id'])
+                            <a href="{{ route('players.show', $bat['id']) }}" class="player-name-link">{{ $bat['name'] }}</a>
+                        @else
+                            <span class="player-name-link">{{ $bat['name'] }}</span>
+                        @endif
                         <div class="dismissal-text">{{ $bat['dismissal'] }}</div>
                     </div>
                 </div>
@@ -53,7 +57,13 @@
             <div class="fow-cols"><div>Fall of Wickets</div><div>Score</div><div>Overs</div></div>
             @foreach ($innings['fow'] as $f)
                 <div class="fow-row">
-                    <div><span class="player-name-link">{{ $f['name'] }}</span></div>
+                    <div>
+                        @if ($f['id'])
+                            <a href="{{ route('players.show', $f['id']) }}" class="player-name-link">{{ $f['name'] }}</a>
+                        @else
+                            <span class="player-name-link">{{ $f['name'] }}</span>
+                        @endif
+                    </div>
                     <div>{{ $f['score'] }}</div>
                     <div>{{ $f['over'] }}</div>
                 </div>
@@ -81,7 +91,11 @@
                         <tr>
                             <td>
                                 <div class="bowler-name-cell">
-                                    <span class="player-name-link">{{ $bowl['name'] }}</span>
+                                    @if ($bowl['id'])
+                                        <a href="{{ route('players.show', $bowl['id']) }}" class="player-name-link">{{ $bowl['name'] }}</a>
+                                    @else
+                                        <span class="player-name-link">{{ $bowl['name'] }}</span>
+                                    @endif
                                 </div>
                             </td>
                             <td>{{ $bowl['overs'] }}</td>

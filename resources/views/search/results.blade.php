@@ -24,7 +24,7 @@
                     @foreach ($players as $player)
                         <div class="card player-card">
                             <div class="player-avatar">{{ $player->initials }}</div>
-                            <h3>{{ $player->name }}</h3>
+                            <h3><a href="{{ route('players.show', $player) }}">{{ $player->name }}</a></h3>
                             <a href="{{ route('players.show', $player) }}" class="btn btn-outline" style="margin-top:.5rem;">View Profile</a>
                         </div>
                     @endforeach
@@ -37,7 +37,7 @@
                 <div class="section-head"><h2>Matches</h2></div>
                 <div class="match-grid">
                     @foreach ($matches as $match)
-                        <a href="{{ route('matches.show', $match) }}" class="match-card">
+                        <div class="match-card" data-href="{{ route('matches.show', $match) }}">
                             <span class="badge badge-matchno">Match {{ $match->match_number }}</span>
                             <span class="badge badge-{{ $match->status }}">{{ $match->status }}</span>
                             <div class="match-date-pill">{{ $match->match_date->format('d M Y') }}</div>
@@ -57,11 +57,11 @@
                                 </div>
                             </div>
                             <div class="match-names">
-                                <span>REAL CHALLENGER BOYS</span>
-                                <span>{{ $match->opponent_name }}</span>
+                                <a href="{{ route('pages.team-profile', 'real-challenger-boys') }}">REAL CHALLENGER BOYS</a>
+                                <a href="{{ route('pages.team-profile', \Illuminate\Support\Str::slug($match->opponent_name)) }}">{{ $match->opponent_name }}</a>
                             </div>
                             <div class="match-footer">📍 {{ $match->venue }}</div>
-                            </a>
+                            </div>
                     @endforeach
                 </div>
             </section>
