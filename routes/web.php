@@ -3,10 +3,13 @@
 use App\Http\Controllers\Admin\ApplicationController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\MatchController as AdminMatchController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\PlayerController as AdminPlayerController;
 use App\Http\Controllers\Admin\SponsorController as AdminSponsorController;
+use App\Http\Controllers\Admin\TeamController as AdminTeamController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\NewsController;
@@ -55,6 +58,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('matches', AdminMatchController::class)->except(['show']);
         Route::resource('news', AdminNewsController::class)->except(['show']);
         Route::resource('sponsors', AdminSponsorController::class)->except(['show']);
+        Route::resource('teams', AdminTeamController::class)->except(['show']);
+        Route::resource('gallery', AdminGalleryController::class)->except(['show']);
+
+        Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
+        Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
 
         Route::get('applications', [ApplicationController::class, 'index'])->name('applications.index');
         Route::delete('applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');

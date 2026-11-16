@@ -18,10 +18,20 @@
             <form method="POST" action="{{ route('admin.login.post') }}">
                 @csrf
                 <div class="admin-login-field">
+                    <label>{{ __('site.admin.user_id') }}</label>
+                    <div class="admin-login-input">
+                        <span>📧</span>
+                        <input type="email" name="email" value="{{ old('email') }}" placeholder="admin@rcb.com.bd" required autofocus>
+                    </div>
+                    @error('email')
+                        <p class="admin-error">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="admin-login-field">
                     <label>{{ __('site.admin.password') }}</label>
                     <div class="admin-login-input">
                         <span>🔒</span>
-                        <input type="password" name="password" placeholder="••••••••" required autofocus>
+                        <input type="password" name="password" placeholder="••••••••" required>
                     </div>
                     @error('password')
                         <p class="admin-error">{{ $message }}</p>

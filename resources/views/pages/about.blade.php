@@ -12,8 +12,8 @@
         <section class="section">
             <div class="card about-card">
                 <h2>{{ __('site.about.who_we_are') }}</h2>
-                <p>{{ __('site.about.who_text') }}</p>
-                <p>{{ __('site.about.believe_text') }}</p>
+                <p>{{ $whoText }}</p>
+                <p>{{ $believeText }}</p>
             </div>
         </section>
 
@@ -32,7 +32,7 @@
                     <span class="stat-label">{{ __('site.about.squad_players') }}</span>
                 </div>
                 <div class="card stat-card">
-                    <span class="stat-number">2004</span>
+                    <span class="stat-number">{{ $since }}</span>
                     <span class="stat-label">{{ __('site.about.since') }}</span>
                 </div>
             </div>
@@ -42,11 +42,11 @@
             <div class="about-columns">
                 <div class="card">
                     <h2>{{ __('site.about.mission') }}</h2>
-                    <p>{{ __('site.about.mission_text') }}</p>
+                    <p>{{ $missionText }}</p>
                 </div>
                 <div class="card">
                     <h2>{{ __('site.about.vision') }}</h2>
-                    <p>{{ __('site.about.vision_text') }}</p>
+                    <p>{{ $visionText }}</p>
                 </div>
             </div>
         </section>
@@ -54,7 +54,7 @@
         <section class="section">
             <div class="card about-card">
                 <h2>{{ __('site.about.home_ground') }}</h2>
-                <p>{{ __('site.about.home_text') }}</p>
+                <p>{{ $homeText }}</p>
                 <p>{{ __('site.about.join_before') }} <a href="{{ route('be-a-player.create') }}" class="text-link">{{ __('site.be_a_player') }}</a> {{ __('site.about.join_after') }}</p>
             </div>
         </section>

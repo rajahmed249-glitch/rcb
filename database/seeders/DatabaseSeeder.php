@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
             MatchSeeder::class,
             NewsSeeder::class,
             SponsorSeeder::class,
+            TeamSeeder::class,
+            GallerySeeder::class,
         ]);
     }
 }

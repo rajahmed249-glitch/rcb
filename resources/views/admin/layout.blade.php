@@ -30,9 +30,8 @@
                 <a href="{{ route('admin.matches.index') }}" class="{{ request()->routeIs('admin.matches.*') ? 'active' : '' }}">
                     <span class="admin-ico">🗓️</span> {{ __('site.admin.matches') }}
                 </a>
-                <a href="{{ route('pages.teams') }}" target="_blank">
+                <a href="{{ route('admin.teams.index') }}" class="{{ request()->routeIs('admin.teams.*') ? 'active' : '' }}">
                     <span class="admin-ico">👕</span> {{ __('site.admin.total_teams') }}
-                    <span class="admin-nav-ext">↗</span>
                 </a>
                 <a href="{{ route('pages.records') }}" target="_blank">
                     <span class="admin-ico">🏆</span> {{ __('site.nav.records') }}
@@ -43,9 +42,8 @@
                 <a href="{{ route('admin.news.index') }}" class="{{ request()->routeIs('admin.news.*') ? 'active' : '' }}">
                     <span class="admin-ico">📰</span> {{ __('site.admin.news') }}
                 </a>
-                <a href="{{ route('pages.gallery') }}" target="_blank">
-                    <span class="admin-ico">🖼️</span> {{ __('site.nav.gallery') }}
-                    <span class="admin-nav-ext">↗</span>
+                <a href="{{ route('admin.gallery.index') }}" class="{{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}">
+                    <span class="admin-ico">🖼️</span> {{ __('site.admin.gallery') }}
                 </a>
                 <a href="{{ route('pages.about') }}" target="_blank">
                     <span class="admin-ico">ℹ️</span> {{ __('site.nav.about') }}
@@ -65,6 +63,11 @@
                 </a>
                 <a href="{{ route('admin.sponsors.index') }}" class="{{ request()->routeIs('admin.sponsors.*') ? 'active' : '' }}">
                     <span class="admin-ico">🤝</span> {{ __('site.admin.sponsors') }}
+                </a>
+
+                <span class="admin-nav-label">{{ __('site.admin.settings') }}</span>
+                <a href="{{ route('admin.settings.edit') }}" class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                    <span class="admin-ico">⚙️</span> {{ __('site.admin.settings') }}
                 </a>
             </nav>
             <div class="admin-sidebar-footer">
