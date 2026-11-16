@@ -342,6 +342,12 @@ return [
         'preferred_role' => 'Preferred Role',
         'message' => 'Message',
         'date' => 'Date',
+        'visitors_today' => "Today's Visitors",
+        'visitors_total' => 'Total Visitors',
+        'welcome' => 'Welcome back!',
+        'welcome_text' => 'Manage your team content from one place.',
+        'footer_text' => 'Real Challenger Boys (RCB) — Admin Panel',
+        'quick_actions' => 'Quick Actions',
     ],
 ];
 

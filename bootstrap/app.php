@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
-        $middleware->web(append: [\App\Http\Middleware\SetLocale::class]);
+        $middleware->web(append: [\App\Http\Middleware\SetLocale::class, \App\Http\Middleware\TrackVisit::class]);
         $middleware->alias(['admin.auth' => \App\Http\Middleware\AdminAuth::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
