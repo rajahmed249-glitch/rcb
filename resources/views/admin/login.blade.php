@@ -64,12 +64,7 @@
                     {{ __('site.admin.sign_in') }} <i class="fas fa-arrow-right"></i>
                 </button>
             </form>
-            <div class="login-demo">
-                <p>
-                    <span class="demo-label">Demo</span>
-                    <code>rajahmed249@gmail.com</code> / <code>&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</code>
-                </p>
-            </div>
+
             <div class="admin-login-back">
                 <a href="{{ route('home') }}"><i class="fas fa-arrow-left"></i> {{ __('site.admin.view_site') }}</a>
                 <span class="sep">&bull;</span>
