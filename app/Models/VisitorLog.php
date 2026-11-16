@@ -18,15 +18,17 @@ class VisitorLog extends Model
     public static function record(string $ipHash): void
     {
         try {
+            $today = now()->toDateString();
+
             $exists = self::query()
                 ->where('ip_hash', $ipHash)
-                ->where('visit_date', now()->toDateString())
+                ->whereDate('visit_date', $today)
                 ->exists();
 
             if (! $exists) {
                 self::create([
                     'ip_hash' => $ipHash,
-                    'visit_date' => now()->toDateString(),
+                    'visit_date' => $today,
                 ]);
             }
         } catch (\Throwable) {
@@ -37,7 +39,7 @@ class VisitorLog extends Model
     {
         try {
             return self::query()
-                ->where('visit_date', now()->toDateString())
+                ->whereDate('visit_date', now()->toDateString())
                 ->distinct('ip_hash')
                 ->count('ip_hash');
         } catch (\Throwable) {

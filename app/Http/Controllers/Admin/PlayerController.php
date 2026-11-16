@@ -10,10 +10,38 @@ use Illuminate\Support\Str;
 
 class PlayerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $query = Player::query()
+            ->orderByDesc('is_captain')
+            ->orderByDesc('is_vice_captain')
+            ->orderBy('id');
+
+        if ($search = trim((string) $request->query('search'))) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('name_bn', 'like', "%{$search}%");
+            });
+        }
+
+        if ($role = trim((string) $request->query('role'))) {
+            $query->where('role', $role);
+        }
+
+        if (($status = $request->query('status')) !== null && $status !== '') {
+            $status === '1' ? $query->whereNotNull('team_id') : $query->whereNull('team_id');
+        }
+
+        $limit = in_array((int) $request->query('limit'), [10, 25, 50, 100], true)
+            ? (int) $request->query('limit')
+            : 10;
+
         return view('admin.players.index', [
-            'players' => Player::orderByDesc('is_captain')->orderByDesc('is_vice_captain')->orderBy('id')->paginate(10),
+            'players' => $query->paginate($limit)->appends($request->query()),
+            'filterSearch' => $search,
+            'filterRole' => trim((string) $request->query('role')),
+            'filterStatus' => (string) $request->query('status'),
+            'filterLimit' => $limit,
         ]);
     }
 
