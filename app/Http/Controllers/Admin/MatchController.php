@@ -14,7 +14,7 @@ class MatchController extends Controller
     public function index()
     {
         return view('admin.matches.index', [
-            'matches' => CricketMatch::orderByDesc('match_date')->get(),
+            'matches' => CricketMatch::orderByDesc('match_date')->paginate(10),
         ]);
     }
 

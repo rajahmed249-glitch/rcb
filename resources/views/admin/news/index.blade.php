@@ -41,4 +41,5 @@
         </tbody>
     </table>
 </div>
+@include('admin.partials.pagination', ['paginator' => $posts])
 @endsection

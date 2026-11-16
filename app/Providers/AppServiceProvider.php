@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Models\PlayerApplication;
-use App\Models\SiteVisit;
+use App\Models\VisitorLog;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,8 +16,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         view()->composer('admin.layout', function ($view) {
-            $view->with('visitorsToday', SiteVisit::todayCount());
-            $view->with('visitorsTotal', SiteVisit::totalCount());
+            $view->with('visitorsToday', VisitorLog::todayCount());
+            $view->with('visitorsTotal', VisitorLog::totalCount());
             $view->with('applicationsCount', PlayerApplication::count());
         });
     }

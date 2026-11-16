@@ -45,4 +45,5 @@
         </table>
     </div>
 @endif
+@include('admin.partials.pagination', ['paginator' => $applications])
 @endsection

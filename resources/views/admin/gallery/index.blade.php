@@ -39,4 +39,5 @@
         </tbody>
     </table>
 </div>
+@include('admin.partials.pagination', ['paginator' => $photos])
 @endsection

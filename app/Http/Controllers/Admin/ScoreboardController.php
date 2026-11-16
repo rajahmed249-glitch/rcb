@@ -11,7 +11,7 @@ class ScoreboardController extends Controller
     public function index()
     {
         return view('admin.scoreboards.index', [
-            'matches' => CricketMatch::orderByDesc('match_date')->get(),
+            'matches' => CricketMatch::orderByDesc('match_date')->paginate(10),
         ]);
     }
 

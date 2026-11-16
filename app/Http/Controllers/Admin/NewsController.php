@@ -12,7 +12,7 @@ class NewsController extends Controller
     public function index()
     {
         return view('admin.news.index', [
-            'posts' => NewsPost::orderByDesc('published_at')->get(),
+            'posts' => NewsPost::orderByDesc('published_at')->paginate(10),
         ]);
     }
 

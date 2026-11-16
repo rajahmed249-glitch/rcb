@@ -31,4 +31,5 @@
         </tbody>
     </table>
 </div>
+@include('admin.partials.pagination', ['paginator' => $matches])
 @endsection

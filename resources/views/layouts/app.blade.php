@@ -107,7 +107,6 @@
                 <a href="{{ route('matches.index') }}" class="nav-link {{ request()->routeIs('matches.*') ? 'active' : '' }}">{{ __('site.nav.fixtures') }}</a>
                 <a href="{{ route('players.index') }}" class="nav-link {{ request()->routeIs('players.*') ? 'active' : '' }}">{{ __('site.nav.players') }}</a>
                 <a href="{{ route('pages.teams') }}" class="nav-link {{ request()->routeIs('pages.teams') ? 'active' : '' }}">{{ __('site.nav.team') }}</a>
-                <a href="{{ route('pages.records') }}" class="nav-link {{ request()->routeIs('pages.records') ? 'active' : '' }}">{{ __('site.nav.records') }}</a>
                 <a href="{{ route('pages.contact') }}" class="nav-link {{ request()->routeIs('pages.contact') ? 'active' : '' }}">{{ __('site.nav.contact') }}</a>
                 <a href="{{ route('be-a-player.create') }}" class="nav-cta-mobile">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.105 18.79l-1 .992a4.159 4.159 0 0 1 -6.038 -5.715l.157 -.166l8.282 -8.401l1.5 1.5l3.45 -3.391a2.08 2.08 0 0 1 3.057 2.815l-.116 .126l-3.391 3.45l1.5 1.5l-3.668 3.617"/><path d="M10.5 7.5l6 6"/><path d="M14 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/></svg>
@@ -148,7 +147,6 @@
                     <li><a href="{{ route('pages.teams') }}">» {{ __('site.nav.team') }}</a></li>
                     <li><a href="{{ route('matches.index') }}">» {{ __('site.nav.fixtures') }}</a></li>
                     <li><a href="{{ route('pages.gallery') }}">» {{ __('site.nav.gallery') }}</a></li>
-                    <li><a href="{{ route('pages.records') }}">» {{ __('site.nav.records') }}</a></li>
                 </ul>
             </div>
             <div>

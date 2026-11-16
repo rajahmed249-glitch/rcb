@@ -11,7 +11,7 @@ class ApplicationController extends Controller
     public function index()
     {
         return view('admin.applications.index', [
-            'applications' => PlayerApplication::orderByDesc('created_at')->get(),
+            'applications' => PlayerApplication::orderByDesc('created_at')->paginate(10),
         ]);
     }
 

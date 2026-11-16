@@ -12,7 +12,7 @@ class SquadController extends Controller
     public function index()
     {
         return view('admin.squads.index', [
-            'matches' => CricketMatch::with('squad')->orderByDesc('match_date')->get(),
+            'matches' => CricketMatch::with('squad')->orderByDesc('match_date')->paginate(10),
         ]);
     }
 

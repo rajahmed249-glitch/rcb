@@ -3,6 +3,13 @@
 use App\Http\Controllers\Admin\ApplicationController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\RoleIconController;
+use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\MatchController as AdminMatchController;
@@ -63,6 +70,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('sponsors', AdminSponsorController::class)->except(['show']);
         Route::resource('teams', AdminTeamController::class)->except(['show']);
         Route::resource('tournaments', TournamentController::class)->except(['show']);
+        Route::resource('locations', LocationController::class);
+        Route::resource('users', UserController::class);
+        Route::resource('roles', RoleController::class);
+        Route::resource('permissions', PermissionController::class);
+        Route::resource('faqs', FaqController::class);
+        Route::resource('role-icons', RoleIconController::class)->names('admin.role_icons');
+        Route::resource('sliders', SliderController::class);
 
         Route::get('squads', [SquadController::class, 'index'])->name('squads.index');
         Route::get('squads/{match}/edit', [SquadController::class, 'edit'])->name('squads.edit');

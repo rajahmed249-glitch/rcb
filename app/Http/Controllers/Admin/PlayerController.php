@@ -13,7 +13,7 @@ class PlayerController extends Controller
     public function index()
     {
         return view('admin.players.index', [
-            'players' => Player::orderByDesc('is_captain')->orderByDesc('is_vice_captain')->orderBy('id')->get(),
+            'players' => Player::orderByDesc('is_captain')->orderByDesc('is_vice_captain')->orderBy('id')->paginate(10),
         ]);
     }
 

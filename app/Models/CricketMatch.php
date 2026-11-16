@@ -46,7 +46,7 @@ class CricketMatch extends Model
 
     public function squad()
     {
-        return $this->belongsToMany(Player::class, 'match_squad')->withTimestamps();
+        return $this->belongsToMany(Player::class, 'match_squad', 'match_id', 'player_id')->withTimestamps();
     }
 
     public function scopeCompleted(Builder $query): Builder

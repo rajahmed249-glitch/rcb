@@ -11,7 +11,7 @@ class SponsorController extends Controller
     public function index()
     {
         return view('admin.sponsors.index', [
-            'sponsors' => Sponsor::orderBy('sort_order')->get(),
+            'sponsors' => Sponsor::orderBy('sort_order')->paginate(10),
         ]);
     }
 

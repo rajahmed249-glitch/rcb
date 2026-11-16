@@ -12,7 +12,7 @@ class TeamController extends Controller
     public function index()
     {
         return view('admin.teams.index', [
-            'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
+            'teams' => Team::orderBy('sort_order')->orderBy('id')->paginate(10),
         ]);
     }
 

@@ -12,7 +12,7 @@ class GalleryController extends Controller
     public function index()
     {
         return view('admin.gallery.index', [
-            'photos' => GalleryPhoto::orderBy('sort_order')->orderBy('id')->get(),
+            'photos' => GalleryPhoto::orderBy('sort_order')->orderBy('id')->paginate(10),
         ]);
     }
 

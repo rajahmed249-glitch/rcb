@@ -47,4 +47,5 @@
         </tbody>
     </table>
 </div>
+@include('admin.partials.pagination', ['paginator' => $players])
 @endsection
