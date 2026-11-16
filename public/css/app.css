@@ -518,7 +518,7 @@ a.match-card:hover { text-decoration: none; }
 .sb-venue { font-size: .75rem; color: #6b7280; }
 .sb-toss { font-size: .75rem; color: #0d9488; font-weight: 600; }
 .sb-names { display: flex; align-items: center; justify-content: space-between; max-width: 42rem; margin: 1.25rem auto 1.5rem; padding: 0 1rem; gap: 1rem; }
-.sb-name { flex: 1; font-size: 1.15rem; font-weight: 700; color: #1f2937; letter-spacing: .025em; }
+.sb-name { flex: 1; font-size: 1.25rem; font-weight: 700; color: #1f2937; letter-spacing: .025em; }
 .sb-name-right { text-align: right; }
 .sb-name-left { text-align: left; }
 .sb-vs { flex-shrink: 0; margin: 0 1rem; width: 2.5rem; height: 2.5rem; border-radius: 999px; background: #ef4444; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(239,68,68,.35); }
@@ -542,7 +542,7 @@ a.match-card:hover { text-decoration: none; }
 .sb-extra-icon { font-size: 1rem; }
 .sb-extra-text { font-size: .8rem; font-weight: 600; color: #0d9488; }
 .sb-tabs-card { background: #fff; border: 1px solid #e5e7eb; border-bottom: 0; border-radius: 1rem 1rem 0 0; box-shadow: 0 10px 25px rgba(15,23,42,.08); padding: .6rem; max-width: 980px; margin: 1rem auto 0; }
-.sb-tabs { display: flex; justify-content: center; gap: .25rem; overflow-x: auto; }
+.sb-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: .25rem; }
 .sb-tab-btn { flex-shrink: 0; padding: .6rem 1.25rem; font-size: .85rem; font-weight: 600; border: 0; background: transparent; color: #4b5563; border-radius: .5rem; cursor: pointer; transition: all .2s ease; }
 .sb-tab-btn:hover { background: #f0fdfa; color: #0d9488; }
 .sb-tab-btn.active { background: #14b8a6; color: #fff; box-shadow: 0 2px 8px rgba(20,184,166,.35); }
@@ -560,11 +560,11 @@ a.match-card:hover { text-decoration: none; }
 .sb-info-value { color: #1f2937; font-weight: 500; }
 
 @media (max-width: 760px) {
+    .sb-card { padding: .75rem; }
     .sb-columns { flex-direction: column; align-items: center; gap: 1.5rem; }
-    .sb-result { order: 3; }
-    .sb-names { flex-direction: column; }
-    .sb-name-right, .sb-name-left { text-align: center; }
-    .sb-vs { margin: 0; }
+    .sb-names { margin: 1rem auto 1.25rem; padding: 0 .25rem; gap: .5rem; }
+    .sb-name { font-size: 1rem; }
+    .sb-vs { margin: 0 .25rem; width: 2.25rem; height: 2.25rem; }
     .sb-info-row { flex-direction: column; gap: .15rem; }
 }
 img.team-logo.opponent { background: #fff; }

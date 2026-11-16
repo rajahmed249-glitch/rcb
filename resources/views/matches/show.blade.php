@@ -90,10 +90,6 @@
                         <div class="sb-result-text sb-result-pending">-</div>
                     @endif
                     <div class="sb-divider"></div>
-                    <div class="sb-extra">
-                        <span class="sb-extra-icon">&#128203;</span>
-                        <span class="sb-extra-text">{{ $match->format }} Match</span>
-                    </div>
                 </div>
 
                 <div class="sb-team">
