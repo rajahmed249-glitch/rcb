@@ -748,55 +748,132 @@ img.team-logo.opponent { background: #fff; }
 }
 
 /* ===== Full Scorecard ===== */
-.score-subtabs { display: flex; justify-content: center; margin-bottom: 1rem; }
-.score-subtab-btn { padding: .6rem 2rem; font-size: .85rem; font-weight: 600; border: 1px solid #e5e7eb; background: #f3f4f6; color: #374151; cursor: pointer; transition: all .2s ease; }
-.score-subtab-btn:first-child { border-radius: 999px 0 0 999px; }
-.score-subtab-btn:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
-.score-subtab-btn:hover { background: #e5e7eb; }
-.score-subtab-btn.active { background: #14b8a6; border-color: #14b8a6; color: #fff; }
+.score-subtabs, .squad-subtabs { display: flex; justify-content: center; margin-bottom: 1.5rem; }
+.subtab-pair { display: flex; }
+.score-subtab-btn, .squad-subtab-btn { padding: .625rem 2rem; font-size: .875rem; font-weight: 600; border: 1px solid #e5e7eb; background: #f3f4f6; color: #374151; cursor: pointer; transition: all .2s ease; white-space: nowrap; }
+.score-subtab-btn:first-child, .squad-subtab-btn:first-child { border-radius: 999px 0 0 999px; }
+.score-subtab-btn:last-child, .squad-subtab-btn:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
+.score-subtab-btn:hover, .squad-subtab-btn:hover { background: #e5e7eb; }
+.score-subtab-btn.active, .squad-subtab-btn.active { background: #14b8a6; border-color: #14b8a6; color: #fff; }
 .scorecard-innings { display: none; }
 .scorecard-innings.active { display: block; }
+.squad-content { display: none; }
+.squad-content.active { display: block; }
+
+/* ===== Summary cards ===== */
+.sum-card { overflow: hidden; border: 1px solid #e5e7eb; border-radius: .5rem; background: #fff; margin-bottom: 1.5rem; }
+.sum-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: #14b8a6; color: #fff; padding: .75rem 1rem; }
+.sum-head .sum-team { font-weight: 600; font-size: 1.05rem; text-transform: uppercase; color: #fff; text-decoration: none; }
+.sum-head .sum-team:hover { text-decoration: underline; }
+.sum-head .sum-score { font-weight: 600; font-size: 1.05rem; white-space: nowrap; }
+.sum-head .sum-score small { font-size: .875rem; font-weight: 500; }
+.sum-body { padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 5rem; }
+.sum-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .5rem; }
+.sum-row:last-child { margin-bottom: 0; }
+.sum-name { color: #0d9488; font-size: .875rem; text-decoration: none; min-width: 0; }
+a.sum-name:hover { text-decoration: underline; }
+.sum-fig { color: #1f2937; font-size: .875rem; font-weight: 600; white-space: nowrap; }
+.sum-fig small { color: #6b7280; font-weight: 400; }
+
+/* ===== Batting card ===== */
 .bat-card { overflow: hidden; border: 1px solid #e5e7eb; border-radius: .75rem; background: #fff; }
 .bat-scroll { overflow-x: auto; }
-.bat-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: #14b8a6; color: #fff; padding: .75rem 1rem; font-weight: 600; flex-wrap: wrap; }
-.bat-cols, .bat-row { display: grid; grid-template-columns: minmax(180px, 1fr) 3rem 3rem 3rem 3rem 3.5rem; align-items: center; min-width: 560px; }
-.bat-cols { background: #f0fdfa; font-weight: 600; font-size: .8rem; color: #0f766e; }
-.bat-cols > div, .bat-row > div, .bowl-cols > div, .bowl-row > div { padding: .55rem .5rem; text-align: center; }
-.bat-cols > div:first-child, .bat-row > div:first-child, .bowl-cols > div:first-child, .bowl-row > div:first-child { text-align: left; padding-left: 1rem; }
-.bat-row { border-top: 1px solid #f3f4f6; font-size: .88rem; }
-.bat-player { display: flex; align-items: center; gap: .6rem; }
+.bat-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: #14b8a6; color: #fff; padding: .75rem 1rem; flex-wrap: wrap; }
+.bat-head .bat-team { font-weight: 600; font-size: 1.05rem; text-transform: uppercase; }
+.bat-head .bat-score { font-weight: 600; white-space: nowrap; }
+.bat-head .bat-score span { font-size: .875rem; font-weight: 500; }
+.bat-cols, .bat-row { display: grid; grid-template-columns: minmax(120px, 1fr) 2rem 2rem 2rem 2rem 2.5rem; align-items: start; }
+.bat-cols { background: #f0fdfa; border-bottom: 1px solid #e5e7eb; font-weight: 600; font-size: .8rem; color: #134e4a; }
+.bat-cols > div, .bat-row > div { padding: .5rem; text-align: center; }
+.bat-cols > div:first-child, .bat-row > div:first-child { text-align: left; padding-left: .5rem; }
+.bat-row { border-top: 1px solid #f3f4f6; font-size: .875rem; }
+.bat-player { display: flex; align-items: flex-start; gap: .5rem; min-width: 0; }
 .bat-photo { width: 32px; height: 32px; border-radius: 999px; object-fit: cover; flex-shrink: 0; }
 .bat-photo-fallback { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #2dd4bf, #0d9488); color: #fff; font-size: .8rem; font-weight: 700; }
-.bat-name { color: #0d9488; font-weight: 600; font-size: .88rem; }
-.bat-dismissal { color: #9ca3af; font-size: 12px; }
-.bat-runs { font-weight: 700; color: #111827; }
-.bat-totalrow { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .6rem 1rem; border-top: 1px solid #e5e7eb; font-size: .88rem; }
-.bat-totalrow span:first-child { font-weight: 700; color: #111827; }
-.bat-totalrow span:last-child { color: #4b5563; }
-.fow { margin: .75rem 1rem 0; border: 1px solid #f3f4f6; border-radius: .5rem; overflow: hidden; }
-.fow-title { background: #f0fdfa; font-weight: 600; font-size: .82rem; color: #0f766e; padding: .5rem .75rem; }
-.fow-cols, .fow-row { display: grid; grid-template-columns: 2fr 1fr 1fr; font-size: .82rem; }
-.fow-cols { font-weight: 600; color: #374151; border-bottom: 1px solid #f3f4f6; }
-.fow-cols > div, .fow-row > div { padding: .45rem .75rem; }
+.player-name-cell { display: grid; grid-template-columns: 1fr; min-width: 0; }
+.player-name-link { color: #0d9488; text-decoration: none; font-size: .875rem; }
+a.player-name-link:hover { text-decoration: underline; }
+.dismissal-text { color: #6b7280; font-size: 13px; white-space: nowrap; }
+.bat-runs { font-weight: 600; color: #111827; }
+.bat-totalrow { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .5rem .75rem; border-top: 1px solid #e5e7eb; font-size: .875rem; }
+.bat-totalrow .t-bold { font-weight: 700; color: #111827; }
+.bat-totalrow .t-muted { color: #4b5563; font-size: 13.5px; text-align: right; }
+.bat-totalrow .t-muted strong { color: #111827; font-weight: 700; }
+
+/* ===== Fall of wickets ===== */
+.fow { margin: .5rem .75rem 0; border: 1px solid #e5e7eb; border-radius: .375rem; overflow: hidden; }
+.fow-cols, .fow-row { display: grid; grid-template-columns: 2fr 1fr 1fr; }
+.fow-cols { background: #f0fdfa; font-weight: 600; color: #374151; border-bottom: 1px solid #e5e7eb; }
+.fow-cols > div, .fow-row > div { padding: .5rem .75rem; font-size: .875rem; }
 .fow-cols > div:nth-child(2), .fow-row > div:nth-child(2), .fow-cols > div:nth-child(3), .fow-row > div:nth-child(3) { text-align: center; }
-.fow-row { border-top: 1px solid #f9fafb; color: #374151; }
-.bowl-block { margin: .75rem 1rem 1rem; border: 1px solid #f3f4f6; border-radius: .5rem; overflow: hidden; }
-.bowl-cols, .bowl-row { display: grid; grid-template-columns: minmax(140px, 1fr) 2.8rem 2.8rem 2.8rem 2.8rem 2.5rem 2.5rem 3.2rem; align-items: center; min-width: 540px; }
-.bowl-cols { background: #f0fdfa; font-weight: 600; font-size: .8rem; color: #0f766e; border-bottom: 1px solid #e5e7eb; }
-.bowl-row { border-top: 1px solid #f9fafb; font-size: .85rem; color: #1f2937; }
-.bowl-name { color: #0d9488; font-weight: 600; }
-.bowl-wickets { font-weight: 700; }
+.fow-row { border-top: 1px solid #f3f4f6; color: #374151; }
 
-/* ===== Squad tab ===== */
-.squad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.squad-col { border: 1px solid #e5e7eb; border-radius: .75rem; overflow: hidden; background: #fff; }
-.squad-head { background: #14b8a6; color: #fff; font-weight: 600; padding: .6rem 1rem; font-size: .9rem; }
-.squad-list { list-style: none; }
-.squad-list li { display: flex; align-items: center; gap: .6rem; padding: .5rem 1rem; border-top: 1px solid #f3f4f6; font-size: .88rem; color: #1f2937; }
-.squad-photo { width: 28px; height: 28px; border-radius: 999px; object-fit: cover; flex-shrink: 0; }
+/* ===== Bowling table ===== */
+.bowl-block { margin: .75rem 0 0; }
+.bowl-scroll { overflow-x: auto; }
+.bowl-table { width: 100%; min-width: 620px; border-collapse: collapse; text-align: left; font-size: .8125rem; color: #374151; }
+.bowl-table thead tr { background: #f0fdfa; border-bottom: 1px solid #e5e7eb; }
+.bowl-table th { padding: .5rem; font-weight: 600; text-align: center; white-space: nowrap; }
+.bowl-table th:first-child { text-align: left; padding-left: .75rem; }
+.bowl-table td { padding: .5rem; text-align: center; border-top: 1px solid #f3f4f6; }
+.bowl-table td:first-child { text-align: left; padding-left: .75rem; }
+.bowl-table tbody tr:hover { background: #f0fdfa; }
+.bowler-name-cell { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+
+/* ===== Squad table ===== */
+.table-scroll { overflow-x: auto; }
+.squad-table { width: 100%; min-width: 700px; border-collapse: collapse; text-align: left; font-size: .8125rem; color: #374151; }
+.squad-table thead tr { background: #f0fdfa; border-bottom: 1px solid #e5e7eb; }
+.squad-table th { padding: .5rem; font-weight: 600; text-align: center; white-space: nowrap; }
+.squad-table th:first-child { text-align: left; padding-left: .75rem; }
+.squad-table td { padding: .5rem; text-align: center; border-top: 1px solid #f3f4f6; }
+.squad-table td:first-child { text-align: left; padding-left: .75rem; }
+.squad-table tbody tr:hover { background: #f0fdfa; }
+.squad-player-cell { display: flex; align-items: center; gap: .75rem; min-width: 150px; }
+.squad-photo { width: 32px; height: 32px; border-radius: 999px; object-fit: cover; flex-shrink: 0; }
 .squad-photo-fallback { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #2dd4bf, #0d9488); color: #fff; font-size: .72rem; font-weight: 700; }
+.t-bold { font-weight: 700; color: #111827; }
+.t-teal { color: #0d9488; font-weight: 600; }
 
-@media (max-width: 760px) {
-    .squad-grid { grid-template-columns: 1fr; }
-    .score-subtab-btn { padding: .5rem 1.25rem; font-size: .78rem; }
+@media (min-width: 640px) {
+    .bat-cols, .bat-row { grid-template-columns: 1fr 3rem 3rem 3rem 3rem 4rem; }
+}
+@media (min-width: 1024px) {
+    .player-name-cell { grid-template-columns: 250px 1fr; align-items: center; }
+}
+
+/* ===== Scorecard mobile ===== */
+@media (max-width: 768px) {
+    .sb-tab-btn { padding: 8px 12px; font-size: 12px; }
+    .score-subtab-btn, .squad-subtab-btn { padding: 6px 14px; font-size: 12px; }
+    .sum-body { grid-template-columns: 1fr; gap: .75rem; }
+    .sum-head .sum-team, .sum-head .sum-score { font-size: .9rem; }
+    .player-name-link { display: inline-block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .player-name-cell { max-width: 170px; min-width: 0; overflow: hidden; }
+    .player-name-cell .player-name-link { max-width: 140px; }
+    .bowler-name-cell { max-width: 150px; min-width: 0; overflow: hidden; }
+    .bowler-name-cell .player-name-link { max-width: 100px; }
+    .squad-player-cell { max-width: 150px; min-width: 0; overflow: hidden; }
+    .squad-player-cell .player-name-link { max-width: 110px; }
+    .dismissal-text { font-size: 11px; padding-right: 4px; }
+    .squad-table { font-size: 11px; }
+    .squad-table th, .squad-table td { padding: 6px 8px; }
+    .bowl-table { font-size: 11px; }
+    .bowl-table th, .bowl-table td { padding: 6px 4px; }
+    .bat-cols > div, .bat-row > div { padding: .5rem .25rem; }
+    .bat-head .bat-team { font-size: .9rem; }
+    .bat-head .bat-score { font-size: .9rem; }
+}
+@media (max-width: 480px) {
+    .player-name-link { max-width: 100px; }
+    .player-name-cell { max-width: 120px; }
+    .player-name-cell .player-name-link { max-width: 90px; }
+    .bowler-name-cell .player-name-link { max-width: 70px; }
+    .squad-player-cell { max-width: 100px; }
+    .squad-player-cell .player-name-link { max-width: 70px; }
+    .dismissal-text { font-size: 10px; }
+    .sum-head .sum-team, .sum-head .sum-score { font-size: .82rem; }
+    .sum-head .sum-score small { font-size: .72rem; }
+    .bat-head .bat-team, .bat-head .bat-score { font-size: .82rem; }
+    .bat-head .bat-score span { font-size: .72rem; }
 }

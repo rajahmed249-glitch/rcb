@@ -111,6 +111,10 @@ class MatchController extends Controller
                 $rcbRuns, $rcbWkts,
                 $match->id, 'opp'
             ),
+            'squads' => [
+                'rcb' => $this->buildSquad($rcbPlayers->take(11)->values(), $match->id, 'rcb'),
+                'opponent' => $this->buildSquad(null, $match->id, 'opp', $opponentNames),
+            ],
         ];
     }
 
@@ -271,5 +275,63 @@ class MatchController extends Controller
             'wickets' => $teamWickets,
             'overs' => $teamOvers,
         ];
+    }
+
+    private function buildSquad($players, int $matchId, string $side, array $names = []): array
+    {
+        mt_srand($matchId * 197 + ($side === 'rcb' ? 11 : 23));
+
+        $squad = [];
+
+        if ($players && $players->count() > 0) {
+            foreach ($players as $p) {
+                $matches = (int) $p->matches_played;
+                $runs = (int) $p->runs;
+                $wickets = (int) $p->wickets;
+                $sr = mt_rand(95, 150);
+                $econ = mt_rand(50, 90) / 10;
+
+                $squad[] = [
+                    'id' => $p->id,
+                    'name' => $p->name,
+                    'photo' => $p->photo_url,
+                    'matches' => $matches,
+                    'innings' => $matches,
+                    'runs' => $runs,
+                    'avg' => $matches > 0 ? round($runs / $matches, 2) : 0,
+                    'hs' => $runs > 0 ? max(12, (int) round($runs * 0.45)) : 0,
+                    'bat_sr' => $sr,
+                    'fifties' => min(3, (int) floor($runs / 55)),
+                    'hundreds' => $runs >= 100 ? 1 : 0,
+                    'wickets' => $wickets,
+                    'economy' => number_format($econ, 2),
+                ];
+            }
+        } else {
+            foreach (array_slice($names, 0, 11) as $name) {
+                $matches = mt_rand(3, 14);
+                $runs = mt_rand(40, 380);
+                $wickets = mt_rand(0, 18);
+                $econ = mt_rand(50, 90) / 10;
+
+                $squad[] = [
+                    'id' => null,
+                    'name' => $name,
+                    'photo' => null,
+                    'matches' => $matches,
+                    'innings' => $matches,
+                    'runs' => $runs,
+                    'avg' => $matches > 0 ? round($runs / $matches, 2) : 0,
+                    'hs' => $runs > 0 ? max(12, (int) round($runs * 0.45)) : 0,
+                    'bat_sr' => mt_rand(95, 150),
+                    'fifties' => min(3, (int) floor($runs / 55)),
+                    'hundreds' => $runs >= 100 ? 1 : 0,
+                    'wickets' => $wickets,
+                    'economy' => number_format($econ, 2),
+                ];
+            }
+        }
+
+        return $squad;
     }
 }

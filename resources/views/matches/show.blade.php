@@ -16,6 +16,40 @@
 
     [$rcbRuns, $rcbWickets] = sbSplitScore($match->rcb_score);
     [$oppRuns, $oppWickets] = sbSplitScore($match->opponent_score);
+
+    $hasScorecard = $match->status === 'completed' && !empty($scorecard['rcb']);
+
+    $summaryCards = [];
+    if ($hasScorecard) {
+        $summaryTeams = [
+            ['key' => 'rcb', 'name' => 'Real Challenger Boys'],
+            ['key' => 'opponent', 'name' => $match->opponent_name],
+        ];
+
+        foreach ($summaryTeams as $t) {
+            $inn = $scorecard[$t['key']];
+
+            $topBat = collect($inn['batting'])
+                ->sortByDesc('runs')
+                ->take(3)
+                ->values()
+                ->map(fn ($b) => $b + ['notOut' => str_starts_with(strtolower($b['dismissal']), 'not out')]);
+
+            $topBowl = collect($inn['bowling'])
+                ->sort(fn ($a, $b) => [$b['wickets'], $a['runs']] <=> [$a['wickets'], $b['runs']])
+                ->take(3)
+                ->values();
+
+            $summaryCards[] = [
+                'name' => $t['name'],
+                'score' => $inn['total'],
+                'wickets' => $inn['wickets'],
+                'overs' => $inn['overs'],
+                'batting' => $topBat,
+                'bowling' => $topBowl,
+            ];
+        }
+    }
 @endphp
 
 @section('content')
@@ -95,38 +129,72 @@
 
         <div class="sb-content-card">
             <div class="sb-tab-content active" id="sb-tab-summary">
-                <div class="sb-summary">
-                    <div class="sb-sum-block">
-                        <div class="sb-sum-head">
-                            <span>Real Challenger Boys</span>
-                            <span class="sb-sum-score">{{ $match->rcb_score ?? '-' }}{{ $match->rcb_overs ? ' (' . $match->rcb_overs . ')' : '' }}</span>
+                @if ($hasScorecard)
+                    @foreach ($summaryCards as $card)
+                        <div class="sum-card">
+                            <div class="sum-head">
+                                <span class="sum-team">{{ $card['name'] }}</span>
+                                <span class="sum-score">{{ $card['score'] }}-{{ $card['wickets'] }} <small>({{ $card['overs'] }} overs)</small></span>
+                            </div>
+                            <div class="sum-body">
+                                <div>
+                                    @foreach ($card['batting'] as $b)
+                                        <div class="sum-row">
+                                            @if ($b['id'] ?? null)
+                                                <a href="{{ route('players.show', $b['id']) }}" class="sum-name">{{ $b['name'] }}</a>
+                                            @else
+                                                <span class="sum-name">{{ $b['name'] }}</span>
+                                            @endif
+                                            <span class="sum-fig">{{ $b['runs'] }}{{ $b['notOut'] ? '*' : '' }} <small>({{ $b['balls'] }})</small></span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div>
+                                    @foreach ($card['bowling'] as $bo)
+                                        <div class="sum-row">
+                                            <span class="sum-name">{{ $bo['name'] }}</span>
+                                            <span class="sum-fig">{{ $bo['wickets'] }}-{{ $bo['runs'] }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
-                        <div class="sb-sum-row"><span>Overs</span><span>{{ $match->rcb_overs ?? '-' }}</span></div>
-                        <div class="sb-sum-row"><span>Format</span><span>{{ $match->format }}</span></div>
-                    </div>
-                    <div class="sb-sum-block">
-                        <div class="sb-sum-head">
-                            <span>{{ $match->opponent_name }}</span>
-                            <span class="sb-sum-score">{{ $match->opponent_score ?? '-' }}{{ $match->opponent_overs ? ' (' . $match->opponent_overs . ')' : '' }}</span>
+                    @endforeach
+                @else
+                    <div class="sb-summary">
+                        <div class="sb-sum-block">
+                            <div class="sb-sum-head">
+                                <span>Real Challenger Boys</span>
+                                <span class="sb-sum-score">{{ $match->rcb_score ?? '-' }}{{ $match->rcb_overs ? ' (' . $match->rcb_overs . ')' : '' }}</span>
+                            </div>
+                            <div class="sb-sum-row"><span>Overs</span><span>{{ $match->rcb_overs ?? '-' }}</span></div>
+                            <div class="sb-sum-row"><span>Format</span><span>{{ $match->format }}</span></div>
                         </div>
-                        <div class="sb-sum-row"><span>Overs</span><span>{{ $match->opponent_overs ?? '-' }}</span></div>
-                        <div class="sb-sum-row"><span>Result</span><span>{{ $match->result_text ?? ucfirst($match->status) }}</span></div>
+                        <div class="sb-sum-block">
+                            <div class="sb-sum-head">
+                                <span>{{ $match->opponent_name }}</span>
+                                <span class="sb-sum-score">{{ $match->opponent_score ?? '-' }}{{ $match->opponent_overs ? ' (' . $match->opponent_overs . ')' : '' }}</span>
+                            </div>
+                            <div class="sb-sum-row"><span>Overs</span><span>{{ $match->opponent_overs ?? '-' }}</span></div>
+                            <div class="sb-sum-row"><span>Result</span><span>{{ $match->result_text ?? ucfirst($match->status) }}</span></div>
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
 
             <div class="sb-tab-content" id="sb-tab-scorecard">
-                @if ($scorecard['rcb'])
+                @if ($hasScorecard)
                     <div class="score-subtabs">
-                        <button class="score-subtab-btn active" data-innings="rcb">Real Challenger Boys</button>
-                        <button class="score-subtab-btn" data-innings="opp">{{ $match->opponent_short_name ?: 'Opponent' }}</button>
+                        <div class="subtab-pair">
+                            <button class="score-subtab-btn active" data-innings="rcb">Real Challenger Boys</button>
+                            <button class="score-subtab-btn" data-innings="opp">{{ $match->opponent_name }}</button>
+                        </div>
                     </div>
 
                     <div class="scorecard-innings active" id="innings-rcb">
                         @include('matches.innings', [
                             'innings' => $scorecard['rcb'],
                             'teamName' => 'Real Challenger Boys',
-                            'scoreStr' => $match->rcb_score,
                         ])
                     </div>
 
@@ -134,7 +202,6 @@
                         @include('matches.innings', [
                             'innings' => $scorecard['opponent'],
                             'teamName' => $match->opponent_name,
-                            'scoreStr' => $match->opponent_score,
                         ])
                     </div>
                 @else
@@ -147,33 +214,107 @@
             </div>
 
             <div class="sb-tab-content" id="sb-tab-squad">
-                @if ($scorecard['rcb'])
-                    <div class="squad-grid">
-                        <div class="squad-col">
-                            <div class="squad-head">Real Challenger Boys</div>
-                            <ul class="squad-list">
-                                @foreach ($scorecard['rcb']['batting'] as $p)
-                                    <li>
-                                        @if ($p['photo'])
-                                            <img src="{{ $p['photo'] }}" alt="{{ $p['name'] }}" class="squad-photo">
-                                        @else
-                                            <span class="squad-photo squad-photo-fallback">{{ mb_strtoupper(mb_substr($p['name'], 0, 1)) }}</span>
-                                        @endif
-                                        <span>{{ $p['name'] }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
+                @if ($hasScorecard)
+                    <div class="squad-subtabs">
+                        <div class="subtab-pair">
+                            <button class="squad-subtab-btn active" data-squad="rcb">Real Challenger Boys</button>
+                            <button class="squad-subtab-btn" data-squad="opp">{{ $match->opponent_name }}</button>
                         </div>
-                        <div class="squad-col">
-                            <div class="squad-head">{{ $match->opponent_name }}</div>
-                            <ul class="squad-list">
-                                @foreach ($scorecard['opponent']['batting'] as $p)
-                                    <li>
-                                        <span class="squad-photo squad-photo-fallback">{{ mb_strtoupper(mb_substr($p['name'], 0, 1)) }}</span>
-                                        <span>{{ $p['name'] }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
+                    </div>
+
+                    <div class="squad-content active" id="squad-rcb">
+                        <div class="table-scroll">
+                            <table class="squad-table">
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th>Matches</th>
+                                        <th>Innings</th>
+                                        <th>Runs</th>
+                                        <th>Average</th>
+                                        <th>Highest Score</th>
+                                        <th>SR</th>
+                                        <th>50s</th>
+                                        <th>100s</th>
+                                        <th>Wickets</th>
+                                        <th>Economy</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($scorecard['squads']['rcb'] as $p)
+                                        <tr>
+                                            <td>
+                                                <div class="squad-player-cell">
+                                                    @if ($p['photo'])
+                                                        <img src="{{ $p['photo'] }}" alt="{{ $p['name'] }}" class="squad-photo">
+                                                    @else
+                                                        <span class="squad-photo squad-photo-fallback">{{ mb_strtoupper(mb_substr($p['name'], 0, 1)) }}</span>
+                                                    @endif
+                                                    @if ($p['id'])
+                                                        <a href="{{ route('players.show', $p['id']) }}" class="player-name-link">{{ $p['name'] }}</a>
+                                                    @else
+                                                        <span class="player-name-link">{{ $p['name'] }}</span>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td>{{ $p['matches'] }}</td>
+                                            <td>{{ $p['innings'] }}</td>
+                                            <td class="t-bold">{{ $p['runs'] }}</td>
+                                            <td>{{ $p['avg'] }}</td>
+                                            <td>{{ $p['hs'] }}</td>
+                                            <td>{{ $p['bat_sr'] }}</td>
+                                            <td>{{ $p['fifties'] }}</td>
+                                            <td>{{ $p['hundreds'] }}</td>
+                                            <td class="t-teal">{{ $p['wickets'] }}</td>
+                                            <td>{{ $p['economy'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="squad-content" id="squad-opp">
+                        <div class="table-scroll">
+                            <table class="squad-table">
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th>Matches</th>
+                                        <th>Innings</th>
+                                        <th>Runs</th>
+                                        <th>Average</th>
+                                        <th>Highest Score</th>
+                                        <th>SR</th>
+                                        <th>50s</th>
+                                        <th>100s</th>
+                                        <th>Wickets</th>
+                                        <th>Economy</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($scorecard['squads']['opponent'] as $p)
+                                        <tr>
+                                            <td>
+                                                <div class="squad-player-cell">
+                                                    <span class="squad-photo squad-photo-fallback">{{ mb_strtoupper(mb_substr($p['name'], 0, 1)) }}</span>
+                                                    <span class="player-name-link">{{ $p['name'] }}</span>
+                                                </div>
+                                            </td>
+                                            <td>{{ $p['matches'] }}</td>
+                                            <td>{{ $p['innings'] }}</td>
+                                            <td class="t-bold">{{ $p['runs'] }}</td>
+                                            <td>{{ $p['avg'] }}</td>
+                                            <td>{{ $p['hs'] }}</td>
+                                            <td>{{ $p['bat_sr'] }}</td>
+                                            <td>{{ $p['fifties'] }}</td>
+                                            <td>{{ $p['hundreds'] }}</td>
+                                            <td class="t-teal">{{ $p['wickets'] }}</td>
+                                            <td>{{ $p['economy'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 @else

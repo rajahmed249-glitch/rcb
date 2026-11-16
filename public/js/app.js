@@ -144,6 +144,21 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+    var squadBtns = document.querySelectorAll('.squad-subtab-btn');
+    if (squadBtns.length) {
+        squadBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                squadBtns.forEach(function (b) { b.classList.remove('active'); });
+                document.querySelectorAll('.squad-content').forEach(function (p) { p.classList.remove('active'); });
+                btn.classList.add('active');
+                var panel = document.getElementById('squad-' + btn.dataset.squad);
+                if (panel) { panel.classList.add('active'); }
+            });
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
     var subtabs = document.querySelectorAll('.score-subtab-btn');
     if (subtabs.length) {
         subtabs.forEach(function (btn) {
