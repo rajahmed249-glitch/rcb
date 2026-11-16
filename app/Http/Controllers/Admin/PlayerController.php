@@ -99,7 +99,6 @@ class PlayerController extends Controller
     private function validated(Request $request): array
     {
         return $request->validate([
-            'team_id' => ['nullable', 'integer', 'exists:teams,id'],
             'name' => ['required', 'string', 'max:255'],
             'name_bn' => ['nullable', 'string', 'max:255'],
             'short_name' => ['nullable', 'string', 'max:10'],
@@ -119,9 +118,6 @@ class PlayerController extends Controller
             'jersey_number' => ['nullable', 'integer'],
             'is_captain' => ['nullable', 'boolean'],
             'is_vice_captain' => ['nullable', 'boolean'],
-            'matches_played' => ['nullable', 'integer'],
-            'runs' => ['nullable', 'integer'],
-            'wickets' => ['nullable', 'integer'],
             'batting_style' => ['nullable', 'string', 'max:255'],
             'bowling_style' => ['nullable', 'string', 'max:255'],
             'bio' => ['nullable', 'string'],

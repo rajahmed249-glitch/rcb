@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             TeamSeeder::class,
             GallerySeeder::class,
             TournamentSeeder::class,
+            LocationSeeder::class,
         ]);
     }
 }

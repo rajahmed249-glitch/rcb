@@ -145,13 +145,8 @@
                 </select>
             </div>
             <div class="apf-group">
-                <label>{{ __('site.admin.team') }} *</label>
-                <select name="team_id" required>
-                    <option value="">--</option>
-                    @foreach ($teams as $team)
-                        <option value="{{ $team->id }}" @selected(old('team_id', $player->team_id) == $team->id)>{{ $team->name }}@if($team->name_bn) / {{ $team->name_bn }}@endif</option>
-                    @endforeach
-                </select>
+                <label>{{ __('site.admin.jersey_number') }}</label>
+                <input type="number" name="jersey_number" value="{{ old('jersey_number', $player->jersey_number) }}">
             </div>
         </div>
 
@@ -207,54 +202,6 @@
         </div>
 
         <div class="apf-row">
-            <div class="apf-group">
-                <label>{{ __('site.admin.jersey_number') }}</label>
-                <input type="number" name="jersey_number" value="{{ old('jersey_number', $player->jersey_number) }}">
-            </div>
-            <div class="apf-group">
-                <label>{{ __('site.admin.matches_played') }}</label>
-                <input type="number" name="matches_played" value="{{ old('matches_played', $player->matches_played) }}">
-            </div>
-        </div>
-
-        <div class="apf-row">
-            <div class="apf-group">
-                <label>{{ __('site.admin.batting_style') }}</label>
-                @php
-                    $battingOptions = ['Right Handed', 'Left Handed'];
-                    $currentBatting = old('batting_style', $player->batting_style);
-                @endphp
-                <select name="batting_style">
-                    <option value="">--</option>
-                    @foreach (array_merge($battingOptions, ($currentBatting && ! in_array($currentBatting, $battingOptions)) ? [$currentBatting] : []) as $opt)
-                        <option value="{{ $opt }}" @selected($currentBatting === $opt)>{{ $opt }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="apf-group">
-                <label>{{ __('site.admin.bowling_style') }}</label>
-                @php
-                    $bowlingOptions = ['Right Arm Fast', 'Right Arm Medium', 'Left Arm Fast', 'Left Arm Medium', 'Right Arm Off Break', 'Right Arm Leg Break', 'Left Arm Orthodox Spin', 'Left Arm Wrist Spin'];
-                    $currentBowling = old('bowling_style', $player->bowling_style);
-                @endphp
-                <select name="bowling_style">
-                    <option value="">-- Select Bowling Style --</option>
-                    @foreach (array_merge($bowlingOptions, ($currentBowling && ! in_array($currentBowling, $bowlingOptions)) ? [$currentBowling] : []) as $opt)
-                        <option value="{{ $opt }}" @selected($currentBowling === $opt)>{{ $opt }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-        <div class="apf-row apf-row-3">
-            <div class="apf-group">
-                <label>{{ __('site.admin.runs') }}</label>
-                <input type="number" name="runs" value="{{ old('runs', $player->runs) }}">
-            </div>
-            <div class="apf-group">
-                <label>{{ __('site.admin.wickets') }}</label>
-                <input type="number" name="wickets" value="{{ old('wickets', $player->wickets) }}">
-            </div>
             <div class="apf-group">
                 <label>{{ __('site.admin.status') }}</label>
                 <div class="apf-toggle">
