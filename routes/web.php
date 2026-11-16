@@ -33,4 +33,5 @@ Route::get('/teams/{slug}', [PageController::class, 'teamProfile'])->name('pages
 Route::get('/records', [PageController::class, 'records'])->name('pages.records');
 Route::get('/contact', [PageController::class, 'contact'])->name('pages.contact');
 
+Route::get('/search/live', [SearchController::class, 'live'])->name('search.live');
 Route::get('/search', SearchController::class)->name('search');

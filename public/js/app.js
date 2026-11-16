@@ -181,3 +181,87 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    var inputs = document.querySelectorAll('.search-form input[name="q"]');
+
+    function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = s == null ? '' : String(s);
+        return d.innerHTML;
+    }
+
+    inputs.forEach(function (input) {
+        var wrap = input.closest('.search-wrap') || input.closest('.mobile-search');
+        if (!wrap) { return; }
+        var panel = wrap.querySelector('.live-results');
+        if (!panel) { return; }
+
+        var timer = null;
+
+        function render(data) {
+            var html = '';
+
+            if (data.players.length) {
+                html += '<div class="live-group">Players</div>';
+                data.players.forEach(function (p) {
+                    var img = p.photo
+                        ? '<img src="' + p.photo + '" alt="">'
+                        : '<span class="live-fallback">' + esc(p.name.charAt(0)) + '</span>';
+                    html += '<a class="live-item" href="' + p.url + '">' + img + '<span>' + esc(p.name) + '</span><small>' + esc(p.role) + '</small></a>';
+                });
+            }
+
+            if (data.matches.length) {
+                html += '<div class="live-group">Matches</div>';
+                data.matches.forEach(function (m) {
+                    html += '<a class="live-item" href="' + m.url + '"><span class="live-fallback">M</span><span>' + esc(m.label) + '</span><small>' + esc(m.date) + '</small></a>';
+                });
+            }
+
+            if (data.news.length) {
+                html += '<div class="live-group">News</div>';
+                data.news.forEach(function (n) {
+                    html += '<a class="live-item" href="' + n.url + '"><span class="live-fallback">N</span><span>' + esc(n.title) + '</span><small>' + esc(n.date) + '</small></a>';
+                });
+            }
+
+            if (!html) {
+                html = '<div class="live-empty">No results found</div>';
+            }
+
+            panel.innerHTML = html;
+            panel.classList.add('open');
+        }
+
+        input.addEventListener('input', function () {
+            var q = input.value.trim();
+            clearTimeout(timer);
+            if (q.length < 2) {
+                panel.classList.remove('open');
+                panel.innerHTML = '';
+                return;
+            }
+            timer = setTimeout(function () {
+                fetch('/search/live?q=' + encodeURIComponent(q), {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                    .then(function (r) { return r.json(); })
+                    .then(render)
+                    .catch(function () {});
+            }, 250);
+        });
+
+        input.addEventListener('focus', function () {
+            if (panel.innerHTML) { panel.classList.add('open'); }
+        });
+
+        input.addEventListener('blur', function () {
+            setTimeout(function () { panel.classList.remove('open'); }, 180);
+        });
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { panel.classList.remove('open'); }
+        });
+    });
+});

@@ -9,6 +9,50 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
+    public function live(Request $request)
+    {
+        $query = trim((string) $request->query('q', ''));
+
+        if ($query === '') {
+            return response()->json(['players' => [], 'matches' => [], 'news' => []]);
+        }
+
+        $players = Player::where('name', 'like', "%{$query}%")
+            ->orderBy('name')
+            ->take(5)
+            ->get();
+
+        $matches = CricketMatch::where('opponent_name', 'like', "%{$query}%")
+            ->orWhere('venue', 'like', "%{$query}%")
+            ->orderByDesc('match_date')
+            ->take(5)
+            ->get();
+
+        $news = NewsPost::where('title', 'like', "%{$query}%")
+            ->orderByDesc('published_at')
+            ->take(5)
+            ->get();
+
+        return response()->json([
+            'players' => $players->map(fn ($p) => [
+                'url' => route('players.show', $p),
+                'name' => $p->name,
+                'role' => $p->role,
+                'photo' => $p->photo_url,
+            ]),
+            'matches' => $matches->map(fn ($m) => [
+                'url' => route('matches.show', $m),
+                'label' => 'Match ' . $m->match_number . ' vs ' . $m->opponent_name,
+                'date' => $m->match_date->format('d M Y'),
+            ]),
+            'news' => $news->map(fn ($n) => [
+                'url' => route('news.show', $n),
+                'title' => $n->title,
+                'date' => $n->published_at?->format('d M Y'),
+            ]),
+        ]);
+    }
+
     public function __invoke(Request $request)
     {
         $query = trim((string) $request->query('q'));
