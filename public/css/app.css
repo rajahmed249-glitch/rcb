@@ -856,17 +856,17 @@ a.player-name-link:hover { text-decoration: underline; }
     .score-subtab-btn, .squad-subtab-btn { padding: 6px 14px; font-size: 12px; }
     .sum-body { gap: 1rem 2rem; padding: .75rem; }
     .sum-row { margin-bottom: .4rem; }
-    .sum-name { font-size: .8rem; max-width: 11ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
+    .sum-name { font-size: .8rem; max-width: 9ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
     .sum-fig { font-size: .8rem; }
     .sum-head .sum-team, .sum-head .sum-score { font-size: .9rem; }
-    .player-name-link { display: inline-block; max-width: 11ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .player-name-link { display: inline-block; max-width: 9ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .player-name-cell { min-width: 0; overflow: visible; }
-    .player-name-cell .player-name-link { max-width: 11ch; }
+    .player-name-cell .player-name-link { max-width: 9ch; }
     .dismissal-text { white-space: nowrap; overflow: visible; text-overflow: clip; display: inline-block; flex-shrink: 0; font-size: 11px; padding-right: 4px; max-width: none; }
     .bowler-name-cell { min-width: 0; }
-    .bowler-name-cell .player-name-link { max-width: 11ch; }
+    .bowler-name-cell .player-name-link { max-width: 9ch; }
     .squad-player-cell { min-width: 0; overflow: hidden; }
-    .squad-player-cell .player-name-link { max-width: 11ch; }
+    .squad-player-cell .player-name-link { max-width: 9ch; }
     .squad-table { font-size: 11px; }
     .squad-table th, .squad-table td { padding: 6px 8px; }
     .bowl-table { font-size: 11px; }
