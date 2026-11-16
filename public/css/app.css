@@ -860,13 +860,13 @@ a.player-name-link:hover { text-decoration: underline; }
     .sum-fig { font-size: .8rem; }
     .sum-head .sum-team, .sum-head .sum-score { font-size: .9rem; }
     .player-name-link { display: inline-block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .player-name-cell { max-width: 170px; min-width: 0; overflow: hidden; }
+    .player-name-cell { min-width: 0; overflow: visible; }
     .player-name-cell .player-name-link { max-width: 140px; }
-    .bowler-name-cell { max-width: 150px; min-width: 0; overflow: hidden; }
-    .bowler-name-cell .player-name-link { max-width: 100px; }
+    .dismissal-text { white-space: nowrap; overflow: visible; text-overflow: clip; display: inline-block; flex-shrink: 0; font-size: 11px; padding-right: 4px; max-width: none; }
+    .bowler-name-cell { max-width: 170px; min-width: 0; }
+    .bowler-name-cell .player-name-link { max-width: 140px; }
     .squad-player-cell { max-width: 150px; min-width: 0; overflow: hidden; }
     .squad-player-cell .player-name-link { max-width: 110px; }
-    .dismissal-text { font-size: 11px; padding-right: 4px; }
     .squad-table { font-size: 11px; }
     .squad-table th, .squad-table td { padding: 6px 8px; }
     .bowl-table { font-size: 11px; }
@@ -877,9 +877,9 @@ a.player-name-link:hover { text-decoration: underline; }
 }
 @media (max-width: 480px) {
     .player-name-link { max-width: 100px; }
-    .player-name-cell { max-width: 120px; }
     .player-name-cell .player-name-link { max-width: 90px; }
-    .bowler-name-cell .player-name-link { max-width: 70px; }
+    .bowler-name-cell { max-width: 170px; }
+    .bowler-name-cell .player-name-link { max-width: 110px; }
     .squad-player-cell { max-width: 100px; }
     .squad-player-cell .player-name-link { max-width: 70px; }
     .dismissal-text { font-size: 10px; }
