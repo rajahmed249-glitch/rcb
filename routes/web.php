@@ -75,7 +75,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('roles', RoleController::class);
         Route::resource('permissions', PermissionController::class);
         Route::resource('faqs', FaqController::class);
-        Route::resource('role-icons', RoleIconController::class)->names('admin.role_icons');
+        Route::resource('role-icons', RoleIconController::class)->names('role_icons');
         Route::resource('sliders', SliderController::class);
 
         Route::get('squads', [SquadController::class, 'index'])->name('squads.index');
