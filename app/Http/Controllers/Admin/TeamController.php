@@ -41,7 +41,7 @@ class TeamController extends Controller
     {
         return view('admin.teams.form', [
             'team' => new Team(),
-            'players' => Player::orderBy('name')->get(),
+            'players' => Player::orderBy('id')->get(),
         ]);
     }
 
@@ -66,7 +66,7 @@ class TeamController extends Controller
     {
         return view('admin.teams.form', [
             'team' => $team,
-            'players' => Player::orderBy('name')->get(),
+            'players' => Player::orderBy('id')->get(),
         ]);
     }
 

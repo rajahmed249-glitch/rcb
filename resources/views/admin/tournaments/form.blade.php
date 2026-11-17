@@ -42,26 +42,13 @@
             <label>{{ __('site.admin.name_bn') }}</label>
             <input type="text" name="name_bn" value="{{ old('name_bn', $tournament->name_bn) }}" placeholder="বাংলায় নাম লিখুন">
         </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.season') }}</label>
-            <input type="text" name="season" maxlength="50" value="{{ old('season', $tournament->season) }}" placeholder="2025-26">
-        </div>
     </div>
 
     <div class="apf-row">
         <div class="apf-group">
-            <label>{{ __('site.admin.slug') }}</label>
-            <input type="text" name="slug" value="{{ old('slug', $tournament->slug) }}" placeholder="rcb-premier-league">
-        </div>
-        <div class="apf-group">
             <label>{{ __('site.admin.sort_order') }}</label>
             <input type="number" name="sort_order" value="{{ old('sort_order', $tournament->sort_order) }}">
         </div>
-    </div>
-
-    <div class="apf-group" style="margin-bottom:18px;">
-        <label>{{ __('site.admin.description') }}</label>
-        <textarea name="description" rows="3" placeholder="Enter description">{{ old('description', $tournament->description) }}</textarea>
     </div>
 
     <div class="apf-group" style="margin-bottom:18px;">

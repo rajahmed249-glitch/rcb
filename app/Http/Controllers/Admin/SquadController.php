@@ -17,7 +17,7 @@ class SquadController extends Controller
         $status = (string) $request->get('status', '');
         $limit = in_array((int) $request->get('limit', 10), [10, 25, 50, 100]) ? (int) $request->get('limit', 10) : 10;
 
-        $query = CricketMatch::with('tournament');
+        $query = CricketMatch::with('tournament')->has('squad');
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
@@ -52,7 +52,7 @@ class SquadController extends Controller
             ->get();
 
         $playersByTeam = Player::whereNotNull('team_id')
-            ->orderByDesc('id')
+            ->orderBy('id')
             ->get()
             ->groupBy('team_id')
             ->map(fn ($players) => $players

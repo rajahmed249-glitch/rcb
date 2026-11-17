@@ -57,7 +57,6 @@
                     <th>#</th>
                     <th>{{ __('site.admin.name_en') }}</th>
                     <th>{{ __('site.admin.name_bn') }}</th>
-                    <th>{{ __('site.admin.season') }}</th>
                     <th>{{ __('site.admin.sort_order') }}</th>
                     <th>{{ __('site.admin.status') }}</th>
                     <th>{{ __('site.admin.action') }}</th>
@@ -70,12 +69,8 @@
                             <td>{{ $tournaments->firstItem() + $loop->index }}</td>
                             <td>
                                 <div class="apl-pname">{{ $tournament->name }}</div>
-                                @if ($tournament->season)
-                                    <div class="apl-psub">{{ $tournament->season }}</div>
-                                @endif
                             </td>
                             <td class="apl-muted">{{ $tournament->name_bn ?: '—' }}</td>
-                            <td class="apl-muted">{{ $tournament->season ?: '—' }}</td>
                             <td class="apl-muted">{{ $tournament->sort_order }}</td>
                             <td>
                                 <span class="apl-status-badge {{ $tournament->is_active ? 'active' : 'inactive' }}">
@@ -100,7 +95,7 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="7" class="apl-empty">
+                        <td colspan="6" class="apl-empty">
                             <i class="fas fa-trophy"></i>
                             <p>{{ __('site.admin.no_data') }}</p>
                         </td>
@@ -147,7 +142,7 @@
         var url = buildUrl();
         var tbody = document.getElementById('trnTableBody');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="7" class="apl-empty"><i class="fas fa-spinner fa-spin"></i><p>...</p></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="apl-empty"><i class="fas fa-spinner fa-spin"></i><p>...</p></td></tr>';
         }
         fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(function (r) { return r.text(); })

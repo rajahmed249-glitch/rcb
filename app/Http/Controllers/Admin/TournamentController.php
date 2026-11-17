@@ -97,8 +97,6 @@ class TournamentController extends Controller
         return $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'name_bn' => ['nullable', 'string', 'max:255'],
-            'season' => ['nullable', 'string', 'max:50'],
-            'description' => ['nullable', 'string'],
             'is_active' => ['nullable', 'boolean'],
             'sort_order' => ['nullable', 'integer'],
         ]) + [
