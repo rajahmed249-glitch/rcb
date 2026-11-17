@@ -1515,3 +1515,19 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
     .apf-stat-wrap { overflow-x: auto; }
     .apf-stat-table { min-width: 560px; }
 }
+
+/* ===== User avatar ===== */
+.usr-avatar {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #4B20DE, #00CEE5);
+    border-radius: 50%;
+}
+.usr-avatar-img { border-radius: 50%; }
+.apf-preview-round { border-radius: 50%; object-fit: cover; }

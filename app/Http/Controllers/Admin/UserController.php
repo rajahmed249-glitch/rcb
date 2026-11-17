@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -60,6 +61,7 @@ class UserController extends Controller
     {
         $data = $this->validated($request);
         $data['password'] = Hash::make($request->input('password'));
+        $data['avatar'] = $this->uploadAvatar($request);
 
         User::create($data);
 
@@ -83,6 +85,8 @@ class UserController extends Controller
         } else {
             unset($data['password']);
         }
+
+        $data['avatar'] = $this->uploadAvatar($request) ?? $user->avatar;
 
         $user->update($data);
 
@@ -117,5 +121,18 @@ class UserController extends Controller
         return $request->validate($rules) + [
             'is_active' => $request->boolean('is_active'),
         ];
+    }
+
+    private function uploadAvatar(Request $request): ?string
+    {
+        if (! $request->hasFile('avatar') || ! $request->file('avatar')->isValid()) {
+            return null;
+        }
+
+        $file = $request->file('avatar');
+        $filename = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . time() . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('uploads/avatars'), $filename);
+
+        return 'uploads/avatars/' . $filename;
     }
 }

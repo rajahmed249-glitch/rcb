@@ -84,7 +84,11 @@
                             <td>{{ $users->firstItem() + $loop->index }}</td>
                             <td>
                                 <div class="apl-avatar-wrap">
-                                    <div class="usr-avatar">{{ strtoupper(substr($user->name, 0, 1)) }}</div>
+                                    @if ($user->avatar)
+                                        <img src="{{ asset($user->avatar) }}" class="apl-avatar usr-avatar-img" alt="{{ $user->name }}">
+                                    @else
+                                        <div class="usr-avatar">{{ strtoupper(substr($user->name, 0, 1)) }}</div>
+                                    @endif
                                 </div>
                             </td>
                             <td>

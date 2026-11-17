@@ -25,7 +25,7 @@
     </div>
 </div>
 
-<form method="POST"
+<form method="POST" enctype="multipart/form-data"
       action="{{ $user->exists ? route('admin.users.update', $user) : route('admin.users.store') }}"
       class="apf-card">
     @csrf
@@ -34,6 +34,27 @@
     @endif
 
     <div class="apf-row">
+        <div class="apf-group">
+            <label>{{ __('site.admin.avatar') }}</label>
+            <div class="apf-upload">
+                <div class="apf-upload-btn-wrap">
+                    <div class="apf-upload-btn">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>{{ __('site.admin.choose_image') }}</span>
+                    </div>
+                    <input type="file" name="avatar" id="avatar" accept="image/*" onchange="previewImage(event)">
+                </div>
+                <div class="apf-preview-wrap">
+                    @if ($user->avatar)
+                        <img id="avatarPreview" src="{{ asset($user->avatar) }}" alt="Preview" class="apf-preview apf-preview-round">
+                    @else
+                        <img id="avatarPreview" src="{{ asset('images/favicon.png') }}" alt="Preview" class="apf-preview apf-preview-round">
+                    @endif
+                </div>
+            </div>
+            <div class="apf-file-name" id="avatarFileName"></div>
+        </div>
+
         <div class="apf-group">
             <label>{{ __('site.admin.name') }} <span class="apf-required">*</span></label>
             <input type="text" name="name" value="{{ old('name', $user->name) }}" required placeholder="{{ __('site.admin.enter_full_name') }}">
@@ -97,6 +118,20 @@ function toggleStatus(active) {
     var i = document.getElementById('statusInactiveLabel');
     if (a) a.classList.toggle('active', active);
     if (i) i.classList.toggle('active', !active);
+}
+
+function previewImage(event) {
+    var input = event.target;
+    var preview = document.getElementById('avatarPreview');
+    var name = document.getElementById('avatarFileName');
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            if (preview) preview.src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+        if (name) name.textContent = input.files[0].name;
+    }
 }
 </script>
 @endsection

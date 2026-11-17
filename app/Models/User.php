@@ -10,6 +10,7 @@ class User extends Model
         'name',
         'email',
         'password',
+        'avatar',
         'role_id',
         'is_active',
     ];
