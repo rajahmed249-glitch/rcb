@@ -56,6 +56,8 @@ class MatchController extends Controller
             'match' => new CricketMatch(),
             'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
             'tournaments' => Tournament::orderBy('sort_order')->orderBy('id')->get(),
+            'tournamentTeams' => $this->tournamentTeams(),
+            'rcbTeam' => Team::where('is_rcb', 1)->first(),
         ]);
     }
 
@@ -76,6 +78,8 @@ class MatchController extends Controller
             'match' => $match,
             'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
             'tournaments' => Tournament::orderBy('sort_order')->orderBy('id')->get(),
+            'tournamentTeams' => $this->tournamentTeams(),
+            'rcbTeam' => Team::where('is_rcb', 1)->first(),
         ]);
     }
 
@@ -97,6 +101,21 @@ class MatchController extends Controller
         return redirect()->route('admin.matches.index')->with('success', __('site.admin.deleted'));
     }
 
+    private function tournamentTeams(): array
+    {
+        return Tournament::with(['teams' => fn ($q) => $q->where('status', 1)->orderBy('name')])
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->mapWithKeys(fn ($tournament) => [
+                $tournament->id => $tournament->teams
+                    ->map(fn ($team) => ['id' => $team->id, 'name' => $team->name])
+                    ->values()
+                    ->all(),
+            ])
+            ->all();
+    }
+
     private function validated(Request $request): array
     {
         $data = $request->validate([
@@ -107,7 +126,7 @@ class MatchController extends Controller
             'match_date' => ['required', 'date'],
             'match_time' => ['nullable', 'date_format:H:i'],
             'status' => ['required', 'in:upcoming,live,completed,abandoned,cancelled'],
-            'match_info' => ['nullable', 'string', 'max:5000'],
+            'match_info' => ['nullable', 'string'],
         ]);
 
         if (! empty($data['opponent_team_id'])) {

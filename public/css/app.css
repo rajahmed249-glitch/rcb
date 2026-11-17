@@ -1987,3 +1987,10 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 .apf-vs-divider { font-size: 12px; font-weight: 700; color: #a16207; background: #fef9c3; border-radius: 6px; padding: 4px 10px; flex-shrink: 0; }
 .apl-date-text { font-size: 13px; color: #1f2937; font-weight: 500; }
 .apl-time-text { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+
+/* ===== Match form: gated team selects + Quill editor ===== */
+.apf-team-error { color: #dc2626; font-size: 12px; margin-top: 6px; }
+.apf-team-error.hidden { display: none; }
+.apf-quill-container { border: 1px solid #d1d5db; border-radius: 8px; overflow: hidden; background: #fff; }
+.apf-quill-container .ql-toolbar { border: none; border-bottom: 1px solid #e5e7eb; }
+.apf-quill-container .ql-container { border: none; font-size: 14px; min-height: 200px; color: #1f2937; }

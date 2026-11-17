@@ -39,6 +39,11 @@ class Team extends Model
         return $this->is_rcb ? asset('images/teams/real-challenger-boys.webp') : null;
     }
 
+    public function tournaments()
+    {
+        return $this->belongsToMany(Tournament::class, 'tournament_teams')->withTimestamps();
+    }
+
     public static function uniqueSlug(string $base, ?int $ignoreId = null): string
     {
         $slug = Str::slug($base) ?: 'team';

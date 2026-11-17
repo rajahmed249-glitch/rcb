@@ -26,6 +26,11 @@ class Tournament extends Model
         return app()->getLocale() === 'bn' && $this->name_bn ? $this->name_bn : $this->name;
     }
 
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'tournament_teams')->withTimestamps();
+    }
+
     public static function uniqueSlug(string $base, ?int $ignoreId = null): string
     {
         $slug = Str::slug($base) ?: 'tournament';

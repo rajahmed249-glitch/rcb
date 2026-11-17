@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Team;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
 
@@ -43,7 +44,11 @@ class TournamentController extends Controller
 
     public function create()
     {
-        return view('admin.tournaments.form', ['tournament' => new Tournament()]);
+        return view('admin.tournaments.form', [
+            'tournament' => new Tournament(),
+            'teams' => Team::orderByDesc('is_rcb')->orderBy('sort_order')->orderBy('id')->get(),
+            'selectedTeamIds' => [],
+        ]);
     }
 
     public function store(Request $request)
@@ -51,14 +56,19 @@ class TournamentController extends Controller
         $data = $this->validated($request);
         $data['slug'] = Tournament::uniqueSlug($request->input('slug') ?: $request->input('name'));
 
-        Tournament::create($data);
+        $tournament = Tournament::create($data);
+        $tournament->teams()->sync(collect($request->input('team_ids', []))->map(fn ($id) => (int) $id)->filter()->all());
 
         return redirect()->route('admin.tournaments.index')->with('success', __('site.admin.saved'));
     }
 
     public function edit(Tournament $tournament)
     {
-        return view('admin.tournaments.form', ['tournament' => $tournament]);
+        return view('admin.tournaments.form', [
+            'tournament' => $tournament,
+            'teams' => Team::orderByDesc('is_rcb')->orderBy('sort_order')->orderBy('id')->get(),
+            'selectedTeamIds' => $tournament->teams()->pluck('teams.id')->all(),
+        ]);
     }
 
     public function update(Request $request, Tournament $tournament)
@@ -70,6 +80,7 @@ class TournamentController extends Controller
         }
 
         $tournament->update($data);
+        $tournament->teams()->sync(collect($request->input('team_ids', []))->map(fn ($id) => (int) $id)->filter()->all());
 
         return redirect()->route('admin.tournaments.index')->with('success', __('site.admin.saved'));
     }

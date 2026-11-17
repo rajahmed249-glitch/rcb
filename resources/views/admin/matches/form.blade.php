@@ -81,30 +81,26 @@
         <div class="apf-group">
             <label>{{ __('site.admin.teams') }} <span class="apf-required">*</span></label>
             <div class="apf-team-select">
-                <select name="rcb_side" id="team_a_id" disabled>
-                    @foreach ($teams as $team)
-                        @if ($team->is_rcb)
-                            <option value="{{ $team->id }}" selected>{{ $team->name }}</option>
-                        @endif
-                    @endforeach
+                <select name="team_a_id" id="team_a_id" disabled>
+                    <option value="">{{ __('site.admin.select_team_1') }}</option>
                 </select>
                 <span class="apf-vs-divider">VS</span>
-                <select name="opponent_team_id" id="team_b_id" required>
+                <select name="opponent_team_id" id="team_b_id" required disabled>
                     <option value="">{{ __('site.admin.select_team_2') }}</option>
-                    @foreach ($teams as $team)
-                        @unless ($team->is_rcb)
-                            <option value="{{ $team->id }}" @selected(old('opponent_team_id', $match->opponent_team_id) == $team->id)>{{ $team->name }}@if($team->name_bn) / {{ $team->name_bn }}@endif</option>
-                        @endunless
-                    @endforeach
                 </select>
             </div>
+            <div id="teamError" class="apf-team-error hidden">{{ __('site.admin.team_error') }}</div>
+            <p class="apf-hint">{{ __('site.admin.match_teams_hint') }}</p>
         </div>
     </div>
 
     <div class="apf-row">
         <div class="apf-group">
             <label>{{ __('site.admin.match_info') }} / {{ __('site.admin.description') }}</label>
-            <textarea name="match_info" id="match_info" rows="6" placeholder="{{ __('site.admin.match_info') }}...">{{ old('match_info', $match->match_info) }}</textarea>
+            <div class="apf-quill-container">
+                <div id="quillEditor"></div>
+            </div>
+            <textarea name="match_info" id="match_info" style="display:none;">{{ old('match_info', $match->match_info) }}</textarea>
         </div>
     </div>
 
@@ -141,13 +137,120 @@
     </div>
 </form>
 
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
 <script>
+var quill;
+
+@php
+    $matchTeamsData = $tournamentTeams;
+    $rcbData = $rcbTeam ? ['id' => $rcbTeam->id, 'name' => $rcbTeam->name] : null;
+@endphp
+
+var tournamentTeams = @js($matchTeamsData);
+var rcbTeam = @js($rcbData);
+
+function apfPopulateTeams(tournamentId) {
+    var selectA = document.getElementById('team_a_id');
+    var selectB = document.getElementById('team_b_id');
+    var teams = tournamentTeams[tournamentId] || [];
+
+    selectA.innerHTML = '';
+    selectB.innerHTML = '';
+
+    var placeholderA = document.createElement('option');
+    placeholderA.value = '';
+    placeholderA.textContent = @js(__('site.admin.select_team_1'));
+    selectA.appendChild(placeholderA);
+
+    if (rcbTeam) {
+        var optA = document.createElement('option');
+        optA.value = rcbTeam.id;
+        optA.textContent = rcbTeam.name;
+        selectA.appendChild(optA);
+        selectA.value = String(rcbTeam.id);
+    }
+
+    var placeholderB = document.createElement('option');
+    placeholderB.value = '';
+    placeholderB.textContent = @js(__('site.admin.select_team_2'));
+    selectB.appendChild(placeholderB);
+
+    teams.forEach(function (team) {
+        if (rcbTeam && String(team.id) === String(rcbTeam.id)) return;
+        var opt = document.createElement('option');
+        opt.value = team.id;
+        opt.textContent = team.name;
+        selectB.appendChild(opt);
+    });
+
+    var enabled = !!tournamentId;
+    selectA.disabled = !enabled;
+    selectB.disabled = !enabled;
+    apfValidateTeams();
+}
+
+function apfValidateTeams() {
+    var a = document.getElementById('team_a_id');
+    var b = document.getElementById('team_b_id');
+    var err = document.getElementById('teamError');
+    var same = a.value && b.value && a.value === b.value;
+    if (err) err.classList.toggle('hidden', !same);
+    return !same;
+}
+
+document.getElementById('tournament_id').addEventListener('change', function () {
+    apfPopulateTeams(this.value);
+    document.getElementById('team_b_id').value = '';
+});
+
+document.getElementById('team_a_id').addEventListener('change', apfValidateTeams);
+document.getElementById('team_b_id').addEventListener('change', apfValidateTeams);
+
+document.addEventListener('DOMContentLoaded', function () {
+    var initialTournament = document.getElementById('tournament_id').value;
+    if (initialTournament) {
+        apfPopulateTeams(initialTournament);
+        var savedB = '{{ old('opponent_team_id', $match->opponent_team_id) }}';
+        if (savedB) document.getElementById('team_b_id').value = savedB;
+        apfValidateTeams();
+    }
+
+    var infoInput = document.getElementById('match_info');
+    quill = new Quill('#quillEditor', {
+        theme: 'snow',
+        placeholder: 'Enter match details, team news, pitch report, weather forecast, player statistics, etc...',
+        modules: {
+            toolbar: [
+                [{ 'size': ['small', false, 'large', 'huge'] }, { 'header': [1, 2, 3, 4, 5, 6, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote', 'code-block'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                [{ 'align': [] }],
+                ['link', 'image', 'video'],
+                [{ 'color': [] }, { 'background': [] }],
+                ['clean']
+            ]
+        }
+    });
+
+    if (infoInput && infoInput.value) {
+        quill.root.innerHTML = infoInput.value;
+    }
+
+    document.getElementById('matchForm').addEventListener('submit', function () {
+        infoInput.value = quill.root.innerHTML;
+    });
+});
+
 function resetMatchForm() {
     if (!confirm('Are you sure you want to reset all fields?')) return false;
     var time = document.getElementById('match_time');
     if (time) time.value = '07:00';
     var upcoming = document.querySelector('input[name="status"][value="upcoming"]');
     if (upcoming) upcoming.checked = true;
+    if (quill) quill.deleteText(0, quill.getLength());
     return true;
 }
 </script>

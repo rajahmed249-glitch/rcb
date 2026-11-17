@@ -65,6 +65,22 @@
     </div>
 
     <div class="apf-group" style="margin-bottom:18px;">
+        <label>{{ __('site.admin.teams') }}</label>
+        <div class="apf-check-grid">
+            @foreach ($teams as $team)
+                <label class="apf-perm-item">
+                    <input type="checkbox" name="team_ids[]" value="{{ $team->id }}" {{ in_array($team->id, old('team_ids', $selectedTeamIds)) ? 'checked' : '' }}>
+                    <span class="apf-perm-name">{{ $team->name }}</span>
+                    @if ($team->is_rcb)
+                        <span class="apf-perm-slug">RCB</span>
+                    @endif
+                </label>
+            @endforeach
+        </div>
+        <p class="apf-hint">{{ __('site.admin.tournament_teams_hint') }}</p>
+    </div>
+
+    <div class="apf-group" style="margin-bottom:18px;">
         <label>{{ __('site.admin.status') }}</label>
         <div class="apf-toggle">
             <label class="apf-toggle-option {{ old('is_active', $tournament->is_active ?? true) ? 'active' : '' }}" id="trnActiveLabel">
