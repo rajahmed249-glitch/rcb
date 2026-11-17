@@ -36,14 +36,16 @@ class UserSeeder extends Seeder
             ['name_bn' => 'ভিউয়ার', 'sort_order' => 5]
         );
 
-        User::updateOrCreate(
-            ['email' => 'rajahmed249@gmail.com'],
-            [
-                'name' => 'Raj Ahmed',
-                'password' => Hash::make('rajahmed2017'),
-                'role_id' => $superAdmin->id,
-                'is_active' => true,
-            ]
-        );
+        if (! User::where('email', 'rajahmed249@gmail.com')->exists()) {
+            User::create(
+                [
+                    'name' => 'Raj Ahmed',
+                    'email' => 'rajahmed249@gmail.com',
+                    'password' => Hash::make('rajahmed2017'),
+                    'role_id' => $superAdmin->id,
+                    'is_active' => true,
+                ]
+            );
+        }
     }
 }

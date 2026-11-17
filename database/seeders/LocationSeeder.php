@@ -83,6 +83,10 @@ class LocationSeeder extends Seeder
 
     public function run(): void
     {
+        if (Location::where('type', 'district')->count() > 0) {
+            return;
+        }
+
         $sort = 0;
 
         foreach ($this->districts as $name => $info) {

@@ -9,6 +9,10 @@ class GallerySeeder extends Seeder
 {
     public function run(): void
     {
+        if (GalleryPhoto::count() > 0) {
+            return;
+        }
+
         GalleryPhoto::query()->delete();
 
         $photos = [

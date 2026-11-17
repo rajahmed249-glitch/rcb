@@ -9,6 +9,10 @@ class NewsSeeder extends Seeder
 {
     public function run(): void
     {
+        if (NewsPost::count() > 0) {
+            return;
+        }
+
         NewsPost::query()->delete();
 
         $posts = [

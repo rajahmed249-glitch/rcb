@@ -11,6 +11,10 @@ class TeamSeeder extends Seeder
 {
     public function run(): void
     {
+        if (Team::count() > 0) {
+            return;
+        }
+
         Team::query()->delete();
 
         $teams = [

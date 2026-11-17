@@ -9,6 +9,10 @@ class SponsorSeeder extends Seeder
 {
     public function run(): void
     {
+        if (Sponsor::count() > 0) {
+            return;
+        }
+
         Sponsor::query()->delete();
 
         $sponsors = [

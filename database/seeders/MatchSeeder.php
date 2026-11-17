@@ -9,6 +9,10 @@ class MatchSeeder extends Seeder
 {
     public function run(): void
     {
+        if (CricketMatch::count() > 0) {
+            return;
+        }
+
         CricketMatch::query()->delete();
 
         $matches = [

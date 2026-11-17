@@ -9,6 +9,10 @@ class PlayerSeeder extends Seeder
 {
     public function run(): void
     {
+        if (Player::count() > 0) {
+            return;
+        }
+
         Player::query()->delete();
 
         $players = [

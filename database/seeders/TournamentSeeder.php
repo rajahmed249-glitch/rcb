@@ -10,6 +10,10 @@ class TournamentSeeder extends Seeder
 {
     public function run(): void
     {
+        if (Tournament::count() > 0) {
+            return;
+        }
+
         Tournament::query()->delete();
 
         $tournaments = [

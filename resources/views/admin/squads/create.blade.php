@@ -47,6 +47,7 @@
         'selectTeam' => __('site.admin.select_team'),
         'selectTeamFirst' => __('site.admin.select_team_first'),
         'selectTeamToLoad' => __('site.admin.select_team_to_load'),
+        'selectPlayers' => __('site.admin.select_players'),
         'noPlayers' => __('site.admin.no_players_for_team'),
         'playersFound' => __('site.admin.players_found'),
     ];
@@ -83,9 +84,18 @@
         </div>
         <div class="apf-group">
             <label>{{ __('site.admin.players') }} <span class="apf-required">*</span></label>
-            <select name="player_ids[]" id="sqdPlayers" multiple disabled size="8">
-                <option value="">{{ __('site.admin.select_team_first') }}</option>
-            </select>
+            <div class="apf-ms" id="sqdPlayerMs">
+                <div class="apf-ms-control" id="sqdMsControl">
+                    <div class="apf-ms-selected" id="sqdMsSelected"></div>
+                    <span class="apf-ms-placeholder" id="sqdMsPlaceholder">{{ __('site.admin.select_team_first') }}</span>
+                    <i class="fas fa-chevron-down apf-ms-arrow"></i>
+                </div>
+                <div class="apf-ms-dropdown" id="sqdMsDropdown">
+                    <input type="text" class="apf-ms-search" id="sqdMsSearch" placeholder="{{ __('site.admin.search_players') }}..." autocomplete="off">
+                    <div class="apf-ms-options" id="sqdMsOptions"></div>
+                </div>
+            </div>
+            <div id="sqdMsHidden"></div>
             <p class="apf-hint" id="sqdPlayerCount">{{ __('site.admin.select_team_to_load') }}</p>
         </div>
     </div>
@@ -102,58 +112,98 @@
     </div>
 </form>
 
-<script type="application/json" id="sqdData">{
-    "matches": @js($sqdMatchesData),
-    "playersByTeam": @js($playersByTeam),
-    "rcbTeam": @js($rcbTeam ? ['id' => (string) $rcbTeam->id, 'name' => $rcbTeam->name] : null),
-    "texts": @js($sqdTexts)
-}</script>
+<script>
+    var sqdMatches = @js($sqdMatchesData);
+    var sqdPlayersByTeam = @js($playersByTeam);
+    var sqdRcbTeam = @js($rcbTeam ? ['id' => (string) $rcbTeam->id, 'name' => $rcbTeam->name] : null);
+    var sqdTexts = @js($sqdTexts);
+</script>
 <script>
 (function () {
-    var data = JSON.parse(document.getElementById('sqdData').textContent);
-    var sqdMatches = data.matches;
-    var sqdPlayersByTeam = data.playersByTeam;
-    var sqdRcbTeam = data.rcbTeam;
-    var texts = data.texts;
-
     var tournamentSelect = document.getElementById('sqdTournament');
     var matchSelect = document.getElementById('sqdMatch');
     var teamSelect = document.getElementById('sqdTeam');
-    var playerSelect = document.getElementById('sqdPlayers');
+    var msControl = document.getElementById('sqdMsControl');
+    var msDropdown = document.getElementById('sqdMsDropdown');
+    var msSearch = document.getElementById('sqdMsSearch');
+    var msPlaceholder = document.getElementById('sqdMsPlaceholder');
     var playerCount = document.getElementById('sqdPlayerCount');
     var matchIdInput = document.getElementById('sqdMatchId');
 
-    function resetPlayers(message, cls) {
-        playerSelect.innerHTML = '';
-        var opt = document.createElement('option');
-        opt.value = '';
-        opt.textContent = message;
-        playerSelect.appendChild(opt);
-        playerSelect.disabled = true;
-        playerCount.textContent = message;
-        playerCount.className = cls || 'apf-hint';
-    }
+    var sqdSelectedPlayers = [];
+    var sqdMsSearchQuery = '';
 
     function resetTeam() {
         teamSelect.innerHTML = '';
         var teamPlaceholder = document.createElement('option');
         teamPlaceholder.value = '';
-        teamPlaceholder.textContent = texts.selectTeam;
+        teamPlaceholder.textContent = sqdTexts.selectTeam;
         teamSelect.appendChild(teamPlaceholder);
         teamSelect.disabled = true;
+    }
+
+    function resetPlayers() {
+        sqdSelectedPlayers = [];
+        sqdMsSearchQuery = '';
+        if (msSearch) msSearch.value = '';
+        document.getElementById('sqdMsOptions').innerHTML = '';
+        msDropdown.classList.remove('open');
+        msPlaceholder.textContent = sqdTexts.selectTeamFirst;
+        playerCount.textContent = sqdTexts.selectTeamToLoad;
+        playerCount.className = 'apf-hint';
+        sqdRenderChips();
+    }
+
+    function sqdRenderChips() {
+        var wrap = document.getElementById('sqdMsSelected');
+        var hidden = document.getElementById('sqdMsHidden');
+        wrap.innerHTML = '';
+        hidden.innerHTML = '';
+        sqdSelectedPlayers.forEach(function (p, i) {
+            var chip = document.createElement('span');
+            chip.className = 'apf-ms-chip';
+            chip.innerHTML = p.name + ' <button type="button" class="apf-ms-remove" data-index="' + i + '">&times;</button>';
+            wrap.appendChild(chip);
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'player_ids[]';
+            input.value = p.id;
+            hidden.appendChild(input);
+        });
+        msPlaceholder.style.display = sqdSelectedPlayers.length ? 'none' : '';
+        sqdApplyVisibility();
+    }
+
+    function sqdApplyVisibility() {
+        document.querySelectorAll('#sqdMsOptions .apf-ms-option').forEach(function (opt) {
+            var val = String(opt.getAttribute('data-value'));
+            var isSelected = sqdSelectedPlayers.some(function (p) { return p.id === val; });
+            opt.classList.toggle('selected', isSelected);
+            var matchesSearch = opt.getAttribute('data-name').toLowerCase().indexOf(sqdMsSearchQuery) >= 0;
+            opt.style.display = (isSelected || !matchesSearch) ? 'none' : '';
+        });
+    }
+
+    function sqdToggleOption(opt) {
+        var id = String(opt.getAttribute('data-value'));
+        var name = opt.getAttribute('data-name');
+        var idx = sqdSelectedPlayers.findIndex(function (p) { return p.id === id; });
+        if (idx >= 0) { sqdSelectedPlayers.splice(idx, 1); }
+        else { sqdSelectedPlayers.push({ id: id, name: name }); }
+        sqdRenderChips();
     }
 
     tournamentSelect.addEventListener('change', function () {
         matchSelect.innerHTML = '';
         var placeholder = document.createElement('option');
         placeholder.value = '';
-        placeholder.textContent = texts.selectMatch;
+        placeholder.textContent = sqdTexts.selectMatch;
         matchSelect.appendChild(placeholder);
         matchSelect.disabled = true;
         matchIdInput.value = '';
 
         resetTeam();
-        resetPlayers(texts.selectTeamFirst);
+        resetPlayers();
 
         var matches = sqdMatches[this.value] || [];
         if (!matches.length) return;
@@ -171,7 +221,7 @@
 
     matchSelect.addEventListener('change', function () {
         resetTeam();
-        resetPlayers(texts.selectTeamFirst);
+        resetPlayers();
         matchIdInput.value = '';
 
         var opt = this.options[this.selectedIndex];
@@ -197,29 +247,80 @@
 
     teamSelect.addEventListener('change', function () {
         var teamId = this.value;
+        sqdSelectedPlayers = [];
+        sqdMsSearchQuery = '';
+        if (msSearch) msSearch.value = '';
+        document.getElementById('sqdMsOptions').innerHTML = '';
+        msDropdown.classList.remove('open');
+
         if (!teamId) {
-            resetPlayers(texts.selectTeamFirst);
+            msPlaceholder.textContent = sqdTexts.selectTeamFirst;
+            msPlaceholder.style.display = '';
+            playerCount.textContent = sqdTexts.selectTeamToLoad;
+            playerCount.className = 'apf-hint';
+            sqdRenderChips();
             return;
         }
+
         var players = sqdPlayersByTeam[teamId] || [];
+        msPlaceholder.textContent = sqdTexts.selectPlayers;
         if (!players.length) {
-            resetPlayers(texts.noPlayers, 'apf-hint apf-hint-error');
+            playerCount.textContent = sqdTexts.noPlayers;
+            playerCount.className = 'apf-hint apf-hint-error';
+            sqdRenderChips();
             return;
         }
-        playerSelect.innerHTML = '';
+        var optionsBox = document.getElementById('sqdMsOptions');
         players.forEach(function (p) {
-            var opt = document.createElement('option');
-            opt.value = p.id;
-            opt.textContent = p.name + (p.role ? ' (' + p.role + ')' : '');
-            playerSelect.appendChild(opt);
+            var opt = document.createElement('div');
+            opt.className = 'apf-ms-option';
+            opt.setAttribute('data-value', p.id);
+            opt.setAttribute('data-name', p.name);
+            var nameSpan = document.createElement('span');
+            nameSpan.className = 'apf-ms-option-name';
+            nameSpan.textContent = p.name + (p.role ? ' (' + p.role + ')' : '');
+            opt.appendChild(nameSpan);
+            optionsBox.appendChild(opt);
         });
-        playerSelect.disabled = false;
-        playerCount.textContent = players.length + ' ' + texts.playersFound;
+        playerCount.textContent = players.length + ' ' + sqdTexts.playersFound;
         playerCount.className = 'apf-hint apf-hint-success';
+        sqdRenderChips();
     });
 
+    msControl.addEventListener('click', function () {
+        if (!teamSelect.value) return;
+        msDropdown.classList.toggle('open');
+        if (msDropdown.classList.contains('open') && msSearch) { msSearch.focus(); }
+    });
+
+    document.addEventListener('click', function (e) {
+        var ms = document.getElementById('sqdPlayerMs');
+        if (ms && !ms.contains(e.target)) { msDropdown.classList.remove('open'); }
+    });
+
+    document.getElementById('sqdMsOptions').addEventListener('click', function (e) {
+        var opt = e.target.closest('.apf-ms-option');
+        if (opt) sqdToggleOption(opt);
+    });
+
+    document.getElementById('sqdMsSelected').addEventListener('click', function (e) {
+        var btn = e.target.closest('.apf-ms-remove');
+        if (btn) {
+            e.stopPropagation();
+            sqdSelectedPlayers.splice(parseInt(btn.getAttribute('data-index'), 10), 1);
+            sqdRenderChips();
+        }
+    });
+
+    if (msSearch) {
+        msSearch.addEventListener('input', function () {
+            sqdMsSearchQuery = this.value.toLowerCase();
+            sqdApplyVisibility();
+        });
+    }
+
     document.getElementById('sqdCreateForm').addEventListener('submit', function (e) {
-        if (!matchIdInput.value || !teamSelect.value || playerSelect.disabled || playerSelect.selectedOptions.length === 0) {
+        if (!matchIdInput.value || !teamSelect.value || sqdSelectedPlayers.length === 0) {
             e.preventDefault();
         }
     });
