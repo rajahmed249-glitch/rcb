@@ -986,7 +986,7 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
 .admin-shell.collapsed .admin-wrapper { margin-left: var(--sbw-c); }
 
 /* ---------- Topbar ---------- */
-.admin-topbar { position: fixed; top: 0; left: var(--sbw); right: 0; height: 64px; background: linear-gradient(90deg, #00CEE5 0%, #4B20DE 100%); background-size: 200% 200%; animation: topbarGradientShift 15s ease infinite; z-index: 999; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; transition: left .3s cubic-bezier(.4, 0, .2, 1); border-bottom: 1px solid rgba(255, 255, 255, .15); box-shadow: 0 4px 20px rgba(0, 0, 0, .15); box-sizing: border-box; }
+.admin-topbar { position: fixed; top: 0; left: var(--sbw); right: 0; height: 64px; background: linear-gradient(90deg, #00CEE5 0%, #4B20DE 100%); background-size: 200% 200%; animation: topbarGradientShift 15s ease infinite; z-index: 999; display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap; overflow: hidden; padding: 0 25px; transition: left .3s cubic-bezier(.4, 0, .2, 1); border-bottom: 1px solid rgba(255, 255, 255, .15); box-shadow: 0 4px 20px rgba(0, 0, 0, .15); box-sizing: border-box; }
 @keyframes topbarGradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 .admin-topbar-left { display: flex; align-items: center; gap: 18px; min-width: 0; }
 .admin-burger { background: rgba(255, 255, 255, .15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, .2); color: #fff; cursor: pointer; padding: 10px 12px; border-radius: 10px; transition: all .3s ease; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -1383,6 +1383,18 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
 .apf-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13, 148, 136, .3); }
 
 /* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+    .admin-profile-name { display: none; }
+    .stat-badge span { display: none; }
+    .stat-badge { padding: 6px 12px; }
+    .visit-btn span { display: none; }
+    .visit-btn { padding: 8px 14px; }
+    .admin-topbar-stats { gap: 10px; }
+    .admin-topbar { padding: 0 18px; }
+}
+@media (max-width: 1100px) {
+    .admin-topbar-title { display: none; }
+}
 @media (max-width: 1024px) {
     .admin-body { padding-top: 60px; }
     .admin-sidebar { transform: translateX(-100%); width: 280px; z-index: 1050; }
