@@ -12,6 +12,11 @@ class Location extends Model
         'type',
         'parent_id',
         'sort_order',
+        'status',
+    ];
+
+    protected $casts = [
+        'status' => 'boolean',
     ];
 
     public function parent()
