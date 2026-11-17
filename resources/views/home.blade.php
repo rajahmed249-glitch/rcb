@@ -199,7 +199,7 @@
                                 <div class="sponsor-item">
                                     <div class="sponsor-box">
                                         @if ($sponsor->logo)
-                                            <img src="{{ asset($sponsor->logo) }}" alt="{{ $sponsor->display_name }}" title="{{ $sponsor->display_name }}" loading="lazy">
+                                            <img src="{{ asset($sponsor->logo) }}" alt="{{ $sponsor->display_name }}" title="{{ $sponsor->display_name }}" onerror="this.outerHTML='{{ $sponsor->display_name }}'">
                                         @else
                                             {{ $sponsor->display_name }}
                                         @endif
