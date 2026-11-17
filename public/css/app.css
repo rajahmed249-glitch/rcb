@@ -1918,3 +1918,8 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
   .pr-grid{grid-template-columns:1fr}
   .pr-field.span2,.pr-span2,.pr-same-check{grid-column:span 1}
 }
+.sponsor-box img { max-height: 42px; max-width: 100%; object-fit: contain; }
+.sponsor-logo { display: block; margin: 0 auto .75rem; max-height: 72px; max-width: 100%; object-fit: contain; }
+.sponsor-card span { display: block; font-weight: 700; color: var(--muted); }
+.nav-dd-arrow { display: inline-block; width: 11px; height: 11px; margin-left: 3px; vertical-align: middle; transition: transform .25s; }
+.nav-dd:hover .nav-dd-arrow, .nav-dd:focus-within .nav-dd-arrow { transform: rotate(180deg); }

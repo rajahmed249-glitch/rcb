@@ -12,10 +12,13 @@
         <div class="sponsor-grid">
             @forelse ($sponsors as $sponsor)
                 <div class="card sponsor-card">
+                    @if ($sponsor->logo)
+                        <img class="sponsor-logo" src="{{ asset($sponsor->logo) }}" alt="{{ $sponsor->display_name }}" title="{{ $sponsor->display_name }}" loading="lazy">
+                    @endif
                     @if ($sponsor->website)
                         <a href="{{ $sponsor->website }}" target="_blank" rel="noopener">{{ $sponsor->display_name }}</a>
                     @else
-                        {{ $sponsor->display_name }}
+                        <span>{{ $sponsor->display_name }}</span>
                     @endif
                 </div>
             @empty

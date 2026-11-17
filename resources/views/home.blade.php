@@ -197,7 +197,13 @@
                         @foreach ([0, 1] as $loopCopy)
                             @foreach ($sponsors as $sponsor)
                                 <div class="sponsor-item">
-                                    <div class="sponsor-box">{{ $sponsor->display_name }}</div>
+                                    <div class="sponsor-box">
+                                        @if ($sponsor->logo)
+                                            <img src="{{ asset($sponsor->logo) }}" alt="{{ $sponsor->display_name }}" title="{{ $sponsor->display_name }}" loading="lazy">
+                                        @else
+                                            {{ $sponsor->display_name }}
+                                        @endif
+                                    </div>
                                 </div>
                             @endforeach
                         @endforeach

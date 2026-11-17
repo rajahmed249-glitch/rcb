@@ -3,9 +3,6 @@
 @section('title', __('site.be_a_player_page.title'))
 
 @section('content')
-    @php
-        $oldOld = old();
-    @endphp
     <section class="pr-section">
         <div class="pr-blob pr-blob-1"></div>
         <div class="pr-blob pr-blob-2"></div>
@@ -35,7 +32,7 @@
                     </label>
                     <div class="pr-preview-col">
                         <div class="pr-preview">
-                            <img src="{{ $oldOld['photo'] && is_string($oldOld['photo']) ? asset($oldOld['photo']) : asset('images/logo2.png') }}" alt="Preview" id="imagePreview">
+                            <img src="{{ is_string(old('photo')) ? asset(old('photo')) : asset('images/logo2.png') }}" alt="Preview" id="imagePreview">
                         </div>
                         <p class="pr-preview-label">{{ __('site.be_a_player_page.preview') }}</p>
                     </div>
