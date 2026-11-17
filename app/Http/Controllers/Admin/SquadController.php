@@ -15,12 +15,13 @@ class SquadController extends Controller
         $status = (string) $request->get('status', '');
         $limit = in_array((int) $request->get('limit', 10), [10, 25, 50, 100]) ? (int) $request->get('limit', 10) : 10;
 
-        $query = CricketMatch::withCount('squad');
+        $query = CricketMatch::with('tournament');
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
                 $q->where('opponent_name', 'like', "%{$search}%")
-                    ->orWhere('opponent_name_bn', 'like', "%{$search}%");
+                    ->orWhere('opponent_name_bn', 'like', "%{$search}%")
+                    ->orWhere('match_name', 'like', "%{$search}%");
             });
         }
 
@@ -28,7 +29,8 @@ class SquadController extends Controller
             $query->where('status', $status);
         }
 
-        $matches = $query->orderByDesc('match_date')
+        $matches = $query->orderByDesc('match_number')
+            ->orderByDesc('match_date')
             ->paginate($limit)
             ->appends($request->query());
 
@@ -63,5 +65,12 @@ class SquadController extends Controller
         $match->squad()->sync($ids);
 
         return redirect()->route('admin.squads.index')->with('success', __('site.admin.saved'));
+    }
+
+    public function destroy(CricketMatch $match)
+    {
+        $match->squad()->detach();
+
+        return redirect()->route('admin.squads.index')->with('success', __('site.admin.deleted'));
     }
 }

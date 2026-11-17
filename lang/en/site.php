@@ -537,6 +537,8 @@ return [
         'action' => 'Action',
         'sn' => '#',
         'match_no' => 'M.N.',
+        'match_no_full' => 'Match NO.',
+        'squad_delete_confirm' => 'Are you sure you want to delete all players from this match squad? This action cannot be undone.',
         'match_name' => 'Match Name',
         'match_information' => 'Match Information',
         'match_info' => 'Match Info',

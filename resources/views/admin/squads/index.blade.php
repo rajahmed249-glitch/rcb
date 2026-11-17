@@ -49,10 +49,11 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>{{ __('site.admin.match_no_full') }}</th>
+                    <th>{{ __('site.admin.tournament') }}</th>
                     <th>{{ __('site.admin.match') }}</th>
-                    <th>{{ __('site.admin.match_date') }}</th>
+                    <th>{{ __('site.admin.teams') }}</th>
                     <th>{{ __('site.admin.status') }}</th>
-                    <th>{{ __('site.admin.squad') }}</th>
                     <th>{{ __('site.admin.action') }}</th>
                 </tr>
             </thead>
@@ -61,28 +62,46 @@
                     @foreach ($matches as $match)
                         <tr>
                             <td>{{ $matches->firstItem() + $loop->index }}</td>
+                            <td><span class="apl-match-no">{{ $match->match_number ? str_pad($match->match_number, 4, '0', STR_PAD_LEFT) : '—' }}</span></td>
+                            <td class="apl-muted">{{ $match->tournament?->name ?? '—' }}</td>
                             <td>
-                                <div class="apl-pname">RCB vs {{ $match->display_opponent_name }}</div>
+                                <div class="apl-match-name">{{ $match->match_name ?: ('RCB vs ' . $match->display_opponent_name) }}</div>
                             </td>
-                            <td class="apl-muted">{{ $match->match_date->format('d M Y') }}</td>
+                            <td>
+                                <div class="apl-team-row">
+                                    <span class="apl-team-name">RCB</span>
+                                    <span class="apl-vs-badge">VS</span>
+                                    @if ($match->opponent_team_id)
+                                        <a href="{{ route('pages.team-profile', $match->opponentTeam->slug) }}" target="_blank" class="apl-team-name apl-team-link" title="{{ $match->display_opponent_name }}">{{ $match->display_opponent_name }}</a>
+                                    @else
+                                        <span class="apl-team-name">{{ $match->display_opponent_name }}</span>
+                                    @endif
+                                </div>
+                            </td>
                             <td>
                                 <span class="apl-status-badge {{ $match->status }}">
                                     <span class="status-dot {{ $match->status }}"></span>{{ ucfirst($match->status) }}
                                 </span>
                             </td>
-                            <td><span class="apl-role-badge">{{ $match->squad_count }}</span></td>
                             <td>
                                 <div class="apl-acts">
                                     <a href="{{ route('admin.squads.edit', $match) }}" class="apl-act apl-act-edit" title="{{ __('site.admin.edit_squad') }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"/><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"/><path d="M16 5l3 3"/></svg>
                                     </a>
+                                    <form method="POST" action="{{ route('admin.squads.destroy', $match) }}" class="apl-act-form" onsubmit="return confirm('{{ __('site.admin.squad_delete_confirm') }}')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="apl-act apl-act-delete" title="{{ __('site.admin.delete') }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/></svg>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="6" class="apl-empty">
+                        <td colspan="7" class="apl-empty">
                             <i class="fas fa-users-viewfinder"></i>
                             <p>{{ __('site.admin.no_data') }}</p>
                         </td>
@@ -129,7 +148,7 @@
         var url = buildUrl();
         var tbody = document.getElementById('sqdTableBody');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="6" class="apl-empty"><i class="fas fa-spinner fa-spin"></i><p>...</p></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="apl-empty"><i class="fas fa-spinner fa-spin"></i><p>...</p></td></tr>';
         }
         fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(function (r) { return r.text(); })

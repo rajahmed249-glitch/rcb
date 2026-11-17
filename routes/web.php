@@ -82,6 +82,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('squads', [SquadController::class, 'index'])->name('squads.index');
         Route::get('squads/{match}/edit', [SquadController::class, 'edit'])->name('squads.edit');
         Route::put('squads/{match}', [SquadController::class, 'update'])->name('squads.update');
+        Route::delete('squads/{match}', [SquadController::class, 'destroy'])->name('squads.destroy');
 
         Route::get('scoreboards', [ScoreboardController::class, 'index'])->name('scoreboards.index');
         Route::get('scoreboards/{match}/edit', [ScoreboardController::class, 'edit'])->name('scoreboards.edit');

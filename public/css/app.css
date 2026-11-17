@@ -2005,3 +2005,5 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 .ql-toolbar button.ql-custom-source { width: auto; padding: 4px 8px; font-size: 13px; font-weight: 700; color: #444; }
 .ql-toolbar button.ql-custom-source:hover { color: #0d9488; }
 .ql-toolbar button.ql-custom-source.ql-active { color: #0d9488; }
+
+.apl-match-no { font-weight: 600; color: #0f766e; font-variant-numeric: tabular-nums; }
