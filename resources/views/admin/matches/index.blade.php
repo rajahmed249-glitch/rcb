@@ -90,7 +90,7 @@
                                     <div class="apl-result-text">{{ $match->result_text }}</div>
                                 @endif
                             </td>
-                            <td><span class="apl-venue-text">{{ Str::limit($match->venue ?: 'TBD', 35) }}</span></td>
+                            <td><span class="apl-venue-text">{{ $match->venue ?: 'TBD' }}</span></td>
                             <td>
                                 <div class="apl-team-row">
                                     <span class="apl-team-name">RCB</span>
