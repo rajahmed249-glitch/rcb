@@ -463,6 +463,7 @@ function toggleWinnerRequired(status) {
     var statusSel = document.getElementById('matchStatus');
     if (statusSel) toggleWinnerRequired(statusSel.value);
     refreshAllPlayerSelects();
+    updateAllDismissalFields();
 })();
 
 function addStatRow(kind, side) {
@@ -477,6 +478,7 @@ function addStatRow(kind, side) {
     var tr = holder.firstElementChild;
     if (tr) body.appendChild(tr);
     refreshAllPlayerSelects();
+    updateAllDismissalFields();
 }
 
 function removeStatRow(btn) {
@@ -500,6 +502,30 @@ function refreshSelectGroup(cls) {
 function refreshAllPlayerSelects() {
     refreshSelectGroup('scb-bat-select');
     refreshSelectGroup('scb-bowl-select');
+}
+
+var SCB_SHOW_FIELDER = ['caught', 'runout', 'stumped', 'c&b', 'hitwicket'];
+var SCB_SHOW_BOWLER = ['bowled', 'caught', 'lbw', 'stumped', 'c&b', 'hitwicket'];
+
+function applyDismissalCell(td, show) {
+    if (!td) return;
+    td.classList.toggle('scb-cell-off', !show);
+    Array.prototype.forEach.call(td.querySelectorAll('select, input'), function (el) {
+        el.disabled = !show;
+        if (!show && el.tagName === 'SELECT') el.value = '';
+    });
+}
+
+function updateDismissalFields(sel) {
+    var tr = sel.closest('tr');
+    if (!tr) return;
+    var v = sel.value;
+    applyDismissalCell(tr.querySelector('.scb-td-fielder'), SCB_SHOW_FIELDER.indexOf(v) !== -1);
+    applyDismissalCell(tr.querySelector('.scb-td-bowler'), SCB_SHOW_BOWLER.indexOf(v) !== -1);
+}
+
+function updateAllDismissalFields() {
+    Array.prototype.forEach.call(document.querySelectorAll('select.scb-dismissal-select'), updateDismissalFields);
 }
 
 document.addEventListener('change', function (e) {

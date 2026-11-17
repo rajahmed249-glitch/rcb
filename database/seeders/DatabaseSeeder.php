@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             RoleIconSeeder::class,
             UserSeeder::class,
             PermissionSeeder::class,
+            ApbnDataSeeder::class,
         ]);
     }
 }

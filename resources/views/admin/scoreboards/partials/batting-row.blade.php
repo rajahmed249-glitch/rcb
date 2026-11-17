@@ -52,7 +52,7 @@
     <td><input type="number" name="stats[{{ $side }}][batting][{{ $i }}][fours]" value="{{ $fr }}" min="0" placeholder="0"></td>
     <td><input type="number" name="stats[{{ $side }}][batting][{{ $i }}][sixes]" value="{{ $sx }}" min="0" placeholder="0"></td>
     <td>
-        <select name="stats[{{ $side }}][batting][{{ $i }}][dismissal]">
+        <select name="stats[{{ $side }}][batting][{{ $i }}][dismissal]" class="scb-dismissal-select" onchange="updateDismissalFields(this)">
             <option value="">-- {{ __('site.admin.select_one') }} --</option>
             <option value="notout" @selected($dsKey === 'notout')>{{ __('site.admin.d_not_out') }}</option>
             <option value="bowled" @selected($dsKey === 'bowled')>{{ __('site.admin.d_bowled') }}</option>
@@ -65,7 +65,7 @@
             <option value="didnotbat" @selected($dsKey === 'didnotbat')>{{ __('site.admin.d_did_not_bat') }}</option>
         </select>
     </td>
-    <td class="apf-st-player">
+    <td class="apf-st-player scb-td-fielder">
         @if ($fieldSelect)
             <select name="stats[{{ $side }}][batting][{{ $i }}][fielder_id]">
                 <option value="">-- {{ __('site.admin.select_one') }} --</option>
@@ -77,7 +77,7 @@
             <input type="text" name="stats[{{ $side }}][batting][{{ $i }}][fielder_name]" value="" placeholder="{{ __('site.admin.fielder') }}">
         @endif
     </td>
-    <td class="apf-st-player">
+    <td class="apf-st-player scb-td-bowler">
         @if ($bowlerSelect)
             <select name="stats[{{ $side }}][batting][{{ $i }}][bowler_id]">
                 <option value="">-- {{ __('site.admin.select_one') }} --</option>
