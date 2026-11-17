@@ -8,10 +8,36 @@ use Illuminate\Http\Request;
 
 class TournamentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = trim((string) $request->get('search', ''));
+        $status = (string) $request->get('status', '');
+        $limit = in_array((int) $request->get('limit', 10), [10, 25, 50, 100]) ? (int) $request->get('limit', 10) : 10;
+
+        $query = Tournament::query();
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('name_bn', 'like', "%{$search}%")
+                    ->orWhere('season', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status !== '') {
+            $query->where('is_active', $status === '1' ? 1 : 0);
+        }
+
+        $tournaments = $query->orderBy('sort_order')
+            ->orderBy('id')
+            ->paginate($limit)
+            ->appends($request->query());
+
         return view('admin.tournaments.index', [
-            'tournaments' => Tournament::orderBy('sort_order')->orderBy('id')->get(),
+            'tournaments' => $tournaments,
+            'filterSearch' => $search,
+            'filterStatus' => $status,
+            'filterLimit' => $limit,
         ]);
     }
 

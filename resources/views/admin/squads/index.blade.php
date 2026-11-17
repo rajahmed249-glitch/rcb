@@ -3,33 +3,177 @@
 @section('title', __('site.admin.squad'))
 
 @section('content')
-<div class="admin-table-wrap">
-    <table class="admin-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>{{ __('site.admin.match') }}</th>
-                <th>{{ __('site.admin.match_date') }}</th>
-                <th>{{ __('site.admin.status') }}</th>
-                <th>{{ __('site.admin.squad') }}</th>
-                <th>{{ __('site.admin.actions') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($matches as $match)
-                <tr>
-                    <td>{{ $match->match_number }}</td>
-                    <td>RCB vs {{ $match->display_opponent_name }}</td>
-                    <td>{{ $match->match_date->format('d M Y') }}</td>
-                    <td><span class="admin-badge {{ $match->status }}">{{ ucfirst($match->status) }}</span></td>
-                    <td>{{ $match->squad->count() }}</td>
-                    <td class="admin-actions">
-                        <a href="{{ route('admin.squads.edit', $match) }}" class="admin-btn small">{{ __('site.admin.edit_squad') }}</a>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+<div class="apl-head">
+    <h2 class="apl-title"><i class="fas fa-users-viewfinder apl-title-ico"></i> {{ __('site.admin.squad') }}</h2>
+    <nav>
+        <ol class="apl-crumb">
+            <li><a class="apl-crumb-link" href="{{ route('admin.dashboard') }}">{{ __('site.admin.dashboard') }} /</a></li>
+            <li class="apl-crumb-current">{{ __('site.admin.squad') }}</li>
+        </ol>
+    </nav>
 </div>
-@include('admin.partials.pagination', ['paginator' => $matches])
+
+<div class="apl-tabs-row">
+    <div class="apl-tabs">
+        <a href="{{ route('admin.squads.index') }}" class="apl-tab active">
+            <i class="fas fa-list"></i> {{ __('site.admin.manage_squads') }}
+        </a>
+    </div>
+</div>
+
+@if (session('success'))
+    <div class="apl-alert-success">
+        <i class="fas fa-check-circle"></i>
+        <span>{{ session('success') }}</span>
+        <button type="button" onclick="this.closest('.apl-alert-success').remove()" class="apl-alert-close">&times;</button>
+    </div>
+@endif
+
+<div class="apl-card">
+    <div class="apl-filter-row">
+        <div class="apl-filters">
+            <label for="sqdLimit" class="apl-label">{{ __('site.admin.show') }}</label>
+            <select id="sqdLimit" class="apl-entries-select">
+                @foreach ([10, 25, 50, 100] as $opt)
+                    <option value="{{ $opt }}" @selected($filterLimit == $opt)>{{ $opt }}</option>
+                @endforeach
+            </select>
+            <span class="apl-label">{{ __('site.admin.entries') }}</span>
+            <span class="apl-divider"></span>
+            <select id="sqdStatus" class="apl-filter-select">
+                <option value="">{{ __('site.admin.all_status') }}</option>
+                <option value="upcoming" @selected($filterStatus === 'upcoming')>{{ __('site.admin.upcoming') }}</option>
+                <option value="completed" @selected($filterStatus === 'completed')>{{ __('site.admin.completed') }}</option>
+            </select>
+        </div>
+        <div class="apl-search-wrap">
+            <i class="fas fa-search"></i>
+            <input type="search" id="sqdSearch" class="apl-search-input" placeholder="{{ __('site.admin.search_by_name') }}" value="{{ $filterSearch }}">
+        </div>
+    </div>
+
+    <div class="apl-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{{ __('site.admin.match') }}</th>
+                    <th>{{ __('site.admin.match_date') }}</th>
+                    <th>{{ __('site.admin.status') }}</th>
+                    <th>{{ __('site.admin.squad') }}</th>
+                    <th>{{ __('site.admin.action') }}</th>
+                </tr>
+            </thead>
+            <tbody id="sqdTableBody">
+                @if ($matches->count())
+                    @foreach ($matches as $match)
+                        <tr>
+                            <td>{{ $matches->firstItem() + $loop->index }}</td>
+                            <td>
+                                <div class="apl-pname">RCB vs {{ $match->display_opponent_name }}</div>
+                            </td>
+                            <td class="apl-muted">{{ $match->match_date->format('d M Y') }}</td>
+                            <td>
+                                <span class="apl-status-badge {{ $match->status }}">
+                                    <span class="status-dot {{ $match->status }}"></span>{{ ucfirst($match->status) }}
+                                </span>
+                            </td>
+                            <td><span class="apl-role-badge">{{ $match->squad_count }}</span></td>
+                            <td>
+                                <div class="apl-acts">
+                                    <a href="{{ route('admin.squads.edit', $match) }}" class="apl-act apl-act-edit" title="{{ __('site.admin.edit_squad') }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"/><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"/><path d="M16 5l3 3"/></svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="6" class="apl-empty">
+                            <i class="fas fa-users-viewfinder"></i>
+                            <p>{{ __('site.admin.no_data') }}</p>
+                        </td>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
+    </div>
+
+    <div class="apl-foot">
+        <div id="sqdEntriesInfo">
+            <p class="apl-info">
+                {{ __('site.admin.showing') }}
+                <span>{{ $matches->firstItem() ?: 0 }}</span>
+                {{ __('site.admin.to') }}
+                <span>{{ $matches->lastItem() ?: 0 }}</span>
+                {{ __('site.admin.of') }}
+                <span>{{ $matches->total() }}</span>
+                {{ __('site.admin.entries') }}
+            </p>
+        </div>
+        <div id="sqdPaginationNav">
+            @include('admin.partials.pagination', ['paginator' => $matches])
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var searchTimer;
+
+    function buildUrl() {
+        var search = document.getElementById('sqdSearch')?.value.trim() || '';
+        var status = document.getElementById('sqdStatus')?.value || '';
+        var limit = document.getElementById('sqdLimit')?.value || '10';
+        var url = window.location.pathname + '?';
+        if (search) url += 'search=' + encodeURIComponent(search) + '&';
+        if (status) url += 'status=' + encodeURIComponent(status) + '&';
+        url += 'limit=' + limit + '&page=1';
+        return url;
+    }
+
+    function applyFilters() {
+        var url = buildUrl();
+        var tbody = document.getElementById('sqdTableBody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="6" class="apl-empty"><i class="fas fa-spinner fa-spin"></i><p>...</p></td></tr>';
+        }
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(function (r) { return r.text(); })
+            .then(function (html) {
+                var doc = new DOMParser().parseFromString(html, 'text/html');
+                var pairs = [
+                    ['#sqdTableBody', '#sqdTableBody'],
+                    ['#sqdPaginationNav', '#sqdPaginationNav'],
+                    ['#sqdEntriesInfo', '#sqdEntriesInfo']
+                ];
+                pairs.forEach(function (pair) {
+                    var next = doc.querySelector(pair[0]);
+                    var cur = document.querySelector(pair[1]);
+                    if (next && cur) cur.innerHTML = next.innerHTML;
+                });
+                window.history.pushState({}, '', url);
+            })
+            .catch(function () { window.location.href = url; });
+    }
+
+    document.getElementById('sqdSearch')?.addEventListener('input', function () {
+        clearTimeout(searchTimer);
+        var wrap = this.closest('.apl-search-wrap');
+        var icon = wrap ? wrap.querySelector('i') : null;
+        if (icon) icon.className = 'fas fa-spinner fa-spin';
+        searchTimer = setTimeout(function () {
+            applyFilters();
+            if (icon) icon.className = 'fas fa-search';
+        }, 300);
+    });
+
+    ['sqdStatus', 'sqdLimit'].forEach(function (id) {
+        document.getElementById(id)?.addEventListener('change', applyFilters);
+    });
+
+    window.addEventListener('popstate', function () { window.location.reload(); });
+})();
+</script>
 @endsection

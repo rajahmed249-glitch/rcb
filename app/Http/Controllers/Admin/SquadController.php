@@ -9,10 +9,34 @@ use Illuminate\Http\Request;
 
 class SquadController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = trim((string) $request->get('search', ''));
+        $status = (string) $request->get('status', '');
+        $limit = in_array((int) $request->get('limit', 10), [10, 25, 50, 100]) ? (int) $request->get('limit', 10) : 10;
+
+        $query = CricketMatch::withCount('squad');
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('opponent_name', 'like', "%{$search}%")
+                    ->orWhere('opponent_name_bn', 'like', "%{$search}%");
+            });
+        }
+
+        if (in_array($status, ['upcoming', 'completed', 'live', 'abandoned'])) {
+            $query->where('status', $status);
+        }
+
+        $matches = $query->orderByDesc('match_date')
+            ->paginate($limit)
+            ->appends($request->query());
+
         return view('admin.squads.index', [
-            'matches' => CricketMatch::with('squad')->orderByDesc('match_date')->paginate(10),
+            'matches' => $matches,
+            'filterSearch' => $search,
+            'filterStatus' => $status,
+            'filterLimit' => $limit,
         ]);
     }
 
