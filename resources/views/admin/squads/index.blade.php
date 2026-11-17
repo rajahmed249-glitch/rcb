@@ -18,7 +18,13 @@
         <a href="{{ route('admin.squads.index') }}" class="apl-tab active">
             <i class="fas fa-list"></i> {{ __('site.admin.manage_squads') }}
         </a>
+        <a href="{{ route('admin.squads.create') }}" class="apl-tab">
+            <i class="fas fa-plus-circle"></i> {{ __('site.admin.add_squad') }}
+        </a>
     </div>
+    <a href="{{ route('admin.squads.create') }}" class="apl-addbtn">
+        <i class="fas fa-plus-circle"></i> {{ __('site.admin.add_squad') }}
+    </a>
 </div>
 
 <div class="apl-card">
@@ -49,9 +55,9 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>{{ __('site.admin.match_no_full') }}</th>
+                    <th>{{ __('site.admin.match_no') }}</th>
                     <th>{{ __('site.admin.tournament') }}</th>
-                    <th>{{ __('site.admin.match') }}</th>
+                    <th>{{ __('site.admin.match_name') }}</th>
                     <th>{{ __('site.admin.teams') }}</th>
                     <th>{{ __('site.admin.status') }}</th>
                     <th>{{ __('site.admin.action') }}</th>
@@ -68,9 +74,8 @@
                                 <div class="apl-match-name">{{ $match->match_name ?: ('RCB vs ' . $match->display_opponent_name) }}</div>
                             </td>
                             <td>
-                                <div class="apl-team-row">
-                                    <span class="apl-team-name">RCB</span>
-                                    <span class="apl-vs-badge">VS</span>
+                                <div class="apl-team-col">
+                                    <span class="apl-team-name">RCB <span class="apl-vs-badge">VS</span></span>
                                     @if ($match->opponent_team_id)
                                         <a href="{{ route('pages.team-profile', $match->opponentTeam->slug) }}" target="_blank" class="apl-team-name apl-team-link" title="{{ $match->display_opponent_name }}">{{ $match->display_opponent_name }}</a>
                                     @else

@@ -42,6 +42,16 @@ class SquadController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return view('admin.squads.create', [
+            'matches' => CricketMatch::with('tournament')
+                ->orderByDesc('match_number')
+                ->orderByDesc('match_date')
+                ->get(),
+        ]);
+    }
+
     public function edit(CricketMatch $match)
     {
         return view('admin.squads.form', [
