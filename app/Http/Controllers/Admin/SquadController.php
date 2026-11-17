@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CricketMatch;
 use App\Models\Player;
+use App\Models\Team;
+use App\Models\Tournament;
 use Illuminate\Http\Request;
 
 class SquadController extends Controller
@@ -44,12 +46,44 @@ class SquadController extends Controller
 
     public function create()
     {
+        $tournaments = Tournament::with(['matches' => fn ($q) => $q->orderByDesc('match_number')])
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        $playersByTeam = Player::whereNotNull('team_id')
+            ->orderByDesc('id')
+            ->get()
+            ->groupBy('team_id')
+            ->map(fn ($players) => $players
+                ->map(fn ($p) => ['id' => $p->id, 'name' => $p->name, 'role' => $p->role])
+                ->values()
+                ->all())
+            ->all();
+
         return view('admin.squads.create', [
-            'matches' => CricketMatch::with('tournament')
-                ->orderByDesc('match_number')
-                ->orderByDesc('match_date')
-                ->get(),
+            'tournaments' => $tournaments,
+            'playersByTeam' => $playersByTeam,
+            'rcbTeam' => Team::where('is_rcb', 1)->first(),
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'match_id' => ['required', 'integer'],
+            'player_ids' => ['required', 'array', 'min:1'],
+            'player_ids.*' => ['integer'],
+        ]);
+
+        $match = CricketMatch::findOrFail($data['match_id']);
+
+        $existing = $match->squad()->pluck('players.id')->all();
+        $merged = array_values(array_unique(array_merge($existing, array_map('intval', $data['player_ids']))));
+
+        $match->squad()->sync($merged);
+
+        return redirect()->route('admin.squads.create')->with('success', __('site.admin.saved'));
     }
 
     public function edit(CricketMatch $match)

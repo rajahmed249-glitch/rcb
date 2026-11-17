@@ -31,6 +31,11 @@ class Tournament extends Model
         return $this->belongsToMany(Team::class, 'tournament_teams')->withTimestamps();
     }
 
+    public function matches()
+    {
+        return $this->hasMany(CricketMatch::class);
+    }
+
     public static function uniqueSlug(string $base, ?int $ignoreId = null): string
     {
         $slug = Str::slug($base) ?: 'tournament';

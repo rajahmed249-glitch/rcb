@@ -81,6 +81,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('squads', [SquadController::class, 'index'])->name('squads.index');
         Route::get('squads/create', [SquadController::class, 'create'])->name('squads.create');
+        Route::post('squads', [SquadController::class, 'store'])->name('squads.store');
         Route::get('squads/{match}/edit', [SquadController::class, 'edit'])->name('squads.edit');
         Route::put('squads/{match}', [SquadController::class, 'update'])->name('squads.update');
         Route::delete('squads/{match}', [SquadController::class, 'destroy'])->name('squads.destroy');
