@@ -23,8 +23,10 @@ class CricketMatch extends Model
         'format',
         'rcb_score',
         'rcb_overs',
+        'rcb_extras',
         'opponent_score',
         'opponent_overs',
+        'opponent_extras',
         'result_text',
         'won',
     ];
@@ -47,6 +49,11 @@ class CricketMatch extends Model
     public function squad()
     {
         return $this->belongsToMany(Player::class, 'match_squad', 'match_id', 'player_id')->withTimestamps();
+    }
+
+    public function stats()
+    {
+        return $this->hasMany(MatchPlayerStat::class, 'match_id')->orderBy('sort_order')->orderBy('id');
     }
 
     public function scopeCompleted(Builder $query): Builder

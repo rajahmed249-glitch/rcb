@@ -9,10 +9,30 @@ use Illuminate\Support\Str;
 
 class PermissionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = trim((string) $request->get('search', ''));
+        $limit = in_array((int) $request->get('limit', 10), [10, 25, 50, 100]) ? (int) $request->get('limit', 10) : 10;
+
+        $query = Permission::query();
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('name_bn', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
+            });
+        }
+
+        $permissions = $query->orderBy('sort_order')
+            ->orderBy('id')
+            ->paginate($limit)
+            ->appends($request->query());
+
         return view('admin.permissions.index', [
-            'permissions' => Permission::orderBy('sort_order')->orderBy('id')->paginate(10),
+            'permissions' => $permissions,
+            'filterSearch' => $search,
+            'filterLimit' => $limit,
         ]);
     }
 

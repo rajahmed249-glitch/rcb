@@ -106,6 +106,31 @@ class MatchController extends Controller
             ->values()
             ->all();
 
+        $stored = $match->stats()->with('player')->get();
+
+        if ($stored->isNotEmpty()) {
+            return [
+                'rcb' => $this->inningsFromStats(
+                    $stored->where('side', 'rcb')->where('stat_type', 'batting')->values(),
+                    $stored->where('side', 'rcb')->where('stat_type', 'bowling')->values(),
+                    $match->rcb_score,
+                    $match->rcb_overs,
+                    $match->rcb_extras
+                ),
+                'opponent' => $this->inningsFromStats(
+                    $stored->where('side', 'opponent')->where('stat_type', 'batting')->values(),
+                    $stored->where('side', 'opponent')->where('stat_type', 'bowling')->values(),
+                    $match->opponent_score,
+                    $match->opponent_overs,
+                    $match->opponent_extras
+                ),
+                'squads' => [
+                    'rcb' => $this->buildSquad($rcbPlayers->take(11)->values(), $match->id, 'rcb'),
+                    'opponent' => $this->buildSquad(null, $match->id, 'opp', $opponentNames),
+                ],
+            ];
+        }
+
         return [
             'rcb' => $this->buildInnings(
                 $rcbRuns, $rcbWkts, $match->rcb_overs,
@@ -124,6 +149,74 @@ class MatchController extends Controller
                 'rcb' => $this->buildSquad($rcbPlayers->take(11)->values(), $match->id, 'rcb'),
                 'opponent' => $this->buildSquad(null, $match->id, 'opp', $opponentNames),
             ],
+        ];
+    }
+
+    private function inningsFromStats($batRows, $bowlRows, ?string $score, ?string $overs, ?int $extras): array
+    {
+        [$teamRuns, $teamWickets] = $this->parseScore($score);
+
+        $batting = [];
+        $fow = [];
+        $fowScore = 0;
+        $cumBalls = 0;
+
+        foreach ($batRows as $row) {
+            $name = $row->player?->name ?: $row->name;
+            $runs = (int) $row->runs;
+            $balls = (int) $row->balls;
+            $dismissal = trim((string) $row->dismissal) ?: 'not out';
+            $isOut = stripos($dismissal, 'not out') === false && stripos($dismissal, 'did not bat') === false;
+
+            $batting[] = [
+                'id' => $row->player_id,
+                'name' => $name,
+                'photo' => $row->player?->photo_url,
+                'runs' => $runs,
+                'balls' => $balls,
+                'fours' => (int) $row->fours,
+                'sixes' => (int) $row->sixes,
+                'sr' => $balls > 0 ? number_format($runs * 100 / $balls, 2) : '0.00',
+                'dismissal' => $dismissal,
+            ];
+
+            if ($isOut) {
+                $fowScore += $runs;
+                $fow[] = [
+                    'id' => $row->player_id,
+                    'name' => $name,
+                    'score' => $fowScore . '-' . count($fow),
+                    'over' => $this->formatOvers($cumBalls / 6),
+                ];
+            }
+
+            $cumBalls += $balls;
+        }
+
+        $bowling = $bowlRows->map(function ($row) {
+            $oversFloat = $this->parseOvers($row->overs);
+
+            return [
+                'id' => $row->player_id,
+                'name' => $row->player?->name ?: $row->name,
+                'overs' => $row->overs,
+                'maidens' => (int) $row->maidens,
+                'runs' => (int) $row->runs,
+                'wickets' => (int) $row->wickets,
+                'wides' => (int) $row->wides,
+                'noballs' => (int) $row->noballs,
+                'econ' => $oversFloat > 0 ? number_format($row->runs / $oversFloat, 2) : '0.00',
+            ];
+        })->values()->all();
+
+        return [
+            'batting' => $batting,
+            'bowling' => $bowling,
+            'fow' => $fow,
+            'extras' => (int) ($extras ?? 0),
+            'total' => $teamRuns,
+            'wickets' => $teamWickets,
+            'overs' => $overs,
         ];
     }
 

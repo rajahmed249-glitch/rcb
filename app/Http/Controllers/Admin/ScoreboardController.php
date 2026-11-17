@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CricketMatch;
+use App\Models\Player;
 use Illuminate\Http\Request;
 
 class ScoreboardController extends Controller
@@ -17,7 +18,22 @@ class ScoreboardController extends Controller
 
     public function edit(CricketMatch $match)
     {
-        return view('admin.scoreboards.form', ['match' => $match]);
+        $stats = $match->stats()->get()->groupBy(fn ($s) => $s->side . '.' . $s->stat_type);
+
+        return view('admin.scoreboards.form', [
+            'match' => $match,
+            'players' => Player::whereNotNull('team_id')->orderByDesc('is_captain')->orderByDesc('is_vice_captain')->orderBy('name')->get(),
+            'statRows' => [
+                'rcb' => [
+                    'batting' => $stats->get('rcb.batting', collect()),
+                    'bowling' => $stats->get('rcb.bowling', collect()),
+                ],
+                'opponent' => [
+                    'batting' => $stats->get('opponent.batting', collect()),
+                    'bowling' => $stats->get('opponent.bowling', collect()),
+                ],
+            ],
+        ]);
     }
 
     public function update(Request $request, CricketMatch $match)
@@ -35,7 +51,78 @@ class ScoreboardController extends Controller
         ];
 
         $match->update($data);
+        $this->saveStats($request, $match);
 
         return redirect()->route('admin.scoreboards.index')->with('success', __('site.admin.saved'));
+    }
+
+    private function saveStats(Request $request, CricketMatch $match): void
+    {
+        $input = $request->input('stats', []);
+        $rows = [];
+
+        foreach (['rcb', 'opponent'] as $side) {
+            foreach (['batting', 'bowling'] as $type) {
+                foreach ($input[$side][$type] ?? [] as $index => $row) {
+                    if (! is_array($row)) {
+                        continue;
+                    }
+
+                    $name = trim((string) ($row['name'] ?? ''));
+                    $playerId = (int) ($row['player_id'] ?? 0) ?: null;
+
+                    if ($type === 'batting') {
+                        if ($row['runs'] === null && $name === '' && $playerId === null) {
+                            continue;
+                        }
+
+                        $rows[] = [
+                            'match_id' => $match->id,
+                            'player_id' => $playerId,
+                            'name' => $name,
+                            'side' => $side,
+                            'stat_type' => 'batting',
+                            'sort_order' => $index,
+                            'runs' => (int) ($row['runs'] ?? 0),
+                            'balls' => (int) ($row['balls'] ?? 0),
+                            'fours' => (int) ($row['fours'] ?? 0),
+                            'sixes' => (int) ($row['sixes'] ?? 0),
+                            'dismissal' => trim((string) ($row['dismissal'] ?? '')) ?: 'not out',
+                        ];
+                    } else {
+                        $overs = trim((string) ($row['overs'] ?? ''));
+                        if ($overs === '' && $name === '' && $playerId === null) {
+                            continue;
+                        }
+
+                        $rows[] = [
+                            'match_id' => $match->id,
+                            'player_id' => $playerId,
+                            'name' => $name,
+                            'side' => $side,
+                            'stat_type' => 'bowling',
+                            'sort_order' => $index,
+                            'overs' => $overs,
+                            'maidens' => (int) ($row['maidens'] ?? 0),
+                            'runs' => (int) ($row['runs'] ?? 0),
+                            'wickets' => (int) ($row['wickets'] ?? 0),
+                            'wides' => (int) ($row['wides'] ?? 0),
+                            'noballs' => (int) ($row['noballs'] ?? 0),
+                        ];
+                    }
+                }
+            }
+        }
+
+        $match->stats()->delete();
+
+        foreach ($rows as $row) {
+            $match->stats()->create($row);
+        }
+
+        $match->update([
+            'rcb_extras' => (int) ($input['rcb']['extras'] ?? 0),
+            'opponent_extras' => (int) ($input['opponent']['extras'] ?? 0),
+        ]);
     }
 }

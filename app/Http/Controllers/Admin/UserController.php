@@ -10,10 +10,41 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = trim((string) $request->get('search', ''));
+        $role = (string) $request->get('role', '');
+        $status = (string) $request->get('status', '');
+        $limit = in_array((int) $request->get('limit', 10), [10, 25, 50, 100]) ? (int) $request->get('limit', 10) : 10;
+
+        $query = User::with('role');
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($role !== '') {
+            $query->where('role_id', (int) $role);
+        }
+
+        if ($status !== '') {
+            $query->where('is_active', $status === '1' ? 1 : 0);
+        }
+
+        $users = $query->orderBy('id')
+            ->paginate($limit)
+            ->appends($request->query());
+
         return view('admin.users.index', [
-            'users' => User::with('role')->orderBy('id')->paginate(10),
+            'users' => $users,
+            'filterSearch' => $search,
+            'filterRole' => $role,
+            'filterStatus' => $status,
+            'filterLimit' => $limit,
+            'roles' => Role::orderBy('sort_order')->orderBy('id')->get(),
         ]);
     }
 

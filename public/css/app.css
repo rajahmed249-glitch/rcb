@@ -1447,3 +1447,71 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
     .floating-shapes .shape-2 { width: 150px; height: 150px; }
     .floating-shapes .shape-3 { width: 100px; height: 100px; }
 }
+
+/* ===== Scoreboard stat input tables (apf extension) ===== */
+.apf-stat-wrap { margin: 0 0 18px; }
+.apf-stat-table { width: 100%; border-collapse: collapse; }
+.apf-stat-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #64748b;
+    padding: 8px 6px;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+.apf-stat-table td { padding: 6px 4px; border-bottom: 1px solid #f1f5f9; }
+.apf-stat-table input,
+.apf-stat-table select {
+    width: 100%;
+    min-width: 58px;
+    padding: 8px 10px;
+    font-size: 13px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    color: #0f172a;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+.apf-stat-table input:focus,
+.apf-stat-table select:focus { border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13, 148, 136, .12); }
+.apf-stat-table td.apf-st-player { min-width: 180px; }
+.apf-stat-table td.apf-st-wide { min-width: 200px; }
+.apf-stat-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0d9488;
+    background: #f0fdfa;
+    border: 1px dashed #0d9488;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+}
+.apf-stat-add:hover { background: #0d9488; color: #fff; }
+.apf-stat-del {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+    color: #dc2626;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+}
+.apf-stat-del:hover { background: #dc2626; color: #fff; }
+@media (max-width: 640px) {
+    .apf-stat-wrap { overflow-x: auto; }
+    .apf-stat-table { min-width: 560px; }
+}
