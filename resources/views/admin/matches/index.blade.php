@@ -90,7 +90,7 @@
                                     <div class="apl-result-text">{{ $match->result_text }}</div>
                                 @endif
                             </td>
-                            <td><span class="apl-venue-text">{{ $match->venue ?: 'TBD' }}</span></td>
+                            <td><span class="apl-venue-text">{!! collect(mb_str_split($match->venue ?: 'TBD', 25))->map(fn ($c) => e($c))->implode('<br>') !!}</span></td>
                             <td>
                                 <div class="apl-team-row">
                                     <span class="apl-team-name">RCB</span>
