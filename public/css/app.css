@@ -107,6 +107,7 @@ img { max-width: 100%; display: block; }
     transition: transform .2s, box-shadow .2s; white-space: nowrap;
 }
 .btn-cta:hover { transform: scale(1.05); box-shadow: 0 10px 22px rgba(13,148,136,.4); }
+.btn-cta svg { width: 1.15rem; height: 1.15rem; flex-shrink: 0; }
 
 .menu-toggle { display: none; background: #fff; border: 1px solid var(--border); color: var(--text); font-size: 1.3rem; border-radius: 8px; padding: .3rem .7rem; cursor: pointer; }
 .header-lang { display: none; }
@@ -1908,7 +1909,7 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 .pr-error{color:#dc2626;font-size:.78rem;font-weight:600}
 .pr-same-check{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.88rem;font-weight:600;color:#334155;grid-column:span 2;cursor:pointer}
 .pr-same-check input{width:17px;height:17px;accent-color:#14b8a6}
-.pr-locked{opacity:.55;filter:blur(2.5px);pointer-events:none;user-select:none;transition:.3s}
+.pr-field input:disabled,.pr-field select:disabled{background:#e5e7eb;color:#9ca3af;cursor:not-allowed}
 .pr-grid{transition:.3s}
 .pr-submit{margin-top:26px}
 .pr-submit button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 24px;border:none;border-radius:6px;background:linear-gradient(90deg,#14b8a6,#0f766e);color:#fff;font-size:.95rem;font-weight:500;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:.25s;box-shadow:0 4px 12px rgba(13,148,136,.35)}

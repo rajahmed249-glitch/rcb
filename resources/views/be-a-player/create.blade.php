@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('site.be_a_player_page.title'))
+@section('full_title', 'Player Registration | RCB')
 
 @section('content')
     <section class="pr-section">
@@ -254,8 +254,6 @@
                 var el = document.getElementById(id);
                 if (el) el.disabled = lock;
             });
-            var grid = document.getElementById('permanentGrid');
-            if (grid) grid.classList.toggle('pr-locked', lock);
         }
 
         document.getElementById('sameAsPresent').addEventListener('change', function (e) {

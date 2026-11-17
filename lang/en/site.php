@@ -248,8 +248,8 @@ return [
     'be_a_player_page' => [
         'title' => 'Be a Player 🏏',
         'subtitle' => 'Want to join REAL CHALLENGER BOYS? Fill in the form and our team will contact you.',
-        'full_name' => 'Full Name *',
-        'phone' => 'Phone Number *',
+        'full_name' => 'Full Name',
+        'phone' => 'Phone Number',
         'email' => 'Email Address',
         'age' => 'Age *',
         'preferred_role' => 'Preferred Role',
