@@ -541,6 +541,7 @@ return [
         'inactive' => 'Inactive',
         'all_roles' => 'All Roles',
         'all_status' => 'All Status',
+        'all_tournaments' => 'All Tournaments',
         'show' => 'Show',
         'entries' => 'entries',
         'search_by_name' => 'Search by name...',

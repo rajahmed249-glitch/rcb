@@ -541,6 +541,7 @@ return [
         'inactive' => 'নিষ্ক্রিয়',
         'all_roles' => 'সব ভূমিকা',
         'all_status' => 'সব স্ট্যাটাস',
+        'all_tournaments' => 'সব টুর্নামেন্ট',
         'show' => 'দেখান',
         'entries' => 'এন্ট্রি',
         'search_by_name' => 'নাম দিয়ে খুঁজুন...',

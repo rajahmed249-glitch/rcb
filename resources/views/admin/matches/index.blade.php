@@ -51,6 +51,12 @@
                 <option value="upcoming" @selected($filterStatus === 'upcoming')>{{ __('site.admin.upcoming') }}</option>
                 <option value="completed" @selected($filterStatus === 'completed')>{{ __('site.admin.completed') }}</option>
             </select>
+            <select id="mtcTournament" class="apl-filter-select">
+                <option value="">{{ __('site.admin.all_tournaments') }}</option>
+                @foreach ($tournaments as $tournament)
+                    <option value="{{ $tournament->id }}" @selected($filterTournament === (int) $tournament->id)>{{ $tournament->display_name }}</option>
+                @endforeach
+            </select>
         </div>
         <div class="apl-search-wrap">
             <i class="fas fa-search"></i>
@@ -161,10 +167,12 @@
     function buildUrl() {
         var search = document.getElementById('mtcSearch')?.value.trim() || '';
         var status = document.getElementById('mtcStatus')?.value || '';
+        var tournament = document.getElementById('mtcTournament')?.value || '';
         var limit = document.getElementById('mtcLimit')?.value || '10';
         var url = window.location.pathname + '?';
         if (search) url += 'search=' + encodeURIComponent(search) + '&';
         if (status) url += 'status=' + encodeURIComponent(status) + '&';
+        if (tournament) url += 'tournament=' + encodeURIComponent(tournament) + '&';
         url += 'limit=' + limit + '&page=1';
         return url;
     }
@@ -205,7 +213,7 @@
         }, 300);
     });
 
-    ['mtcStatus', 'mtcLimit'].forEach(function (id) {
+    ['mtcStatus', 'mtcTournament', 'mtcLimit'].forEach(function (id) {
         document.getElementById(id)?.addEventListener('change', applyFilters);
     });
 

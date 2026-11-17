@@ -17,6 +17,8 @@ class MatchController extends Controller
         $status = (string) $request->get('status', '');
         $limit = in_array((int) $request->get('limit', 10), [10, 25, 50, 100]) ? (int) $request->get('limit', 10) : 10;
 
+        $tournamentId = (int) $request->get('tournament', 0);
+
         $query = CricketMatch::with(['tournament', 'opponentTeam']);
 
         if ($search !== '') {
@@ -31,6 +33,10 @@ class MatchController extends Controller
             $query->where('status', $status);
         }
 
+        if ($tournamentId > 0) {
+            $query->where('tournament_id', $tournamentId);
+        }
+
         $matches = $query->orderByDesc('match_date')
             ->paginate($limit)
             ->appends($request->query());
@@ -39,7 +45,9 @@ class MatchController extends Controller
             'matches' => $matches,
             'filterSearch' => $search,
             'filterStatus' => $status,
+            'filterTournament' => $tournamentId,
             'filterLimit' => $limit,
+            'tournaments' => Tournament::orderBy('sort_order')->orderBy('id')->get(),
         ]);
     }
 
