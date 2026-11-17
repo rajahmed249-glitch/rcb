@@ -452,6 +452,7 @@ return [
         'website' => 'ওয়েবসাইট',
         'sort_order' => 'ক্রম',
         'logo' => 'লোগো',
+        'team_logo' => 'টিম লোগো',
         'phone' => 'ফোন',
         'email' => 'ইমেইল',
         'age' => 'বয়স',

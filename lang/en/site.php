@@ -452,6 +452,7 @@ return [
         'website' => 'Website',
         'sort_order' => 'Sort Order',
         'logo' => 'Logo',
+        'team_logo' => 'Team Logo',
         'phone' => 'Phone',
         'email' => 'Email',
         'age' => 'Age',

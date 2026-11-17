@@ -1942,9 +1942,12 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 
 /* ===== Players chip multiselect ===== */
 .apf-ms { position: relative; }
-.apf-ms-control { display: flex; align-items: center; justify-content: space-between; min-height: 48px; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; cursor: pointer; transition: all .2s; }
+.apf-ms-control { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 48px; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; cursor: pointer; transition: all .2s; }
+.apf-ms-control .apf-ms-arrow { margin-left: auto; flex-shrink: 0; }
 .apf-ms-control:hover { border-color: #0d9488; }
-.apf-ms-placeholder { font-size: 14px; color: #9ca3af; }
+.apf-ms-placeholder { font-size: 14px; color: #9ca3af; order: 1; }
+.apf-ms-control .apf-ms-selected { order: 0; }
+.apf-ms-control .apf-ms-arrow { order: 2; }
 .apf-ms-arrow { color: #9ca3af; font-size: 13px; transition: transform .25s; }
 .apf-ms-dropdown { display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: #fff; border: 1px solid #d1d5db; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, .1); z-index: 60; overflow: hidden; }
 .apf-ms-dropdown.open { display: block; }
@@ -1957,8 +1960,9 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 .apf-ms-option .apf-ms-option-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .apf-ms-option .apf-ms-option-role { color: #94a3b8; font-size: 12px; white-space: nowrap; }
 .apf-ms-option .apf-ms-option-team { color: #0d9488; font-size: 11px; background: #ccfbf1; border-radius: 4px; padding: 1px 7px; white-space: nowrap; }
-.apf-ms-selected { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.apf-ms-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; font-size: 13px; border-radius: 4px; background: #d1fae5; color: #065f46; }
+.apf-ms-selected { display: flex; flex-wrap: wrap; gap: 6px; flex: 1 1 auto; min-width: 0; }
+.apf-ms-selected:empty { display: none; }
+.apf-ms-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; font-size: 13px; border-radius: 4px; background: #d1fae5; color: #065f46; white-space: nowrap; }
 .apf-ms-remove { background: none; border: none; color: #065f46; opacity: .6; font-size: 15px; line-height: 1; cursor: pointer; padding: 0 2px; }
 .apf-ms-remove:hover { opacity: 1; }
 

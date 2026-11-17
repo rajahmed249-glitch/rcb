@@ -65,6 +65,7 @@
             <label>{{ __('site.admin.players') }} <span class="apf-required">*</span></label>
             <div class="apf-ms" id="playerMultiSelect">
                 <div class="apf-ms-control" id="apfMsControl">
+                    <div class="apf-ms-selected" id="apfMsSelected"></div>
                     <span class="apf-ms-placeholder" data-placeholder="{{ __('site.admin.select_players') }}">{{ __('site.admin.select_players') }}</span>
                     <i class="fas fa-chevron-down apf-ms-arrow"></i>
                 </div>
@@ -84,7 +85,6 @@
                         @endforeach
                     </div>
                 </div>
-                <div class="apf-ms-selected" id="apfMsSelected"></div>
             </div>
             <input type="hidden" name="player_ids_present" value="1">
             <div id="apfMsHidden"></div>
@@ -94,7 +94,7 @@
 
     <div class="apf-row">
         <div class="apf-group">
-            <label>{{ __('site.admin.logo') }}</label>
+            <label>{{ __('site.admin.team_logo') }}</label>
             <div class="apf-upload">
                 <div class="apf-upload-btn-wrap">
                     <div class="apf-upload-btn">
@@ -114,6 +114,9 @@
             <div class="apf-file-name" id="logoFileName"></div>
             <p class="apf-hint">200x200px — JPG, PNG, WEBP, SVG, GIF</p>
         </div>
+    </div>
+
+    <div class="apf-row">
         <div class="apf-group">
             <label>{{ __('site.admin.status') }}</label>
             <div class="apf-radios">
@@ -144,6 +147,7 @@
 
 <script>
 var apfSelectedPlayers = [];
+var apfMsSearchQuery = '';
 
 @if ($team->exists)
     @foreach ($players->where('team_id', $team->id) as $player)
@@ -169,9 +173,16 @@ function apfRenderChips() {
         hidden.appendChild(input);
     });
     if (placeholder) placeholder.style.display = apfSelectedPlayers.length ? 'none' : '';
+    apfApplyOptionVisibility();
+}
+
+function apfApplyOptionVisibility() {
     document.querySelectorAll('.apf-ms-option').forEach(function (opt) {
         var val = String(opt.getAttribute('data-value'));
-        opt.classList.toggle('selected', apfSelectedPlayers.some(function (p) { return p.id === val; }));
+        var isSelected = apfSelectedPlayers.some(function (p) { return p.id === val; });
+        opt.classList.toggle('selected', isSelected);
+        var matchesSearch = opt.getAttribute('data-name').toLowerCase().indexOf(apfMsSearchQuery) >= 0;
+        opt.style.display = (isSelected || !matchesSearch) ? 'none' : '';
     });
 }
 
@@ -209,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('apfMsSelected').addEventListener('click', function (e) {
         var btn = e.target.closest('.apf-ms-remove');
         if (btn) {
+            e.stopPropagation();
             apfSelectedPlayers.splice(parseInt(btn.getAttribute('data-index'), 10), 1);
             apfRenderChips();
         }
@@ -216,10 +228,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (search) {
         search.addEventListener('input', function () {
-            var q = this.value.toLowerCase();
-            document.querySelectorAll('.apf-ms-option').forEach(function (opt) {
-                opt.style.display = opt.getAttribute('data-name').toLowerCase().indexOf(q) >= 0 ? '' : 'none';
-            });
+            apfMsSearchQuery = this.value.toLowerCase();
+            apfApplyOptionVisibility();
         });
     }
 });
