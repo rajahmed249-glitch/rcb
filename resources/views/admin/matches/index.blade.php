@@ -90,7 +90,7 @@
                                     <span class="apl-team-name">RCB</span>
                                     <span class="apl-vs-badge">VS</span>
                                     @if ($match->opponent_team_id)
-                                        <a href="{{ route('pages.teamProfile', $match->opponentTeam->slug) }}" target="_blank" class="apl-team-name apl-team-link" title="{{ $match->display_opponent_name }}">{{ $match->display_opponent_name }}</a>
+                                        <a href="{{ route('pages.team-profile', $match->opponentTeam->slug) }}" target="_blank" class="apl-team-name apl-team-link" title="{{ $match->display_opponent_name }}">{{ $match->display_opponent_name }}</a>
                                     @else
                                         <span class="apl-team-name">{{ $match->display_opponent_name }}</span>
                                     @endif
