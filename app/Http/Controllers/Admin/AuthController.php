@@ -35,6 +35,7 @@ class AuthController extends Controller
                 'admin_auth' => true,
                 'admin_user_id' => $user->id,
                 'admin_user_name' => $user->name,
+                'admin_user_role' => $user->role?->display_name ?? 'Administrator',
             ]);
 
             return redirect()->route('admin.dashboard');
@@ -54,7 +55,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        session()->forget(['admin_auth', 'admin_user_id', 'admin_user_name']);
+        session()->forget(['admin_auth', 'admin_user_id', 'admin_user_name', 'admin_user_role']);
 
         return redirect()->route('admin.login');
     }

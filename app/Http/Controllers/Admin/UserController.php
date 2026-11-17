@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -51,10 +52,7 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('admin.users.form', [
-            'user' => new User(),
-            'roles' => Role::orderBy('sort_order')->orderBy('id')->get(),
-        ]);
+        return view('admin.users.form', $this->formExtras(new User()));
     }
 
     public function store(Request $request)
@@ -63,17 +61,15 @@ class UserController extends Controller
         $data['password'] = Hash::make($request->input('password'));
         $data['avatar'] = $this->uploadAvatar($request);
 
-        User::create($data);
+        $user = User::create($data);
+        $user->permissions()->sync($request->input('permissions', []));
 
         return redirect()->route('admin.users.index')->with('success', __('site.admin.saved'));
     }
 
     public function edit(User $user)
     {
-        return view('admin.users.form', [
-            'user' => $user,
-            'roles' => Role::orderBy('sort_order')->orderBy('id')->get(),
-        ]);
+        return view('admin.users.form', $this->formExtras($user));
     }
 
     public function update(Request $request, User $user)
@@ -95,6 +91,7 @@ class UserController extends Controller
         $data['avatar'] = $this->uploadAvatar($request) ?? $user->avatar;
 
         $user->update($data);
+        $user->permissions()->sync($request->input('permissions', []));
 
         return redirect()->route('admin.users.index')->with('success', __('site.admin.saved'));
     }
@@ -104,6 +101,28 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', __('site.admin.deleted'));
+    }
+
+    private function formExtras(User $user): array
+    {
+        $roles = Role::orderBy('sort_order')->orderBy('id')->get();
+        $permissions = Permission::orderBy('sort_order')->orderBy('id')->get();
+
+        $own = $user->exists ? $user->permissions()->pluck('permissions.id')->all() : [];
+        $selected = old('permissions', $own ?: ($user->role?->permissions()->pluck('permissions.id')->all() ?? []));
+
+        $rolePermissions = [];
+        foreach ($roles as $role) {
+            $rolePermissions[(string) $role->id] = $role->permissions()->pluck('permissions.id')->all();
+        }
+
+        return [
+            'user' => $user,
+            'roles' => $roles,
+            'permissions' => $permissions,
+            'rolePermissions' => $rolePermissions,
+            'selectedPermissions' => $selected,
+        ];
     }
 
     private function validated(Request $request, ?int $userId = null): array

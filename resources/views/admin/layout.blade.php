@@ -163,12 +163,12 @@
                         <span>{{ __('site.admin.visit_site') }}</span>
                     </a>
                     <div class="admin-profile" id="adminProfile">
-                        <span class="admin-profile-name">Admin</span>
-                        <div class="admin-avatar">A</div>
+                        <span class="admin-profile-name">{{ session('admin_user_name', 'Admin') }}</span>
+                        <div class="admin-avatar">{{ strtoupper(substr(session('admin_user_name', 'Admin'), 0, 1)) }}</div>
                         <div class="profile-dropdown">
                             <div class="pd-head">
-                                <div class="pd-name">Admin</div>
-                                <div class="pd-role">Administrator</div>
+                                <div class="pd-name">{{ session('admin_user_name', 'Admin') }}</div>
+                                <div class="pd-role">{{ session('admin_user_role', 'Administrator') }}</div>
                             </div>
                             <a href="{{ route('admin.settings.edit') }}"><span class="admin-ico"><i class="fas fa-cog"></i></span> {{ __('site.admin.settings') }}</a>
                             <a href="{{ route('admin.logout') }}" class="logout-link" onclick="event.preventDefault(); document.getElementById('logoutFormTop').submit();"><span class="admin-ico"><i class="fas fa-sign-out-alt"></i></span> {{ __('site.admin.logout') }}</a>

@@ -103,6 +103,19 @@
         </div>
     </div>
 
+    <div class="apf-heading">{{ __('site.admin.user_permissions') }}</div>
+    <div class="apf-hint" style="margin: -10px 0 12px;">{{ __('site.admin.user_permissions_hint') }}</div>
+
+    <div class="apf-perm-grid">
+        @foreach ($permissions as $permission)
+            <label class="apf-perm-item">
+                <input type="checkbox" name="permissions[]" value="{{ $permission->id }}" @checked(in_array($permission->id, old('permissions', $selectedPermissions)))>
+                <span class="apf-perm-name">{{ $permission->display_name }}</span>
+                <span class="apf-perm-slug">{{ $permission->slug }}</span>
+            </label>
+        @endforeach
+    </div>
+
     <div class="apf-row">
         <div class="apf-group">
             <label>{{ __('site.admin.status') }}</label>
@@ -135,6 +148,15 @@
 </form>
 
 <script>
+var rolePermissions = @json($rolePermissions);
+
+document.querySelector('select[name="role_id"]')?.addEventListener('change', function () {
+    var ids = rolePermissions[this.value] || [];
+    document.querySelectorAll('.apf-perm-item input[type="checkbox"]').forEach(function (cb) {
+        cb.checked = ids.indexOf(parseInt(cb.value, 10)) !== -1 || ids.indexOf(cb.value) !== -1;
+    });
+});
+
 function toggleStatus(active) {
     var a = document.getElementById('statusActiveLabel');
     var i = document.getElementById('statusInactiveLabel');

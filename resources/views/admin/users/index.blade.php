@@ -92,10 +92,10 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="apl-pname">{{ $user->name }}</div>
+                                <div class="apl-pname">{{ $user->name }}@if ($user->id == session('admin_user_id'))<span class="apl-you-badge" title="{{ __('site.admin.logged_in_as') }}"><span class="you-dot"></span>{{ __('site.admin.you') }}</span>@endif</div>
                             </td>
                             <td class="apl-muted">{{ $user->email }}</td>
-                            <td><span class="apl-role-badge">{{ $user->role?->display_name ?? '—' }}</span></td>
+                            <td><span class="apl-role-badge role-c{{ ($user->role?->id ?? 0) % 8 }}">{{ $user->role?->display_name ?? '—' }}</span></td>
                             <td>
                                 <span class="apl-status-badge {{ $user->is_active ? 'active' : 'inactive' }}">
                                     {{ $user->is_active ? __('site.admin.active') : __('site.admin.inactive') }}

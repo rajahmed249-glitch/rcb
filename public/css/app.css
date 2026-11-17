@@ -1576,3 +1576,31 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
 @media (max-width: 640px) {
     .apf-perm-grid { grid-template-columns: 1fr; }
 }
+
+/* ===== Logged-in "You" badge ===== */
+.apl-you-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 8px;
+    padding: 2px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #15803d;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 999px;
+    vertical-align: middle;
+}
+.you-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: youPulse 1.5s ease-in-out infinite; }
+@keyframes youPulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+/* ===== Role badge colors (per role id) ===== */
+.apl-role-badge.role-c0 { background: #f1f5f9; color: #475569; }
+.apl-role-badge.role-c1 { background: #ede9fe; color: #6d28d9; }
+.apl-role-badge.role-c2 { background: #dbeafe; color: #1d4ed8; }
+.apl-role-badge.role-c3 { background: #dcfce7; color: #15803d; }
+.apl-role-badge.role-c4 { background: #ffedd5; color: #c2410c; }
+.apl-role-badge.role-c5 { background: #fce7f3; color: #be185d; }
+.apl-role-badge.role-c6 { background: #cffafe; color: #0e7490; }
+.apl-role-badge.role-c7 { background: #fef9c3; color: #a16207; }
