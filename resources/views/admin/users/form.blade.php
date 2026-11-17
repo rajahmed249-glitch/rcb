@@ -66,13 +66,32 @@
     </div>
 
     <div class="apf-row">
+        @if ($user->exists)
         <div class="apf-group">
-            <label>@if ($user->exists){{ __('site.admin.change_password') }}@else{{ __('site.admin.password') }} <span class="apf-required">*</span>@endif</label>
-            <input type="password" name="password" placeholder="{{ $user->exists ? __('site.admin.leave_blank') : 'min 6 characters' }}">
-            @if ($user->exists)
-                <div class="apf-hint">{{ __('site.admin.leave_blank') }}</div>
-            @endif
+            <label>{{ __('site.admin.old_password') }}</label>
+            <div class="apf-pw-wrap">
+                <input type="password" name="old_password" id="oldPassword" placeholder="{{ __('site.admin.old_password') }}" autocomplete="current-password">
+                <button type="button" class="apf-pw-toggle" onclick="togglePassword('oldPassword', this)"><i class="fas fa-eye"></i></button>
+            </div>
+            <div class="apf-hint">{{ __('site.admin.old_password_hint') }}</div>
         </div>
+        <div class="apf-group">
+            <label>{{ __('site.admin.new_password') }}</label>
+            <div class="apf-pw-wrap">
+                <input type="password" name="password" id="newPassword" placeholder="{{ __('site.admin.new_password') }}" autocomplete="new-password">
+                <button type="button" class="apf-pw-toggle" onclick="togglePassword('newPassword', this)"><i class="fas fa-eye"></i></button>
+            </div>
+            <div class="apf-hint">{{ __('site.admin.leave_blank') }}</div>
+        </div>
+        @else
+        <div class="apf-group">
+            <label>{{ __('site.admin.password') }} <span class="apf-required">*</span></label>
+            <div class="apf-pw-wrap">
+                <input type="password" name="password" id="newPassword" placeholder="min 6 characters" required autocomplete="new-password">
+                <button type="button" class="apf-pw-toggle" onclick="togglePassword('newPassword', this)"><i class="fas fa-eye"></i></button>
+            </div>
+        </div>
+        @endif
         <div class="apf-group">
             <label>{{ __('site.admin.role') }}</label>
             <select name="role_id">
@@ -121,6 +140,15 @@ function toggleStatus(active) {
     var i = document.getElementById('statusInactiveLabel');
     if (a) a.classList.toggle('active', active);
     if (i) i.classList.toggle('active', !active);
+}
+
+function togglePassword(inputId, btn) {
+    var input = document.getElementById(inputId);
+    if (!input) return;
+    var show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    var icon = btn ? btn.querySelector('i') : null;
+    if (icon) icon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
 }
 
 function previewImage(event) {

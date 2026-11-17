@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             LocationSeeder::class,
             RoleIconSeeder::class,
             UserSeeder::class,
+            PermissionSeeder::class,
         ]);
     }
 }

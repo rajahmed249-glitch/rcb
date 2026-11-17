@@ -81,6 +81,12 @@ class UserController extends Controller
         $data = $this->validated($request, $user->id);
 
         if ($request->filled('password')) {
+            if (! Hash::check($request->input('old_password', ''), $user->password)) {
+                return back()
+                    ->withErrors(['old_password' => __('site.admin.wrong_old_password')])
+                    ->withInput($request->except('password', 'old_password'));
+            }
+
             $data['password'] = Hash::make($request->input('password'));
         } else {
             unset($data['password']);

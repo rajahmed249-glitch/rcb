@@ -17,6 +17,11 @@ class Role extends Model
         return $this->hasMany(User::class);
     }
 
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'role_permission')->withTimestamps();
+    }
+
     public function getDisplayNameAttribute(): string
     {
         return trim(($this->name_bn && app()->getLocale() === 'bn' ? $this->name_bn : $this->name));

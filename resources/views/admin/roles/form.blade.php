@@ -48,6 +48,18 @@
         </div>
     </div>
 
+    <div class="apf-heading">{{ __('site.admin.role_permissions') }}</div>
+
+    <div class="apf-perm-grid">
+        @foreach ($permissions as $permission)
+            <label class="apf-perm-item">
+                <input type="checkbox" name="permissions[]" value="{{ $permission->id }}" @checked(in_array($permission->id, old('permissions', $selectedPermissions)))>
+                <span class="apf-perm-name">{{ $permission->display_name }}</span>
+                <span class="apf-perm-slug">{{ $permission->slug }}</span>
+            </label>
+        @endforeach
+    </div>
+
     <div class="apf-actions">
         <a href="{{ route('admin.roles.index') }}" class="apf-cancel">
             <i class="fas fa-arrow-left"></i> {{ __('site.admin.cancel') }}

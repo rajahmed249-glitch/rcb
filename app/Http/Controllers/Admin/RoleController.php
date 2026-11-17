@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
@@ -48,12 +49,17 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        return view('admin.roles.form', ['role' => $role]);
+        return view('admin.roles.form', [
+            'role' => $role,
+            'permissions' => Permission::orderBy('sort_order')->orderBy('id')->get(),
+            'selectedPermissions' => $role->permissions()->pluck('permissions.id')->all(),
+        ]);
     }
 
     public function update(Request $request, Role $role)
     {
         $role->update($this->validated($request));
+        $role->permissions()->sync($request->input('permissions', []));
 
         return redirect()->route('admin.roles.index')->with('success', __('site.admin.saved'));
     }
