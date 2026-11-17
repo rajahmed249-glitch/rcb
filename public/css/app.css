@@ -1994,3 +1994,8 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 .apf-quill-container { border: 1px solid #d1d5db; border-radius: 8px; overflow: hidden; background: #fff; }
 .apf-quill-container .ql-toolbar { border: none; border-bottom: 1px solid #e5e7eb; }
 .apf-quill-container .ql-container { border: none; font-size: 14px; min-height: 200px; color: #1f2937; }
+
+.admin-flash { display: flex; align-items: center; gap: 10px; }
+.admin-flash i { flex-shrink: 0; }
+.admin-flash-close { margin-left: auto; cursor: pointer; color: inherit; opacity: .7; background: none; border: none; font-size: 18px; line-height: 1; padding: 0 2px; }
+.admin-flash-close:hover { opacity: 1; }

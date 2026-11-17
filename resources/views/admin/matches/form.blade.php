@@ -28,14 +28,6 @@
     </a>
 </div>
 
-@if (session('success'))
-    <div class="apl-alert-success">
-        <i class="fas fa-check-circle"></i>
-        <span>{{ session('success') }}</span>
-        <button type="button" onclick="this.closest('.apl-alert-success').remove()" class="apl-alert-close">&times;</button>
-    </div>
-@endif
-
 <form method="POST" id="matchForm"
       action="{{ $match->exists ? route('admin.matches.update', $match) : route('admin.matches.store') }}"
       class="apf-card">

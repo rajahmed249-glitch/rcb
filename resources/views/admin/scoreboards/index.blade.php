@@ -21,14 +21,6 @@
     </div>
 </div>
 
-@if (session('success'))
-    <div class="apl-alert-success">
-        <i class="fas fa-check-circle"></i>
-        <span>{{ session('success') }}</span>
-        <button type="button" onclick="this.closest('.apl-alert-success').remove()" class="apl-alert-close">&times;</button>
-    </div>
-@endif
-
 <div class="apl-card">
     <div class="apl-filter-row">
         <div class="apl-filters">

@@ -183,7 +183,22 @@
 
             <main class="admin-main">
                 @if (session('success'))
-                    <div class="admin-flash"><i class="fas fa-check-circle"></i> {{ session('success') }}</div>
+                    <div class="admin-flash" id="adminFlash"><i class="fas fa-check-circle"></i> {{ session('success') }} <button type="button" class="admin-flash-close" id="adminFlashClose">&times;</button></div>
+                    <script>
+                        (function () {
+                            var flash = document.getElementById('adminFlash');
+                            if (!flash) return;
+                            var timer = setTimeout(dismissFlash, 4000);
+                            function dismissFlash() {
+                                clearTimeout(timer);
+                                flash.style.transition = 'opacity .3s ease, transform .3s ease';
+                                flash.style.opacity = '0';
+                                flash.style.transform = 'translateY(-6px)';
+                                setTimeout(function () { flash.remove(); }, 300);
+                            }
+                            document.getElementById('adminFlashClose').addEventListener('click', dismissFlash);
+                        })();
+                    </script>
                 @endif
                 <div class="admin-content">
                     @yield('content')
