@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             TournamentSeeder::class,
             LocationSeeder::class,
             RoleIconSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

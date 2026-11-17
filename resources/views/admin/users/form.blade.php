@@ -67,8 +67,11 @@
 
     <div class="apf-row">
         <div class="apf-group">
-            <label>{{ __('site.admin.password') }} @if (!$user->exists)<span class="apf-required">*</span>@endif</label>
+            <label>@if ($user->exists){{ __('site.admin.change_password') }}@else{{ __('site.admin.password') }} <span class="apf-required">*</span>@endif</label>
             <input type="password" name="password" placeholder="{{ $user->exists ? __('site.admin.leave_blank') : 'min 6 characters' }}">
+            @if ($user->exists)
+                <div class="apf-hint">{{ __('site.admin.leave_blank') }}</div>
+            @endif
         </div>
         <div class="apf-group">
             <label>{{ __('site.admin.role') }}</label>

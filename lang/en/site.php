@@ -451,6 +451,7 @@ return [
         'type' => 'Type',
         'parent' => 'Parent',
         'leave_blank' => 'leave blank to keep current',
+        'change_password' => 'Change Password',
         'no_data' => 'No data found.',
         'manage_players' => 'Manage Players',
         'full_name' => 'Full Name',
