@@ -22,9 +22,8 @@ class PlayerApplicationController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:30'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'age' => ['required', 'integer', 'min:10', 'max:60'],
-            'dob' => ['nullable', 'date'],
+            'email' => ['required', 'email', 'max:255'],
+            'dob' => ['required', 'date'],
             'preferred_role' => ['nullable', 'string', 'max:50'],
             'jersey_size' => ['nullable', 'string', 'max:20'],
             'message' => ['nullable', 'string', 'max:2000'],
@@ -43,6 +42,12 @@ class PlayerApplicationController extends Controller
             'facebook_id' => ['nullable', 'string', 'max:255'],
             'photo' => ['nullable', 'image', 'max:4096'],
         ]);
+
+        if ($request->boolean('same_as_present')) {
+            foreach (['village', 'district_id', 'thana_id', 'post_office'] as $field) {
+                $validated['permanent_' . $field] = $validated['present_' . $field] ?? null;
+            }
+        }
 
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
             $file = $request->file('photo');

@@ -32,7 +32,7 @@
                     </label>
                     <div class="pr-preview-col">
                         <div class="pr-preview">
-                            <img src="{{ is_string(old('photo')) ? asset(old('photo')) : asset('images/logo2.png') }}" alt="Preview" id="imagePreview">
+                            <img src="{{ is_string(old('photo')) ? asset(old('photo')) : asset('images/user_profile.webp') }}" alt="Preview" id="imagePreview">
                         </div>
                         <p class="pr-preview-label">{{ __('site.be_a_player_page.preview') }}</p>
                     </div>
@@ -67,13 +67,8 @@
                         @error('phone')<p class="pr-error">{{ $message }}</p>@enderror
                     </div>
                     <div class="pr-field">
-                        <label>{{ __('site.be_a_player_page.age') }} <em>*</em></label>
-                        <input type="number" name="age" value="{{ old('age') }}" min="10" max="60" required>
-                        @error('age')<p class="pr-error">{{ $message }}</p>@enderror
-                    </div>
-                    <div class="pr-field">
                         <label>{{ __('site.be_a_player_page.dob') }} <em>*</em></label>
-                        <input type="date" name="dob" value="{{ old('dob') }}">
+                        <input type="date" name="dob" value="{{ old('dob') }}" required>
                         @error('dob')<p class="pr-error">{{ $message }}</p>@enderror
                     </div>
                     <div class="pr-field">
@@ -135,10 +130,10 @@
                     <span></span><h3>{{ __('site.be_a_player_page.permanent_address') }}</h3><span></span>
                 </div>
                 <div class="pr-same-check">
-                    <input type="checkbox" id="sameAsPresent">
+                    <input type="checkbox" id="sameAsPresent" name="same_as_present" value="1">
                     <label for="sameAsPresent">{{ __('site.be_a_player_page.same_as_present') }}</label>
                 </div>
-                <div class="pr-grid">
+                <div class="pr-grid" id="permanentGrid">
                     <div class="pr-field">
                         <label>{{ __('site.be_a_player_page.village') }} <em>*</em></label>
                         <input type="text" name="permanent_village" id="permanent_village" value="{{ old('permanent_village') }}">
@@ -253,6 +248,16 @@
             filterThanasByDistrict(this.value, 'permanent_thana');
         });
 
+        var permanentFields = ['permanent_village', 'permanent_district', 'permanent_thana', 'permanent_post_office'];
+        function lockPermanent(lock) {
+            permanentFields.forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) el.disabled = lock;
+            });
+            var grid = document.getElementById('permanentGrid');
+            if (grid) grid.classList.toggle('pr-locked', lock);
+        }
+
         document.getElementById('sameAsPresent').addEventListener('change', function (e) {
             if (e.target.checked) {
                 document.querySelector('input[name="permanent_village"]').value = document.querySelector('input[name="present_village"]').value;
@@ -262,7 +267,9 @@
                     document.getElementById('permanent_thana').value = document.getElementById('present_thana').value;
                 }, 50);
                 document.querySelector('input[name="permanent_post_office"]').value = document.querySelector('input[name="present_post_office"]').value;
+                lockPermanent(true);
             } else {
+                lockPermanent(false);
                 document.querySelector('input[name="permanent_village"]').value = '';
                 document.getElementById('permanent_district').value = '';
                 filterThanasByDistrict('', 'permanent_thana');
