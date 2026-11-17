@@ -66,17 +66,27 @@
 
     <div class="apf-group" style="margin-bottom:18px;">
         <label>{{ __('site.admin.teams') }}</label>
-        <div class="apf-check-grid">
-            @foreach ($teams as $team)
-                <label class="apf-perm-item">
-                    <input type="checkbox" name="team_ids[]" value="{{ $team->id }}" {{ in_array($team->id, old('team_ids', $selectedTeamIds)) ? 'checked' : '' }}>
-                    <span class="apf-perm-name">{{ $team->name }}</span>
-                    @if ($team->is_rcb)
-                        <span class="apf-perm-slug">RCB</span>
-                    @endif
-                </label>
-            @endforeach
+        <div class="apf-ms" id="trnMultiSelect">
+            <div class="apf-ms-control" id="trnMsControl">
+                <div class="apf-ms-selected" id="trnMsSelected"></div>
+                <span class="apf-ms-placeholder" data-placeholder="{{ __('site.admin.select_teams') }}">{{ __('site.admin.select_teams') }}</span>
+                <i class="fas fa-chevron-down apf-ms-arrow"></i>
+            </div>
+            <div class="apf-ms-dropdown" id="trnMsDropdown">
+                <input type="text" class="apf-ms-search" id="trnMsSearch" placeholder="{{ __('site.admin.search_players') }}..." autocomplete="off">
+                <div class="apf-ms-options" id="trnMsOptions">
+                    @foreach ($teams as $team)
+                        <div class="apf-ms-option" data-value="{{ $team->id }}" data-name="{{ $team->name }}">
+                            <span class="apf-ms-option-name">{{ $team->name }}</span>
+                            @if ($team->is_rcb)
+                                <span class="apf-ms-option-team">RCB</span>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
+        <div id="trnMsHidden"></div>
         <p class="apf-hint">{{ __('site.admin.tournament_teams_hint') }}</p>
     </div>
 
@@ -116,5 +126,94 @@ function toggleTrnStatus(active) {
     if (a) a.classList.toggle('active', active);
     if (i) i.classList.toggle('active', !active);
 }
+
+var trnSelectedTeams = [];
+var trnMsSearchQuery = '';
+
+@php
+    $trnPresetTeams = $teams->whereIn('id', old('team_ids', $selectedTeamIds));
+@endphp
+@foreach ($trnPresetTeams as $team)
+    trnSelectedTeams.push({ id: '{{ $team->id }}', name: @js($team->name) });
+@endforeach
+
+function trnRenderChips() {
+    var wrap = document.getElementById('trnMsSelected');
+    var hidden = document.getElementById('trnMsHidden');
+    var placeholder = document.querySelector('#trnMsControl .apf-ms-placeholder');
+    wrap.innerHTML = '';
+    hidden.innerHTML = '';
+    trnSelectedTeams.forEach(function (t, i) {
+        var chip = document.createElement('span');
+        chip.className = 'apf-ms-chip';
+        chip.innerHTML = t.name + ' <button type="button" class="apf-ms-remove" data-index="' + i + '">&times;</button>';
+        wrap.appendChild(chip);
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'team_ids[]';
+        input.value = t.id;
+        hidden.appendChild(input);
+    });
+    if (placeholder) placeholder.style.display = trnSelectedTeams.length ? 'none' : '';
+    trnApplyOptionVisibility();
+}
+
+function trnApplyOptionVisibility() {
+    document.querySelectorAll('#trnMsOptions .apf-ms-option').forEach(function (opt) {
+        var val = String(opt.getAttribute('data-value'));
+        var isSelected = trnSelectedTeams.some(function (t) { return t.id === val; });
+        opt.classList.toggle('selected', isSelected);
+        var matchesSearch = opt.getAttribute('data-name').toLowerCase().indexOf(trnMsSearchQuery) >= 0;
+        opt.style.display = (isSelected || !matchesSearch) ? 'none' : '';
+    });
+}
+
+function trnToggleOption(opt) {
+    var id = String(opt.getAttribute('data-value'));
+    var name = opt.getAttribute('data-name');
+    var idx = trnSelectedTeams.findIndex(function (t) { return t.id === id; });
+    if (idx >= 0) { trnSelectedTeams.splice(idx, 1); }
+    else { trnSelectedTeams.push({ id: id, name: name }); }
+    trnRenderChips();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    trnRenderChips();
+
+    var control = document.getElementById('trnMsControl');
+    var dropdown = document.getElementById('trnMsDropdown');
+    var search = document.getElementById('trnMsSearch');
+
+    control.addEventListener('click', function () {
+        dropdown.classList.toggle('open');
+        if (dropdown.classList.contains('open') && search) { search.focus(); }
+    });
+
+    document.addEventListener('click', function (e) {
+        var ms = document.getElementById('trnMultiSelect');
+        if (ms && !ms.contains(e.target)) { dropdown.classList.remove('open'); }
+    });
+
+    document.getElementById('trnMsOptions').addEventListener('click', function (e) {
+        var opt = e.target.closest('.apf-ms-option');
+        if (opt) trnToggleOption(opt);
+    });
+
+    document.getElementById('trnMsSelected').addEventListener('click', function (e) {
+        var btn = e.target.closest('.apf-ms-remove');
+        if (btn) {
+            e.stopPropagation();
+            trnSelectedTeams.splice(parseInt(btn.getAttribute('data-index'), 10), 1);
+            trnRenderChips();
+        }
+    });
+
+    if (search) {
+        search.addEventListener('input', function () {
+            trnMsSearchQuery = this.value.toLowerCase();
+            trnApplyOptionVisibility();
+        });
+    }
+});
 </script>
 @endsection

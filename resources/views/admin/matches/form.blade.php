@@ -82,14 +82,15 @@
             <label>{{ __('site.admin.teams') }} <span class="apf-required">*</span></label>
             <div class="apf-team-select">
                 <select name="team_a_id" id="team_a_id" disabled>
-                    <option value="">{{ __('site.admin.select_team_1') }}</option>
+                    @if ($rcbTeam)
+                        <option value="{{ $rcbTeam->id }}" selected>{{ $rcbTeam->name }}</option>
+                    @endif
                 </select>
                 <span class="apf-vs-divider">VS</span>
                 <select name="opponent_team_id" id="team_b_id" required disabled>
                     <option value="">{{ __('site.admin.select_team_2') }}</option>
                 </select>
             </div>
-            <div id="teamError" class="apf-team-error hidden">{{ __('site.admin.team_error') }}</div>
             <p class="apf-hint">{{ __('site.admin.match_teams_hint') }}</p>
         </div>
     </div>
@@ -151,25 +152,10 @@ var tournamentTeams = @js($matchTeamsData);
 var rcbTeam = @js($rcbData);
 
 function apfPopulateTeams(tournamentId) {
-    var selectA = document.getElementById('team_a_id');
     var selectB = document.getElementById('team_b_id');
     var teams = tournamentTeams[tournamentId] || [];
 
-    selectA.innerHTML = '';
     selectB.innerHTML = '';
-
-    var placeholderA = document.createElement('option');
-    placeholderA.value = '';
-    placeholderA.textContent = @js(__('site.admin.select_team_1'));
-    selectA.appendChild(placeholderA);
-
-    if (rcbTeam) {
-        var optA = document.createElement('option');
-        optA.value = rcbTeam.id;
-        optA.textContent = rcbTeam.name;
-        selectA.appendChild(optA);
-        selectA.value = String(rcbTeam.id);
-    }
 
     var placeholderB = document.createElement('option');
     placeholderB.value = '';
@@ -184,28 +170,12 @@ function apfPopulateTeams(tournamentId) {
         selectB.appendChild(opt);
     });
 
-    var enabled = !!tournamentId;
-    selectA.disabled = !enabled;
-    selectB.disabled = !enabled;
-    apfValidateTeams();
-}
-
-function apfValidateTeams() {
-    var a = document.getElementById('team_a_id');
-    var b = document.getElementById('team_b_id');
-    var err = document.getElementById('teamError');
-    var same = a.value && b.value && a.value === b.value;
-    if (err) err.classList.toggle('hidden', !same);
-    return !same;
+    selectB.disabled = !tournamentId;
 }
 
 document.getElementById('tournament_id').addEventListener('change', function () {
     apfPopulateTeams(this.value);
-    document.getElementById('team_b_id').value = '';
 });
-
-document.getElementById('team_a_id').addEventListener('change', apfValidateTeams);
-document.getElementById('team_b_id').addEventListener('change', apfValidateTeams);
 
 document.addEventListener('DOMContentLoaded', function () {
     var initialTournament = document.getElementById('tournament_id').value;
@@ -213,7 +183,6 @@ document.addEventListener('DOMContentLoaded', function () {
         apfPopulateTeams(initialTournament);
         var savedB = '{{ old('opponent_team_id', $match->opponent_team_id) }}';
         if (savedB) document.getElementById('team_b_id').value = savedB;
-        apfValidateTeams();
     }
 
     var infoInput = document.getElementById('match_info');

@@ -327,6 +327,7 @@ return [
         'save_team' => 'Save Team',
         'select_players' => 'Select players...',
         'search_players' => 'Search players',
+        'select_teams' => 'Select teams...',
         'select_players_hint' => 'Select multiple players for this team',
         'panel' => 'RCB Admin',
         'dashboard' => 'Dashboard',
