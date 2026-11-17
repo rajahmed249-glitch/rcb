@@ -534,7 +534,7 @@ return [
         'full_name' => 'পূর্ণ নাম',
         'playing_role' => 'খেলার ভূমিকা',
         'action' => 'অ্যাকশন',
-        'sn' => 'S.N./#',
+        'sn' => '#',
         'match_no' => 'মে.ন.',
         'match_name' => 'ম্যাচ নাম',
         'date_time' => 'তারিখ ও সময়',

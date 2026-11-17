@@ -534,7 +534,7 @@ return [
         'full_name' => 'Full Name',
         'playing_role' => 'Playing Role',
         'action' => 'Action',
-        'sn' => 'S.N./#',
+        'sn' => '#',
         'match_no' => 'M.N.',
         'match_name' => 'Match Name',
         'date_time' => 'Date & Time',
