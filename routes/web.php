@@ -48,9 +48,10 @@ Route::get('/sponsors', [SponsorController::class, 'index'])->name('sponsors.ind
 
 Route::get('/about', [PageController::class, 'about'])->name('pages.about');
 Route::get('/gallery', [PageController::class, 'gallery'])->name('pages.gallery');
+Route::get('/gallery/videos', [PageController::class, 'galleryVideos'])->name('pages.gallery-videos');
+Route::get('/records', [PageController::class, 'records'])->name('pages.records');
 Route::get('/teams', [PageController::class, 'teams'])->name('pages.teams');
 Route::get('/teams/{slug}', [PageController::class, 'teamProfile'])->name('pages.team-profile');
-Route::get('/records', [PageController::class, 'records'])->name('pages.records');
 Route::get('/contact', [PageController::class, 'contact'])->name('pages.contact');
 
 Route::get('/search/live', [SearchController::class, 'live'])->name('search.live');

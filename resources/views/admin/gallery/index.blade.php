@@ -21,9 +21,10 @@
             @foreach ($photos as $photo)
                 <tr>
                     <td>{{ $photo->id }}</td>
-                    <td><img src="{{ asset($photo->image) }}" alt="" class="admin-thumb"></td>
+                    <td><img src="{{ $photo->thumbnail_url }}" alt="" class="admin-thumb"></td>
                     <td>
                         {{ $photo->title }}@if($photo->title_bn) <small class="admin-bn">/{{ $photo->title_bn }}</small>@endif
+                        <br><span class="admin-badge {{ $photo->type === 'video' ? 'video' : 'photo' }}">{{ $photo->type === 'video' ? __('site.admin.video') : __('site.admin.photo') }}</span>
                     </td>
                     <td>{{ $photo->sort_order }}</td>
                     <td class="admin-actions">

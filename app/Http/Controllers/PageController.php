@@ -31,20 +31,24 @@ class PageController extends Controller
 
     public function gallery()
     {
-        $photos = GalleryPhoto::orderBy('sort_order')->orderBy('id')->get();
-
-        if ($photos->isEmpty()) {
-            $photos = collect([
-                ['image' => 'images/banner1.png', 'alt' => 'RCB team on the field'],
-                ['image' => 'images/banner2.webp', 'alt' => 'RCB team photo'],
-                ['image' => 'images/banner3.webp', 'alt' => 'RCB celebration'],
-                ['image' => 'images/news/team-photo-2.webp', 'alt' => 'RCB team group photo'],
-                ['image' => 'images/news/team-photo-3.webp', 'alt' => 'RCB team group photo'],
-                ['image' => 'images/logo.png', 'alt' => 'RCB logo'],
-            ])->map(fn ($p) => (object) $p);
-        }
+        $photos = GalleryPhoto::photos()
+            ->orderByDesc('date')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->paginate(12);
 
         return view('pages.gallery', ['photos' => $photos]);
+    }
+
+    public function galleryVideos()
+    {
+        $videos = GalleryPhoto::videos()
+            ->orderByDesc('date')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->paginate(9);
+
+        return view('pages.gallery-videos', ['videos' => $videos]);
     }
 
     public function teams()
@@ -107,11 +111,72 @@ class PageController extends Controller
 
     public function records()
     {
+        $rcbTeam = Team::where('is_rcb', true)->first();
+        $rcbId = $rcbTeam?->id ?? 1;
+
+        $matches = CricketMatch::completed()
+            ->orderByDesc('match_date')
+            ->get();
+
+        $opponentIds = $matches->pluck('opponent_team_id')->filter()->unique();
+        $teams = Team::whereIn('id', $opponentIds)->get()->keyBy('id');
+
+        $opponents = [];
+
+        foreach ($opponentIds as $oppId) {
+            $team = $teams->get($oppId);
+            $oppMatches = $matches->where('opponent_team_id', $oppId);
+
+            $played = $oppMatches->count();
+            $won = $oppMatches->where('won', true)->count();
+            $lost = $oppMatches->where('won', false)->whereNotNull('won')->count();
+            $draw = $played - $won - $lost;
+
+            $opponents[] = [
+                'id' => $oppId,
+                'name' => $team?->display_name ?? $oppMatches->first()->display_opponent_name,
+                'logo' => $team?->logo ?? $oppMatches->first()->opponent_logo,
+                'slug' => $team?->slug,
+                'played' => $played,
+                'won' => $won,
+                'lost' => $lost,
+                'draw' => $draw,
+                'w_l' => $lost > 0 ? round($won / $lost, 2) : ($won > 0 ? $won : 0),
+                'w_percent' => $played > 0 ? round(($won / $played) * 100, 1) : 0,
+                'l_percent' => $played > 0 ? round(($lost / $played) * 100, 1) : 0,
+                'd_percent' => $played > 0 ? round(($draw / $played) * 100, 1) : 0,
+                'matches' => $oppMatches->take(5)->values(),
+            ];
+        }
+
+        usort($opponents, fn ($a, $b) => $b['played'] <=> $a['played']);
+
+        $totalMatches = collect($opponents)->sum('played');
+        $totalWins = collect($opponents)->sum('won');
+        $totalLosses = collect($opponents)->sum('lost');
+        $totalDraws = collect($opponents)->sum('draw');
+        $winPercentage = $totalMatches > 0 ? round(($totalWins / $totalMatches) * 100, 1) : 0;
+
+        $page = max(1, (int) request()->get('page', 1));
+        $perPage = 10;
+        $paged = array_slice($opponents, ($page - 1) * $perPage, $perPage);
+
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $paged,
+            count($opponents),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         return view('pages.records', [
-            'topRuns' => Player::orderByDesc('runs')->take(5)->get(),
-            'topWickets' => Player::orderByDesc('wickets')->take(5)->get(),
-            'topMatches' => Player::orderByDesc('matches_played')->take(5)->get(),
-            'completed' => CricketMatch::completed()->get(),
+            'opponents' => $paginator,
+            'totalMatches' => $totalMatches,
+            'totalWins' => $totalWins,
+            'totalLosses' => $totalLosses,
+            'totalDraws' => $totalDraws,
+            'winPercentage' => $winPercentage,
+            'rcbId' => $rcbId,
         ]);
     }
 

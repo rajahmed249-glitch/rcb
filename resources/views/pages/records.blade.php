@@ -1,105 +1,200 @@
 @extends('layouts.app')
 
-@section('title', 'Records')
+@section('title', __('site.records.title') . ' - RCB')
 
 @section('content')
-    <div class="container">
-        <div class="page-head">
-            <h1>{{ __('site.records.title') }}</h1>
-            <p>{{ __('site.records.subtitle') }}</p>
+    <div class="rec-wrap">
+        <div class="rec-stats">
+            <div class="rec-stat purple">
+                <p class="rec-stat-label">{{ __('site.records.total_matches') }}</p>
+                <p class="rec-stat-num">{{ $totalMatches }}</p>
+                <p class="rec-stat-hint">{{ __('site.records.all_opponents') }}</p>
+            </div>
+            <div class="rec-stat green">
+                <p class="rec-stat-label">{{ __('site.records.total_wins') }}</p>
+                <p class="rec-stat-num">{{ $totalWins }}</p>
+                <p class="rec-stat-hint">{{ __('site.records.across_formats') }}</p>
+            </div>
+            <div class="rec-stat red">
+                <p class="rec-stat-label">{{ __('site.records.total_losses') }}</p>
+                <p class="rec-stat-num">{{ $totalLosses }}</p>
+                <p class="rec-stat-hint">{{ $totalDraws }} {{ __('site.records.no_result') }}</p>
+            </div>
+            <div class="rec-stat blue">
+                <p class="rec-stat-label">{{ __('site.records.win_percentage') }}</p>
+                <p class="rec-stat-num">{{ $winPercentage }}%</p>
+                <p class="rec-stat-hint">{{ $totalWins }} {{ __('site.records.wins_in') }} {{ $totalMatches }} {{ __('site.records.matches') }}</p>
+            </div>
         </div>
 
-        @php
-            $highestTotal = $completed->sortByDesc(fn ($m) => $m->rcb_score ?? 0)->first();
-            $biggestWin = $completed->where('won', true)->first();
-        @endphp
-
-        <section class="section">
-            <div class="section-head"><h2>{{ __('site.records.team_records') }}</h2></div>
-            <div class="stats-grid">
-                <div class="card stat-card">
-                    <span class="stat-number">{{ $highestTotal?->rcb_score ?? '-' }}{{ $highestTotal ? '-'.$highestTotal->rcb_overs : '' }}</span>
-                    <span class="stat-label">{{ __('site.records.highest_total') }}</span>
-                </div>
-                <div class="card stat-card">
-                    <span class="stat-number">{{ $completed->where('won', true)->count() }}</span>
-                    <span class="stat-label">{{ __('site.records.total_wins') }}</span>
-                </div>
-                <div class="card stat-card">
-                    <span class="stat-number">{{ $completed->count() }}</span>
-                    <span class="stat-label">{{ __('site.records.matches_played') }}</span>
-                </div>
-                <div class="card stat-card">
-                    <span class="stat-number">{{ $completed->where('won', true)->count() > 0 ? 'Yes' : '-' }}</span>
-                    <span class="stat-label">{{ __('site.records.big_match_winners') }}</span>
-                </div>
+        <div class="rec-panel">
+            <div class="rec-panel-head">
+                <h2>
+                    <svg fill="currentColor" viewBox="0 0 20 20"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/></svg>
+                    {{ __('site.records.results_summary') }}
+                </h2>
+                <span class="rec-updated">{{ __('site.records.last_updated') }}: {{ now()->translatedFormat('d M Y') }}</span>
             </div>
-        </section>
 
-        <section class="section">
-            <div class="section-head"><h2>{{ __('site.records.batting_most_runs') }}</h2></div>
-            <div class="card table-card">
-                <table class="record-table">
-                    <thead><tr><th>#</th><th>{{ __('site.records.player') }}</th><th>{{ __('site.role') }}</th><th>{{ __('site.runs') }}</th><th>{{ __('site.matches') }}</th></tr></thead>
+            <div class="rec-table-scroll">
+                <table class="rec-table">
+                    <thead>
+                        <tr>
+                            <th>{{ __('site.records.opponent') }}</th>
+                            <th class="c">{{ __('site.records.mat') }}</th>
+                            <th class="c">{{ __('site.records.won') }}</th>
+                            <th class="c">{{ __('site.records.lost') }}</th>
+                            <th class="c">{{ __('site.records.nr') }}</th>
+                            <th class="c">{{ __('site.records.w_l') }}</th>
+                            <th class="c">{{ __('site.records.wins') }}%</th>
+                            <th class="c">{{ __('site.records.losses') }}%</th>
+                            <th class="c">{{ __('site.records.nr') }}%</th>
+                            <th class="c">{{ __('site.records.details') }}</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        @forelse ($topRuns as $i => $player)
-                            <tr>
-                                <td>{{ $i + 1 }}</td>
-                                <td><a href="{{ route('players.show', $player) }}" class="text-link">{{ $player->display_name }}</a>@if ($player->badge) ({{ $player->badge }})@endif</td>
-                                <td>{{ $player->display_role }}</td>
-                                <td><strong>{{ $player->runs }}</strong></td>
-                                <td>{{ $player->matches_played }}</td>
+                        @forelse ($opponents as $op)
+                            @php($i = $loop->index)
+                            <tr class="rec-row" onclick="toggleRow({{ $i }})">
+                                <td>
+                                    <div class="rec-opp">
+                                        @if ($op['logo'])
+                                            <img src="{{ asset($op['logo']) }}" alt="{{ $op['name'] }}">
+                                        @else
+                                            <span class="rec-opp-fallback">{{ mb_strtoupper(mb_substr($op['name'], 0, 2)) }}</span>
+                                        @endif
+                                        @if ($op['slug'])
+                                            <a href="{{ route('pages.team-profile', $op['slug']) }}" onclick="event.stopPropagation()">{{ $op['name'] }}</a>
+                                        @else
+                                            <span>{{ $op['name'] }}</span>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="c strong">{{ $op['played'] }}</td>
+                                <td class="c win">{{ $op['won'] }}</td>
+                                <td class="c loss">{{ $op['lost'] }}</td>
+                                <td class="c muted">{{ $op['draw'] }}</td>
+                                <td class="c mono">{{ $op['w_l'] }}</td>
+                                <td><div class="rec-bar"><span class="mono">{{ $op['w_percent'] }}%</span><div class="rec-bar-track"><div class="rec-bar-fill green" style="width: {{ $op['w_percent'] }}%"></div></div></div></td>
+                                <td><div class="rec-bar"><span class="mono">{{ $op['l_percent'] }}%</span><div class="rec-bar-track"><div class="rec-bar-fill red" style="width: {{ $op['l_percent'] }}%"></div></div></div></td>
+                                <td><div class="rec-bar"><span class="mono">{{ $op['d_percent'] }}%</span><div class="rec-bar-track"><div class="rec-bar-fill yellow" style="width: {{ $op['d_percent'] }}%"></div></div></div></td>
+                                <td class="c">
+                                    <button type="button" class="rec-toggle" onclick="event.stopPropagation(); toggleRow({{ $i }})" aria-label="{{ __('site.records.details') }}">
+                                        <svg id="arrow-{{ $i }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr id="row-{{ $i }}" class="rec-expanded hidden">
+                                <td colspan="10">
+                                    <div class="rec-h2h">
+                                        <div class="rec-h2h-head">
+                                            <h3><span class="dot"></span>{{ __('site.records.head_to_head') }} <em>{{ $op['name'] }}</em></h3>
+                                        </div>
+                                        @if ($op['matches']->count())
+                                            <table class="rec-h2h-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>{{ __('site.records.scorecard') }}</th>
+                                                        <th>{{ __('site.records.result') }}</th>
+                                                        <th>{{ __('site.records.date') }}</th>
+                                                        <th class="c">{{ __('site.records.scoreboard') }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($op['matches'] as $m)
+                                                        <tr>
+                                                            <td class="mono">{{ $m->id }}</td>
+                                                            <td>
+                                                                <div class="rec-score-lines">
+                                                                    <span>RCB: {{ $m->rcb_score ?? '-' }}{{ $m->rcb_overs ? ' (' . $m->rcb_overs . ' ov)' : '' }}</span>
+                                                                    <span>{{ $m->display_opponent_name }}: {{ $m->opponent_score ?? '-' }}{{ $m->opponent_overs ? ' (' . $m->opponent_overs . ' ov)' : '' }}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="rec-result {{ $m->won ? 'win' : 'loss' }}">{{ $m->result_text ?: ($m->won ? __('site.records.won') : __('site.records.lost')) }}</span>
+                                                            </td>
+                                                            <td class="muted">{{ $m->match_date?->translatedFormat('d M Y') }}</td>
+                                                            <td class="c">
+                                                                <a href="{{ route('matches.show', $m) }}" class="rec-view" onclick="event.stopPropagation()">
+                                                                    {{ __('site.records.view') }}
+                                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        @else
+                                            <p class="rec-h2h-empty">{{ __('site.records.no_match_details') }}</p>
+                                        @endif
+                                    </div>
+                                </td>
                             </tr>
                         @empty
-                            <tr><td colspan="5" class="muted">{{ __('site.records.no_records') }}</td></tr>
+                            <tr>
+                                <td colspan="10" class="rec-none">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    <p class="rec-none-title">{{ __('site.records.no_opponents') }}</p>
+                                    <p class="rec-none-sub">{{ __('site.records.no_match_records') }}</p>
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-        </section>
+        </div>
 
-        <section class="section">
-            <div class="section-head"><h2>{{ __('site.records.bowling_most_wickets') }}</h2></div>
-            <div class="card table-card">
-                <table class="record-table">
-                    <thead><tr><th>#</th><th>{{ __('site.records.player') }}</th><th>{{ __('site.role') }}</th><th>{{ __('site.wickets') }}</th><th>{{ __('site.matches') }}</th></tr></thead>
-                    <tbody>
-                        @forelse ($topWickets as $i => $player)
-                            <tr>
-                                <td>{{ $i + 1 }}</td>
-                                <td><a href="{{ route('players.show', $player) }}" class="text-link">{{ $player->display_name }}</a>@if ($player->badge) ({{ $player->badge }})@endif</td>
-                                <td>{{ $player->display_role }}</td>
-                                <td><strong>{{ $player->wickets }}</strong></td>
-                                <td>{{ $player->matches_played }}</td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="5" class="muted">{{ __('site.records.no_records') }}</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
+        @if ($opponents->lastPage() > 1)
+            <div class="pgal-pager">
+                <nav class="pgal-pager-nav">
+                    @if ($opponents->onFirstPage())
+                        <span class="pgal-page-btn disabled">‹ {{ __('site.gallery.prev') }}</span>
+                    @else
+                        <a href="{{ $opponents->previousPageUrl() }}" class="pgal-page-btn">‹ {{ __('site.gallery.prev') }}</a>
+                    @endif
+                    <div class="pgal-pages">
+                        @foreach ($opponents->getUrlRange(1, $opponents->lastPage()) as $p => $url)
+                            @if ($p == $opponents->currentPage())
+                                <span class="pgal-page-num current">{{ $p }}</span>
+                            @else
+                                <a href="{{ $url }}" class="pgal-page-num">{{ $p }}</a>
+                            @endif
+                        @endforeach
+                    </div>
+                    <span class="pgal-page-info">{{ __('site.gallery.page') }} {{ $opponents->currentPage() }}/{{ $opponents->lastPage() }}</span>
+                    @if ($opponents->hasMorePages())
+                        <a href="{{ $opponents->nextPageUrl() }}" class="pgal-page-btn">{{ __('site.gallery.next') }} ›</a>
+                    @else
+                        <span class="pgal-page-btn disabled">{{ __('site.gallery.next') }} ›</span>
+                    @endif
+                </nav>
             </div>
-        </section>
-
-        <section class="section">
-            <div class="section-head"><h2>{{ __('site.records.most_appearances') }}</h2></div>
-            <div class="card table-card">
-                <table class="record-table">
-                    <thead><tr><th>#</th><th>{{ __('site.records.player') }}</th><th>{{ __('site.role') }}</th><th>{{ __('site.matches') }}</th><th>{{ __('site.runs') }}</th></tr></thead>
-                    <tbody>
-                        @forelse ($topMatches as $i => $player)
-                            <tr>
-                                <td>{{ $i + 1 }}</td>
-                                <td><a href="{{ route('players.show', $player) }}" class="text-link">{{ $player->display_name }}</a>@if ($player->badge) ({{ $player->badge }})@endif</td>
-                                <td>{{ $player->display_role }}</td>
-                                <td><strong>{{ $player->matches_played }}</strong></td>
-                                <td>{{ $player->runs }}</td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="5" class="muted">{{ __('site.records.no_records') }}</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </section>
+        @endif
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        function toggleRow(index) {
+            var row = document.getElementById('row-' + index);
+            var arrow = document.getElementById('arrow-' + index);
+
+            if (row.classList.contains('hidden')) {
+                row.classList.remove('hidden');
+                if (arrow) arrow.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />';
+            } else {
+                row.classList.add('hidden');
+                if (arrow) arrow.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />';
+            }
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('tr[id^="row-"]').forEach(function (row) {
+                    if (!row.classList.contains('hidden')) toggleRow(parseInt(row.id.replace('row-', ''), 10));
+                });
+            }
+        });
+    </script>
+@endpush
