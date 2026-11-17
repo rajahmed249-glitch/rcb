@@ -62,12 +62,12 @@
         <table>
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>{{ __('site.admin.match') }}</th>
-                    <th>{{ __('site.admin.tournaments') }}</th>
-                    <th>{{ __('site.admin.match_date') }}</th>
-                    <th>{{ __('site.admin.rcb_score') }}</th>
-                    <th>{{ __('site.admin.opponent_score') }}</th>
+                    <th>{{ __('site.admin.sn') }}</th>
+                    <th>{{ __('site.admin.match_no') }}</th>
+                    <th>{{ __('site.admin.match_name') }}</th>
+                    <th>{{ __('site.admin.venue') }}</th>
+                    <th>{{ __('site.admin.team') }}</th>
+                    <th>{{ __('site.admin.date_time') }}</th>
                     <th>{{ __('site.admin.status') }}</th>
                     <th>{{ __('site.admin.action') }}</th>
                 </tr>
@@ -76,17 +76,30 @@
                 @if ($matches->count())
                     @foreach ($matches as $match)
                         <tr>
-                            <td>{{ $match->match_number }}</td>
+                            <td>{{ $matches->firstItem() + $loop->index }}</td>
+                            <td>{{ $match->match_number ?: '—' }}</td>
                             <td>
-                                <div class="apl-pname">RCB vs {{ $match->display_opponent_name }}</div>
-                                @if ($match->venue)
-                                    <div class="apl-psub"><i class="fas fa-map-marker-alt"></i> {{ $match->venue }}</div>
+                                <div class="apl-match-name">RCB vs {{ $match->display_opponent_name }}</div>
+                                @if ($match->status === 'completed' && $match->result_text)
+                                    <div class="apl-result-text">{{ $match->result_text }}</div>
                                 @endif
                             </td>
-                            <td class="apl-muted">{{ $match->tournament?->display_name ?? '—' }}</td>
-                            <td class="apl-muted">{{ $match->match_date->format('d M Y') }}</td>
-                            <td class="apl-muted">{{ $match->rcb_score ?: '-' }}</td>
-                            <td class="apl-muted">{{ $match->opponent_score ?: '-' }}</td>
+                            <td><span class="apl-venue-text">{{ Str::limit($match->venue ?: 'TBD', 35) }}</span></td>
+                            <td>
+                                <div class="apl-team-row">
+                                    <span class="apl-team-name">RCB</span>
+                                    <span class="apl-vs-badge">VS</span>
+                                    @if ($match->opponent_team_id)
+                                        <a href="{{ route('pages.teamProfile', $match->opponentTeam->slug) }}" target="_blank" class="apl-team-name apl-team-link" title="{{ $match->display_opponent_name }}">{{ $match->display_opponent_name }}</a>
+                                    @else
+                                        <span class="apl-team-name">{{ $match->display_opponent_name }}</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td>
+                                <div class="apl-date-text">{{ $match->match_date->format('d M Y') }}</div>
+                                <div class="apl-time-text">{{ $match->match_date->format('h:i A') }}</div>
+                            </td>
                             <td>
                                 <span class="apl-status-badge {{ $match->status }}">
                                     <span class="status-dot {{ $match->status }}"></span>{{ ucfirst($match->status) }}
