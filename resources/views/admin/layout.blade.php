@@ -163,16 +163,16 @@
                         <span>{{ __('site.admin.visit_site') }}</span>
                     </a>
                     <div class="admin-profile" id="adminProfile">
-                        <span class="admin-profile-name">{{ session('admin_user_name', 'Admin') }}</span>
-                        @if (session('admin_user_avatar'))
-                            <div class="admin-avatar"><img src="{{ asset(session('admin_user_avatar')) }}" alt="{{ session('admin_user_name', 'Admin') }}"></div>
+                        <span class="admin-profile-name">{{ $adminUser?->name ?? session('admin_user_name', 'Admin') }}</span>
+                        @if ($adminUser?->avatar)
+                            <div class="admin-avatar"><img src="{{ asset($adminUser->avatar) }}" alt="{{ $adminUser->name ?? 'Admin' }}"></div>
                         @else
-                            <div class="admin-avatar">{{ strtoupper(substr(session('admin_user_name', 'Admin'), 0, 1)) }}</div>
+                            <div class="admin-avatar">{{ strtoupper(substr($adminUser?->name ?? session('admin_user_name', 'Admin'), 0, 1)) }}</div>
                         @endif
                         <div class="profile-dropdown">
                             <div class="pd-head">
-                                <div class="pd-name">{{ session('admin_user_name', 'Admin') }}</div>
-                                <div class="pd-role">{{ session('admin_user_role', 'Administrator') }}</div>
+                                <div class="pd-name">{{ $adminUser?->name ?? session('admin_user_name', 'Admin') }}</div>
+                                <div class="pd-role">{{ $adminUser?->role?->display_name ?? session('admin_user_role', 'Administrator') }}</div>
                             </div>
                             <a href="{{ route('admin.settings.edit') }}"><span class="admin-ico"><i class="fas fa-cog"></i></span> {{ __('site.admin.settings') }}</a>
                             <a href="{{ route('admin.logout') }}" class="logout-link" onclick="event.preventDefault(); document.getElementById('logoutFormTop').submit();"><span class="admin-ico"><i class="fas fa-sign-out-alt"></i></span> {{ __('site.admin.logout') }}</a>
