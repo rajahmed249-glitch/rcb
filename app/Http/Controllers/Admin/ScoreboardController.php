@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CricketMatch;
+use App\Models\MatchCommentary;
+use App\Models\MatchFallOfWicket;
+use App\Models\MatchPlayerStat;
 use App\Models\Player;
 use Illuminate\Http\Request;
 
@@ -61,113 +64,228 @@ class ScoreboardController extends Controller
         return view('admin.scoreboards.create', ['matches' => $matches]);
     }
 
-    public function edit(CricketMatch $match)
+    public function edit(Request $request, CricketMatch $match)
     {
-        $stats = $match->stats()->get()->groupBy(fn ($s) => $s->side . '.' . $s->stat_type);
+        $team = $request->query('team');
+        $side = $team === 'opponent' ? 'opponent' : ($team === 'summary' ? 'summary' : 'rcb');
+
+        $stats = $match->stats()->where('side', $side)->get()->groupBy(fn ($s) => $s->stat_type);
 
         return view('admin.scoreboards.form', [
             'match' => $match,
-            'players' => Player::whereNotNull('team_id')->orderByDesc('is_captain')->orderByDesc('is_vice_captain')->orderBy('name')->get(),
+            'side' => $side,
+            'players' => Player::whereNotNull('team_id')
+                ->orderByDesc('is_captain')
+                ->orderByDesc('is_vice_captain')
+                ->orderBy('id')
+                ->get(),
             'statRows' => [
-                'rcb' => [
-                    'batting' => $stats->get('rcb.batting', collect()),
-                    'bowling' => $stats->get('rcb.bowling', collect()),
-                ],
-                'opponent' => [
-                    'batting' => $stats->get('opponent.batting', collect()),
-                    'bowling' => $stats->get('opponent.bowling', collect()),
-                ],
+                'batting' => $stats->get('batting', collect())->sortBy('sort_order')->values(),
+                'bowling' => $stats->get('bowling', collect())->sortBy('sort_order')->values(),
             ],
+            'fowRows' => $match->fow()->where('side', $side)->get()->values(),
+            'commentaryRows' => $match->commentary()->where('side', $side)->get()->values(),
         ]);
     }
 
     public function update(Request $request, CricketMatch $match)
     {
-        $data = $request->validate([
-            'status' => ['required', 'in:completed,upcoming'],
-            'rcb_score' => ['nullable', 'string', 'max:50'],
-            'rcb_overs' => ['nullable', 'string', 'max:50'],
-            'opponent_score' => ['nullable', 'string', 'max:50'],
-            'opponent_overs' => ['nullable', 'string', 'max:50'],
-            'result_text' => ['nullable', 'string', 'max:255'],
-            'won' => ['nullable', 'boolean'],
-        ]) + [
-            'won' => $request->boolean('won'),
-        ];
+        if ($request->boolean('save_summary')) {
+            $data = $request->validate([
+                'status' => ['required', 'in:completed,upcoming'],
+                'rcb_score' => ['nullable', 'string', 'max:50'],
+                'rcb_overs' => ['nullable', 'string', 'max:50'],
+                'opponent_score' => ['nullable', 'string', 'max:50'],
+                'opponent_overs' => ['nullable', 'string', 'max:50'],
+                'result_text' => ['nullable', 'string', 'max:255'],
+            ]);
+            $data['won'] = $request->boolean('won');
+            $match->update($data);
 
-        $match->update($data);
-        $this->saveStats($request, $match);
+            return redirect()->route('admin.scoreboards.edit', ['match' => $match, 'team' => 'summary'])->with('success', __('site.admin.saved'));
+        }
 
-        return redirect()->route('admin.scoreboards.index')->with('success', __('site.admin.saved'));
+        $side = $request->input('stats_side');
+
+        if (! in_array($side, ['rcb', 'opponent'])) {
+            return redirect()->route('admin.scoreboards.index');
+        }
+
+        $this->saveStats($request, $match, $side);
+        $this->saveFow($request, $match, $side);
+        $this->saveCommentary($request, $match, $side);
+
+        return redirect()->route('admin.scoreboards.edit', ['match' => $match, 'team' => $side])->with('success', __('site.admin.saved'));
     }
 
-    private function saveStats(Request $request, CricketMatch $match): void
+    private function composeDismissal(array $row, $playerNames): string
     {
-        $input = $request->input('stats', []);
+        $type = (string) ($row['dismissal'] ?? '');
+
+        if ($type === '' || $type === 'notout') {
+            return 'not out';
+        }
+
+        if ($type === 'didnotbat') {
+            return 'did not bat';
+        }
+
+        $fielderId = (int) ($row['fielder_id'] ?? 0) ?: null;
+        $bowlerId = (int) ($row['bowler_id'] ?? 0) ?: null;
+        $fielder = trim((string) ($row['fielder_name'] ?? '')) ?: (string) $playerNames->get((int) $fielderId);
+        $bowler = trim((string) ($row['bowler_name'] ?? '')) ?: (string) $playerNames->get((int) $bowlerId);
+
+        return match ($type) {
+            'bowled' => 'b ' . $bowler,
+            'caught' => 'c ' . $fielder . ' b ' . $bowler,
+            'lbw' => 'lbw b ' . $bowler,
+            'runout' => 'run out (' . $fielder . ')',
+            'stumped' => 'st ' . $fielder . ' b ' . $bowler,
+            'c&b' => 'c & b ' . $bowler,
+            'hitwicket' => 'hit wicket b ' . $bowler,
+            default => 'not out',
+        };
+    }
+
+    private function saveStats(Request $request, CricketMatch $match, string $side): void
+    {
+        $input = $request->input('stats', [])[$side] ?? [];
+
+        MatchPlayerStat::where('match_id', $match->id)->where('side', $side)->delete();
+
+        $playerNames = Player::pluck('name', 'id');
         $rows = [];
 
-        foreach (['rcb', 'opponent'] as $side) {
-            foreach (['batting', 'bowling'] as $type) {
-                foreach ($input[$side][$type] ?? [] as $index => $row) {
-                    if (! is_array($row)) {
+        foreach (['batting', 'bowling'] as $type) {
+            foreach ($input[$type] ?? [] as $index => $row) {
+                if (! is_array($row)) {
+                    continue;
+                }
+
+                $playerId = (int) ($row['player_id'] ?? 0) ?: null;
+                $name = trim((string) ($row['name'] ?? ''));
+
+                if ($type === 'batting') {
+                    $runs = $row['runs'] ?? null;
+
+                    if ($playerId === null && $name === '' && ($runs === null || $runs === '')) {
                         continue;
                     }
 
-                    $name = trim((string) ($row['name'] ?? ''));
-                    $playerId = (int) ($row['player_id'] ?? 0) ?: null;
+                    $rows[] = [
+                        'match_id' => $match->id,
+                        'player_id' => $playerId,
+                        'name' => $name ?: ($playerId ? (string) $playerNames->get($playerId) : null),
+                        'side' => $side,
+                        'stat_type' => 'batting',
+                        'sort_order' => $index,
+                        'runs' => max(0, (int) ($row['runs'] ?? 0)),
+                        'balls' => max(0, (int) ($row['balls'] ?? 0)),
+                        'fours' => max(0, (int) ($row['fours'] ?? 0)),
+                        'sixes' => max(0, (int) ($row['sixes'] ?? 0)),
+                        'dismissal' => $this->composeDismissal($row, $playerNames),
+                        'fielder_id' => (int) ($row['fielder_id'] ?? 0) ?: null,
+                        'bowler_id' => (int) ($row['bowler_id'] ?? 0) ?: null,
+                    ];
+                } else {
+                    $overs = trim((string) ($row['overs'] ?? ''));
 
-                    if ($type === 'batting') {
-                        if ($row['runs'] === null && $name === '' && $playerId === null) {
-                            continue;
-                        }
-
-                        $rows[] = [
-                            'match_id' => $match->id,
-                            'player_id' => $playerId,
-                            'name' => $name,
-                            'side' => $side,
-                            'stat_type' => 'batting',
-                            'sort_order' => $index,
-                            'runs' => (int) ($row['runs'] ?? 0),
-                            'balls' => (int) ($row['balls'] ?? 0),
-                            'fours' => (int) ($row['fours'] ?? 0),
-                            'sixes' => (int) ($row['sixes'] ?? 0),
-                            'dismissal' => trim((string) ($row['dismissal'] ?? '')) ?: 'not out',
-                        ];
-                    } else {
-                        $overs = trim((string) ($row['overs'] ?? ''));
-                        if ($overs === '' && $name === '' && $playerId === null) {
-                            continue;
-                        }
-
-                        $rows[] = [
-                            'match_id' => $match->id,
-                            'player_id' => $playerId,
-                            'name' => $name,
-                            'side' => $side,
-                            'stat_type' => 'bowling',
-                            'sort_order' => $index,
-                            'overs' => $overs,
-                            'maidens' => (int) ($row['maidens'] ?? 0),
-                            'runs' => (int) ($row['runs'] ?? 0),
-                            'wickets' => (int) ($row['wickets'] ?? 0),
-                            'wides' => (int) ($row['wides'] ?? 0),
-                            'noballs' => (int) ($row['noballs'] ?? 0),
-                        ];
+                    if ($playerId === null && $name === '' && $overs === '') {
+                        continue;
                     }
+
+                    $rows[] = [
+                        'match_id' => $match->id,
+                        'player_id' => $playerId,
+                        'name' => $name ?: ($playerId ? (string) $playerNames->get($playerId) : null),
+                        'side' => $side,
+                        'stat_type' => 'bowling',
+                        'sort_order' => $index,
+                        'overs' => $overs ?: null,
+                        'maidens' => max(0, (int) ($row['maidens'] ?? 0)),
+                        'runs' => max(0, (int) ($row['runs'] ?? 0)),
+                        'wickets' => max(0, (int) ($row['wickets'] ?? 0)),
+                        'wides' => max(0, (int) ($row['wides'] ?? 0)),
+                        'noballs' => max(0, (int) ($row['noballs'] ?? 0)),
+                    ];
                 }
             }
         }
 
-        $match->stats()->delete();
-
         foreach ($rows as $row) {
-            $match->stats()->create($row);
+            MatchPlayerStat::create($row);
         }
 
-        $match->update([
-            'rcb_extras' => (int) ($input['rcb']['extras'] ?? 0),
-            'opponent_extras' => (int) ($input['opponent']['extras'] ?? 0),
-        ]);
+        $extrasInput = $request->input('extras', [])[$side] ?? null;
+
+        if (is_array($extrasInput)) {
+            $match->update([$side === 'rcb' ? 'rcb_extras' : 'opponent_extras' => max(0, (int) ($extrasInput['total'] ?? 0))]);
+        }
+    }
+
+    private function saveFow(Request $request, CricketMatch $match, string $side): void
+    {
+        $input = $request->input('fow', [])[$side] ?? [];
+
+        MatchFallOfWicket::where('match_id', $match->id)->where('side', $side)->delete();
+
+        $playerNames = Player::pluck('name', 'id');
+
+        foreach ($input as $index => $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+
+            $playerId = (int) ($row['player_id'] ?? 0) ?: null;
+            $name = trim((string) ($row['name'] ?? ''));
+            $score = trim((string) ($row['score'] ?? ''));
+
+            if ($playerId === null && $name === '' && $score === '') {
+                continue;
+            }
+
+            MatchFallOfWicket::create([
+                'match_id' => $match->id,
+                'side' => $side,
+                'player_id' => $playerId,
+                'name' => $name ?: ($playerId ? (string) $playerNames->get($playerId) : null),
+                'score' => $score ?: null,
+                'wicket_no' => max(0, (int) ($row['wicket_no'] ?? 0)) ?: null,
+                'over' => trim((string) ($row['over'] ?? '')) ?: null,
+                'sort_order' => $index,
+            ]);
+        }
+    }
+
+    private function saveCommentary(Request $request, CricketMatch $match, string $side): void
+    {
+        $input = $request->input('commentary', [])[$side] ?? [];
+
+        MatchCommentary::where('match_id', $match->id)->where('side', $side)->delete();
+
+        foreach ($input as $index => $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+
+            $description = trim((string) ($row['description'] ?? ''));
+            $overNumber = trim((string) ($row['over_number'] ?? ''));
+            $scoreAt = trim((string) ($row['score_at'] ?? ''));
+
+            if ($description === '' && $overNumber === '' && $scoreAt === '') {
+                continue;
+            }
+
+            MatchCommentary::create([
+                'match_id' => $match->id,
+                'side' => $side,
+                'over_number' => $overNumber ?: null,
+                'score_at' => $scoreAt ?: null,
+                'ball_number' => trim((string) ($row['ball_number'] ?? '')) ?: null,
+                'ball_per_run' => trim((string) ($row['ball_per_run'] ?? '')) ?: null,
+                'description' => $description ?: null,
+                'sort_order' => $index,
+            ]);
+        }
     }
 }

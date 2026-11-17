@@ -2053,3 +2053,60 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
     outline-offset: 4px;
     border-radius: 8px;
 }
+
+.scb-team-pill svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+.scb-team-pill.result {
+    background: #ccfbf1;
+    color: #0f766e;
+}
+.scb-team-pill.result:hover {
+    background: #99f6e4;
+    box-shadow: 0 1px 4px rgba(15, 118, 110, .25);
+}
+.scb-score-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 16px;
+}
+.scb-score-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+.scb-score-tab:hover {
+    border-color: #14b8a6;
+    color: #0f766e;
+}
+.scb-score-tab.active {
+    background: linear-gradient(135deg, #14b8a6, #0d9488);
+    border-color: #0d9488;
+    color: #fff;
+}
+.scb-tab-panel {
+    display: none;
+}
+.scb-tab-panel.active {
+    display: block;
+}
+.scb-tab-panel textarea {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    resize: vertical;
+}

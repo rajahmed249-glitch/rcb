@@ -11,14 +11,14 @@
 <tr>
     <td class="apf-st-player">
         @if ($side === 'rcb')
-            <select name="stats[rcb][bowling][{{ $i }}][player_id]">
-                <option value="">-- {{ __('site.admin.player') }} --</option>
+            <select name="stats[{{ $side }}][bowling][{{ $i }}][player_id]">
+                <option value="">-- {{ __('site.admin.select_bowler') }} --</option>
                 @foreach ($players as $pl)
                     <option value="{{ $pl->id }}" @selected($pid == $pl->id)>{{ $pl->name }}</option>
                 @endforeach
             </select>
         @else
-            <input type="text" name="stats[opponent][bowling][{{ $i }}][name]" value="{{ $nm }}" placeholder="{{ __('site.admin.player_name') }}">
+            <input type="text" name="stats[{{ $side }}][bowling][{{ $i }}][name]" value="{{ $nm }}" placeholder="{{ __('site.admin.player_name') }}">
         @endif
     </td>
     <td><input type="text" name="stats[{{ $side }}][bowling][{{ $i }}][overs]" value="{{ $ov }}" placeholder="3.2"></td>
