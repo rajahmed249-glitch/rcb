@@ -8,14 +8,14 @@
     $wk = $row?->wickets ?? (is_array($row) ? ($row['wickets'] ?? '') : '');
     $wd = $row?->wides ?? (is_array($row) ? ($row['wides'] ?? '') : '');
     $nb = $row?->noballs ?? (is_array($row) ? ($row['noballs'] ?? '') : '');
-    $bowlerSelect = $players->isNotEmpty() && ((string) $pid === '' || $players->contains('id', (int) $pid));
+    $bowlerSelect = $fieldPlayers->isNotEmpty() && ((string) $pid === '' || $fieldPlayers->contains('id', (int) $pid));
 @endphp
 <tr>
     <td class="apf-st-player">
         @if ($bowlerSelect)
             <select name="stats[{{ $side }}][bowling][{{ $i }}][player_id]" class="scb-bowl-select">
                 <option value="">-- {{ __('site.admin.select_bowler') }} --</option>
-                @foreach ($players as $pl)
+                @foreach ($fieldPlayers as $pl)
                     <option value="{{ $pl->id }}" @selected($pid == $pl->id)>{{ $pl->name }}</option>
                 @endforeach
             </select>

@@ -72,6 +72,10 @@ class Player extends Model
 
     public function getDisplayRoleAttribute(): string
     {
+        if (! $this->role) {
+            return '';
+        }
+
         $key = 'site.roles.' . str_replace(['-', ' '], '_', strtolower($this->role));
 
         return __($key) === $key ? $this->role : __($key);
