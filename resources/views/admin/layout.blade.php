@@ -164,7 +164,11 @@
                     </a>
                     <div class="admin-profile" id="adminProfile">
                         <span class="admin-profile-name">{{ session('admin_user_name', 'Admin') }}</span>
-                        <div class="admin-avatar">{{ strtoupper(substr(session('admin_user_name', 'Admin'), 0, 1)) }}</div>
+                        @if (session('admin_user_avatar'))
+                            <div class="admin-avatar"><img src="{{ asset(session('admin_user_avatar')) }}" alt="{{ session('admin_user_name', 'Admin') }}"></div>
+                        @else
+                            <div class="admin-avatar">{{ strtoupper(substr(session('admin_user_name', 'Admin'), 0, 1)) }}</div>
+                        @endif
                         <div class="profile-dropdown">
                             <div class="pd-head">
                                 <div class="pd-name">{{ session('admin_user_name', 'Admin') }}</div>

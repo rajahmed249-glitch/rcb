@@ -1454,7 +1454,7 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
     .apl-title { font-size: 16px; }
 }
 @media (max-width: 400px) {
-    .visit-btn { display: none; }
+    .visit-btn { padding: 5px 8px; }
     .admin-topbar { padding: 0 8px; }
     .admin-topbar-stats { gap: 4px; }
     .stat-badge { padding: 3px 6px; }
