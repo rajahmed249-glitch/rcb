@@ -49,11 +49,10 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>{{ __('site.admin.match') }}</th>
-                    <th>{{ __('site.admin.match_date') }}</th>
-                    <th>{{ __('site.admin.rcb_score') }} - {{ __('site.admin.opponent_score') }}</th>
-                    <th>{{ __('site.admin.status') }}</th>
-                    <th>{{ __('site.admin.result_text') }}</th>
+                    <th>{{ __('site.admin.match_no') }}</th>
+                    <th>{{ __('site.admin.match_name') }}</th>
+                    <th>{{ __('site.admin.venue') }}</th>
+                    <th>{{ __('site.admin.date_time') }}</th>
                     <th>{{ __('site.admin.action') }}</th>
                 </tr>
             </thead>
@@ -62,17 +61,13 @@
                     @foreach ($matches as $match)
                         <tr>
                             <td>{{ $matches->firstItem() + $loop->index }}</td>
+                            <td><span class="apl-match-no">{{ $match->match_number ?: '—' }}</span></td>
+                            <td><span class="apl-venue-text">{!! collect(mb_str_split($match->match_name ?: ('RCB vs ' . $match->display_opponent_name), 25))->map(fn ($c) => e($c))->implode('<br>') !!}</span></td>
+                            <td><span class="apl-venue-text">{!! collect(mb_str_split($match->venue ?: 'TBD', 25))->map(fn ($c) => e($c))->implode('<br>') !!}</span></td>
                             <td>
-                                <div class="apl-pname">RCB vs {{ $match->display_opponent_name }}</div>
+                                <div class="apl-date-text">{{ $match->match_date->format('d M Y') }}</div>
+                                <div class="apl-time-text">{{ $match->match_date->format('h:i A') }}</div>
                             </td>
-                            <td class="apl-muted">{{ $match->match_date->format('d M Y') }}</td>
-                            <td class="apl-muted">{{ $match->rcb_score ?? '-' }} - {{ $match->opponent_score ?? '-' }}</td>
-                            <td>
-                                <span class="apl-status-badge {{ $match->status }}">
-                                    <span class="status-dot {{ $match->status }}"></span>{{ ucfirst($match->status) }}
-                                </span>
-                            </td>
-                            <td class="apl-muted">{{ $match->result_text ?: '—' }}</td>
                             <td>
                                 <div class="apl-acts">
                                     <a href="{{ route('admin.scoreboards.edit', $match) }}" class="apl-act apl-act-edit" title="{{ __('site.admin.edit_score') }}">
@@ -84,7 +79,7 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="7" class="apl-empty">
+                        <td colspan="6" class="apl-empty">
                             <i class="fas fa-chart-line"></i>
                             <p>{{ __('site.admin.no_data') }}</p>
                         </td>
@@ -131,7 +126,7 @@
         var url = buildUrl();
         var tbody = document.getElementById('scbTableBody');
         if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="7" class="apl-empty"><i class="fas fa-spinner fa-spin"></i><p>...</p></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="apl-empty"><i class="fas fa-spinner fa-spin"></i><p>...</p></td></tr>';
         }
         fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(function (r) { return r.text(); })
