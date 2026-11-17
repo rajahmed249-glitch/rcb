@@ -42,6 +42,25 @@ class ScoreboardController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        $matches = CricketMatch::with('tournament')
+            ->orderByDesc('match_number')
+            ->orderByDesc('match_date')
+            ->get()
+            ->map(function ($match) {
+                $name = $match->match_name ?: ('RCB vs ' . $match->display_opponent_name);
+
+                return [
+                    'id' => $match->id,
+                    'label' => $name . ' (' . $match->match_date->format('d M Y') . ')',
+                ];
+            })
+            ->values();
+
+        return view('admin.scoreboards.create', ['matches' => $matches]);
+    }
+
     public function edit(CricketMatch $match)
     {
         $stats = $match->stats()->get()->groupBy(fn ($s) => $s->side . '.' . $s->stat_type);

@@ -199,5 +199,19 @@ function removeStatRow(btn) {
     var tr = btn.closest('tr');
     if (tr) tr.remove();
 }
+
+(function () {
+    var params = new URLSearchParams(window.location.search);
+    var team = params.get('team');
+    if (team !== 'rcb' && team !== 'opponent') return;
+    var body = document.getElementById('bat-' + team + '-body');
+    if (!body) return;
+    var wrap = body.closest('.apf-stat-wrap');
+    if (!wrap) return;
+    wrap.classList.add('scb-side-focus');
+    setTimeout(function () {
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+})();
 </script>
 @endsection

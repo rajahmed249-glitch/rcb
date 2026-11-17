@@ -87,6 +87,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('squads/{match}', [SquadController::class, 'destroy'])->name('squads.destroy');
 
         Route::get('scoreboards', [ScoreboardController::class, 'index'])->name('scoreboards.index');
+        Route::get('scoreboards/create', [ScoreboardController::class, 'create'])->name('scoreboards.create');
         Route::get('scoreboards/{match}/edit', [ScoreboardController::class, 'edit'])->name('scoreboards.edit');
         Route::put('scoreboards/{match}', [ScoreboardController::class, 'update'])->name('scoreboards.update');
         Route::resource('gallery', AdminGalleryController::class)->except(['show']);
