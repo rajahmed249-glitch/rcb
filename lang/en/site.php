@@ -288,6 +288,7 @@ return [
         'gallery' => 'Gallery',
         'site_settings_note' => 'Leave a field empty to keep showing the default text.',
         'sign_in' => 'Sign In',
+        'remember_me' => 'Remember me',
         'wrong_password' => 'Incorrect password.',
         'saved' => 'Saved successfully.',
         'deleted' => 'Deleted successfully.',
