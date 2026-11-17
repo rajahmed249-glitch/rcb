@@ -30,92 +30,134 @@
     @method('PUT')
     <input type="hidden" name="stats_side" value="{{ $side === 'summary' ? '' : $side }}">
     @if ($side === 'summary')
-        <input type="hidden" name="save_summary" value="1">
-    @endif
+        @php
+            $rcbScoreParts = array_pad(explode('-', (string) old('team_a_score', $match->rcb_score)), 2, '');
+            $oppScoreParts = array_pad(explode('-', (string) old('team_b_score', $match->opponent_score)), 2, '');
+            $rcbRuns = $rcbScoreParts[0] !== '' ? $rcbScoreParts[0] : '0';
+            $rcbWkts = $rcbScoreParts[1] !== '' ? $rcbScoreParts[1] : '0';
+            $oppRuns = $oppScoreParts[0] !== '' ? $oppScoreParts[0] : '0';
+            $oppWkts = $oppScoreParts[1] !== '' ? $oppScoreParts[1] : '0';
+            $teamAName = $rcbTeam?->display_name ?? 'Real Challenger Boys';
+            $teamBName = $match->display_opponent_name;
+        @endphp
 
-    <div class="apf-heading"><i class="fas fa-info-circle"></i> {{ __('site.admin.match_information') }}</div>
+        <div class="apf-heading"><i class="fas fa-info-circle"></i> {{ __('site.admin.match_result_details') }}</div>
 
-    <div class="apf-row apf-row-3">
-        <div class="apf-group">
-            <label>{{ __('site.admin.tournament') }}</label>
-            <select disabled>
-                <option>{{ $match->tournament?->display_name ?? '—' }}</option>
-            </select>
+        <div class="scb-info-box">
+            <i class="fas fa-users"></i>
+            <span class="scb-info-text">
+                <strong>{{ $match->match_name ?: ('RCB vs ' . $teamBName) }}</strong> &bull;
+                {{ $teamAName }} vs {{ $teamBName }}
+                &bull; <strong>{{ __('site.admin.venue') }}:</strong> {{ $match->venue }}
+            </span>
         </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.match') }}</label>
-            <select disabled>
-                <option>{{ $match->match_name ?: ('RCB vs ' . $match->display_opponent_name) }} (M-{{ $match->match_number }})</option>
-            </select>
-        </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.team') }}</label>
-            <select id="scbTeamSwitch" onchange="switchScoreSide(this.value)">
-                <option value="">{{ __('site.admin.select_one') }}</option>
-                <option value="rcb" @selected($side === 'rcb')>{{ __('site.admin.rcb_side') }}</option>
-                <option value="opponent" @selected($side === 'opponent')>{{ $match->display_opponent_name }}</option>
-            </select>
-        </div>
-    </div>
 
-    @if ($side === 'summary')
-        <div class="apf-heading"><i class="fas fa-chart-bar"></i> {{ __('site.admin.match_result') }}</div>
+        <div class="apf-row">
+            <div class="apf-group">
+                <label>{{ __('site.admin.toss_won_by') }} <span class="apf-required">*</span></label>
+                <select name="toss_winner_id" required>
+                    <option value="">{{ __('site.admin.select_team') }}</option>
+                    @if ($rcbTeam)
+                        <option value="{{ $rcbTeam->id }}" @selected((string) old('toss_winner_id', $match->toss_winner_id) === (string) $rcbTeam->id)>{{ $teamAName }}</option>
+                    @endif
+                    @if ($opponentTeam)
+                        <option value="{{ $opponentTeam->id }}" @selected((string) old('toss_winner_id', $match->toss_winner_id) === (string) $opponentTeam->id)>{{ $teamBName }}</option>
+                    @endif
+                </select>
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.elected_to') }} <span class="apf-required">*</span></label>
+                <select name="toss_elected" required>
+                    <option value="">{{ __('site.admin.select_one') }}</option>
+                    <option value="bat" @selected(old('toss_elected', $match->toss_elected) === 'bat')>{{ __('site.admin.bat') }}</option>
+                    <option value="bowl" @selected(old('toss_elected', $match->toss_elected) === 'bowl')>{{ __('site.admin.bowl') }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="apf-row apf-row-3">
+            <div class="apf-group">
+                <label>{{ $teamAName }} {{ __('site.admin.score') }} <span class="apf-required">*</span></label>
+                <input type="number" name="team_a_score" id="team_a_score" min="0" max="999" required placeholder="{{ __('site.admin.score') }}" value="{{ $rcbRuns }}" oninput="validateScore(this, 'scoreErrorA')" onkeydown="preventInvalidInput(this, event)">
+                <span class="scb-error-text" id="scoreErrorA">{{ __('site.admin.score_error') }}</span>
+                <span class="scb-field-hint">{{ __('site.admin.score_hint') }}</span>
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.wickets') }} <span class="apf-required">*</span></label>
+                <input type="number" name="team_a_wickets" id="team_a_wickets" min="0" max="10" required placeholder="{{ __('site.admin.wickets') }}" value="{{ $rcbWkts }}" oninput="validateWickets(this, 'wicketsErrorA')" onkeydown="preventInvalidInput(this, event)">
+                <span class="scb-error-text" id="wicketsErrorA">{{ __('site.admin.wickets_error') }}</span>
+                <span class="scb-field-hint">{{ __('site.admin.wickets_hint') }}</span>
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.overs') }} <span class="apf-required">*</span></label>
+                <input type="text" name="team_a_overs" id="team_a_overs" required placeholder="e.g., 10.2" value="{{ old('team_a_overs', $match->rcb_overs ?: '0.0') }}" oninput="validateOvers(this, 'oversErrorA')" onkeydown="preventOversInput(this, event)" maxlength="4">
+                <span class="scb-error-text" id="oversErrorA">{{ __('site.admin.overs_error') }}</span>
+                <span class="scb-field-hint">{{ __('site.admin.overs_hint') }}</span>
+            </div>
+        </div>
+
+        <div class="apf-row apf-row-3">
+            <div class="apf-group">
+                <label>{{ $teamBName }} {{ __('site.admin.score') }} <span class="apf-required">*</span></label>
+                <input type="number" name="team_b_score" id="team_b_score" min="0" max="999" required placeholder="{{ __('site.admin.score') }}" value="{{ $oppRuns }}" oninput="validateScore(this, 'scoreErrorB')" onkeydown="preventInvalidInput(this, event)">
+                <span class="scb-error-text" id="scoreErrorB">{{ __('site.admin.score_error') }}</span>
+                <span class="scb-field-hint">{{ __('site.admin.score_hint') }}</span>
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.wickets') }} <span class="apf-required">*</span></label>
+                <input type="number" name="team_b_wickets" id="team_b_wickets" min="0" max="10" required placeholder="{{ __('site.admin.wickets') }}" value="{{ $oppWkts }}" oninput="validateWickets(this, 'wicketsErrorB')" onkeydown="preventInvalidInput(this, event)">
+                <span class="scb-error-text" id="wicketsErrorB">{{ __('site.admin.wickets_error') }}</span>
+                <span class="scb-field-hint">{{ __('site.admin.wickets_hint') }}</span>
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.overs') }} <span class="apf-required">*</span></label>
+                <input type="text" name="team_b_overs" id="team_b_overs" required placeholder="e.g., 10.2" value="{{ old('team_b_overs', $match->opponent_overs ?: '0.0') }}" oninput="validateOvers(this, 'oversErrorB')" onkeydown="preventOversInput(this, event)" maxlength="4">
+                <span class="scb-error-text" id="oversErrorB">{{ __('site.admin.overs_error') }}</span>
+                <span class="scb-field-hint">{{ __('site.admin.overs_hint') }}</span>
+            </div>
+        </div>
+
+        <div class="apf-row apf-row-3">
+            <div class="apf-group">
+                <label>{{ __('site.admin.result_text') }}</label>
+                <input type="text" name="result_text" value="{{ old('result_text', $match->result_text) }}" placeholder="{{ __('site.admin.result_placeholder') }}">
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.winner') }} <span class="apf-required" id="winnerRequired">*</span></label>
+                <select name="winner_team_id" id="winner_team_id" required>
+                    <option value="">{{ __('site.admin.select_winner') }}</option>
+                    @if ($rcbTeam)
+                        <option value="{{ $rcbTeam->id }}" @selected((string) old('winner_team_id', $match->winner_team_id) === (string) $rcbTeam->id)>{{ $teamAName }}</option>
+                    @endif
+                    @if ($opponentTeam)
+                        <option value="{{ $opponentTeam->id }}" @selected((string) old('winner_team_id', $match->winner_team_id) === (string) $opponentTeam->id)>{{ $teamBName }}</option>
+                    @endif
+                </select>
+            </div>
+            <div class="apf-group">
+                <label>{{ __('site.admin.player_of_match') }}</label>
+                <select name="player_of_match_id">
+                    <option value="">{{ __('site.admin.select_player') }}</option>
+                    @foreach ($squadPlayers as $sp)
+                        <option value="{{ $sp->id }}" @selected((string) old('player_of_match_id', $match->player_of_match_id) === (string) $sp->id)>{{ $sp->display_name }}</option>
+                    @endforeach
+                </select>
+                <span class="scb-field-hint">{{ __('site.admin.only_squad_players_hint') }}</span>
+            </div>
+        </div>
 
         <div class="apf-row">
             <div class="apf-group">
                 <label>{{ __('site.admin.status') }} <span class="apf-required">*</span></label>
-                <select name="status" required>
+                <select name="status" id="matchStatus" required onchange="toggleWinnerRequired(this.value)">
                     <option value="upcoming" @selected(old('status', $match->status) === 'upcoming')>{{ __('site.admin.upcoming') }}</option>
+                    <option value="live" @selected(old('status', $match->status) === 'live')>{{ __('site.admin.live') }}</option>
                     <option value="completed" @selected(old('status', $match->status) === 'completed')>{{ __('site.admin.completed') }}</option>
+                    <option value="abandoned" @selected(old('status', $match->status) === 'abandoned')>{{ __('site.admin.abandoned') }}</option>
                 </select>
             </div>
-            <div class="apf-group">
-                <label>{{ __('site.admin.result_text') }}</label>
-                <input type="text" name="result_text" value="{{ old('result_text', $match->result_text) }}" placeholder="Real Challenger Boys won by 18 runs">
-            </div>
         </div>
 
-        <div class="apf-row apf-row-3">
-            <div class="apf-group">
-                <label>RCB {{ __('site.admin.rcb_score') }}</label>
-                <input type="text" name="rcb_score" value="{{ old('rcb_score', $match->rcb_score) }}" placeholder="202-8">
-            </div>
-            <div class="apf-group">
-                <label>RCB {{ __('site.admin.rcb_overs') }}</label>
-                <input type="text" name="rcb_overs" value="{{ old('rcb_overs', $match->rcb_overs) }}" placeholder="15.0">
-            </div>
-            <div class="apf-group"></div>
-        </div>
-
-        <div class="apf-row apf-row-3">
-            <div class="apf-group">
-                <label>{{ __('site.admin.opponent_score') }}</label>
-                <input type="text" name="opponent_score" value="{{ old('opponent_score', $match->opponent_score) }}" placeholder="178-9">
-            </div>
-            <div class="apf-group">
-                <label>{{ __('site.admin.opponent_overs') }}</label>
-                <input type="text" name="opponent_overs" value="{{ old('opponent_overs', $match->opponent_overs) }}" placeholder="15.0">
-            </div>
-            <div class="apf-group"></div>
-        </div>
-
-        <div class="apf-row">
-            <div class="apf-group">
-                <label>{{ __('site.admin.won') }}</label>
-                <div class="apf-toggle">
-                    <label class="apf-toggle-option {{ old('won', $match->won) ? 'active' : '' }}" id="wonYesLabel">
-                        <input type="radio" name="won" value="1" @checked(old('won', $match->won)) onchange="toggleWon(true)">
-                        <span class="apf-toggle-icon">🏆</span>
-                        <span>{{ __('site.admin.won') }}</span>
-                    </label>
-                    <label class="apf-toggle-option {{ old('won', $match->won) ? '' : 'active' }}" id="wonNoLabel">
-                        <input type="radio" name="won" value="0" @checked(! old('won', $match->won)) onchange="toggleWon(false)">
-                        <span class="apf-toggle-icon">➖</span>
-                        <span>{{ __('site.admin.not_won') }}</span>
-                    </label>
-                </div>
-            </div>
-        </div>
     @else
         <div class="apf-heading"><i class="fas fa-chart-bar"></i> {{ __('site.admin.score_information') }}</div>
 
@@ -245,11 +287,13 @@
         <a href="{{ route('admin.scoreboards.index') }}" class="apf-cancel">
             <i class="fas fa-arrow-left"></i> {{ __('site.admin.cancel') }}
         </a>
-        <button type="reset" class="apf-reset">
-            <i class="fas fa-undo-alt"></i> {{ __('site.admin.reset') }}
-        </button>
+        @if ($side !== 'summary')
+            <button type="reset" class="apf-reset">
+                <i class="fas fa-undo-alt"></i> {{ __('site.admin.reset') }}
+            </button>
+        @endif
         <button type="submit" class="apf-submit">
-            <i class="fas fa-save"></i> {{ __('site.admin.save') }}
+            <i class="fas fa-save"></i> {{ $side === 'summary' ? __('site.admin.update_result') : __('site.admin.save') }}
         </button>
     </div>
 </form>
@@ -276,6 +320,109 @@ function switchScoreSide(side) {
     var base = '{{ url('admin/scoreboards') }}/{{ $match->id }}/edit';
     window.location.href = base + '?team=' + side;
 }
+
+function preventInvalidInput(input, event) {
+    var key = event.key;
+    var allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
+    if (allowedKeys.indexOf(key) !== -1) return true;
+    if (/^[0-9]$/.test(key)) {
+        if (input.id === 'team_a_score' || input.id === 'team_b_score') {
+            if (input.value.replace(/[^0-9]/g, '').length >= 3) { event.preventDefault(); return false; }
+        }
+        if (input.id === 'team_a_wickets' || input.id === 'team_b_wickets') {
+            if (input.value.replace(/[^0-9]/g, '').length >= 2) { event.preventDefault(); return false; }
+        }
+        return true;
+    }
+    event.preventDefault();
+    return false;
+}
+
+function preventOversInput(input, event) {
+    var key = event.key;
+    var allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
+    if (allowedKeys.indexOf(key) !== -1) return true;
+    if (/^[0-9.]$/.test(key)) {
+        if (key === '.' && input.value.indexOf('.') !== -1) { event.preventDefault(); return false; }
+        if (input.value.replace(/[^0-9.]/g, '').length >= 4) { event.preventDefault(); return false; }
+        return true;
+    }
+    event.preventDefault();
+    return false;
+}
+
+function validateScore(input, errorId) {
+    var errorEl = document.getElementById(errorId);
+    var value = parseInt(input.value, 10);
+    if (input.value === '' || isNaN(value)) {
+        if (errorEl) errorEl.classList.remove('show');
+        input.classList.remove('is-invalid');
+        return true;
+    }
+    if (value < 0 || value > 999) {
+        if (errorEl) errorEl.classList.add('show');
+        input.classList.add('is-invalid');
+        return false;
+    }
+    if (errorEl) errorEl.classList.remove('show');
+    input.classList.remove('is-invalid');
+    return true;
+}
+
+function validateWickets(input, errorId) {
+    var errorEl = document.getElementById(errorId);
+    var value = parseInt(input.value, 10);
+    if (input.value === '' || isNaN(value)) {
+        if (errorEl) errorEl.classList.remove('show');
+        input.classList.remove('is-invalid');
+        return true;
+    }
+    if (value < 0 || value > 10) {
+        if (errorEl) errorEl.classList.add('show');
+        input.classList.add('is-invalid');
+        return false;
+    }
+    if (errorEl) errorEl.classList.remove('show');
+    input.classList.remove('is-invalid');
+    return true;
+}
+
+function validateOvers(input, errorId) {
+    var errorEl = document.getElementById(errorId);
+    var value = input.value;
+    if (value === '') {
+        if (errorEl) errorEl.classList.remove('show');
+        input.classList.remove('is-invalid');
+        return true;
+    }
+    var fullPattern = /^\d{1,2}\.\d{1}$/;
+    if (!fullPattern.test(value) || parseFloat(value) < 1.0 || parseFloat(value) > 99.0) {
+        if (errorEl) errorEl.classList.add('show');
+        input.classList.add('is-invalid');
+        return false;
+    }
+    if (errorEl) errorEl.classList.remove('show');
+    input.classList.remove('is-invalid');
+    return true;
+}
+
+function toggleWinnerRequired(status) {
+    var req = document.getElementById('winnerRequired');
+    var sel = document.getElementById('winner_team_id');
+    if (!req || !sel) return;
+    var completed = status === 'completed';
+    req.style.display = completed ? '' : 'none';
+    if (completed) {
+        sel.setAttribute('required', 'required');
+    } else {
+        sel.removeAttribute('required');
+    }
+}
+
+(function () {
+    var statusSel = document.getElementById('matchStatus');
+    if (statusSel) toggleWinnerRequired(statusSel.value);
+})();
 
 function addStatRow(kind, side) {
     var tpl = document.getElementById('tpl-' + kind + '-' + side);

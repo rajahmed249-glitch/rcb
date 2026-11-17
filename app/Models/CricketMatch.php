@@ -32,6 +32,10 @@ class CricketMatch extends Model
         'opponent_extras',
         'result_text',
         'won',
+        'toss_winner_id',
+        'toss_elected',
+        'winner_team_id',
+        'player_of_match_id',
     ];
 
     protected $casts = [

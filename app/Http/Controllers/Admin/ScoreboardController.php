@@ -8,6 +8,7 @@ use App\Models\MatchCommentary;
 use App\Models\MatchFallOfWicket;
 use App\Models\MatchPlayerStat;
 use App\Models\Player;
+use App\Models\Team;
 use Illuminate\Http\Request;
 
 class ScoreboardController extends Controller
@@ -74,6 +75,9 @@ class ScoreboardController extends Controller
         return view('admin.scoreboards.form', [
             'match' => $match,
             'side' => $side,
+            'rcbTeam' => Team::where('is_rcb', 1)->first(),
+            'opponentTeam' => $match->opponentTeam,
+            'squadPlayers' => $match->squad()->get()->sortBy('id')->values(),
             'players' => Player::whereNotNull('team_id')
                 ->orderByDesc('is_captain')
                 ->orderByDesc('is_vice_captain')
@@ -92,15 +96,37 @@ class ScoreboardController extends Controller
     {
         if ($request->boolean('save_summary')) {
             $data = $request->validate([
-                'status' => ['required', 'in:completed,upcoming'],
-                'rcb_score' => ['nullable', 'string', 'max:50'],
-                'rcb_overs' => ['nullable', 'string', 'max:50'],
-                'opponent_score' => ['nullable', 'string', 'max:50'],
-                'opponent_overs' => ['nullable', 'string', 'max:50'],
+                'status' => ['required', 'in:upcoming,live,completed,abandoned'],
+                'toss_winner_id' => ['nullable', 'integer'],
+                'toss_elected' => ['nullable', 'in:bat,bowl'],
+                'team_a_score' => ['required', 'integer', 'min:0', 'max:999'],
+                'team_a_wickets' => ['required', 'integer', 'min:0', 'max:10'],
+                'team_a_overs' => ['required', 'string', 'max:20'],
+                'team_b_score' => ['required', 'integer', 'min:0', 'max:999'],
+                'team_b_wickets' => ['required', 'integer', 'min:0', 'max:10'],
+                'team_b_overs' => ['required', 'string', 'max:20'],
                 'result_text' => ['nullable', 'string', 'max:255'],
+                'winner_team_id' => ['nullable', 'integer'],
+                'player_of_match_id' => ['nullable', 'integer'],
             ]);
-            $data['won'] = $request->boolean('won');
-            $match->update($data);
+
+            $rcbTeam = Team::where('is_rcb', 1)->first();
+
+            $match->update([
+                'status' => $data['status'],
+                'toss_winner_id' => $data['toss_winner_id'] ?? null,
+                'toss_elected' => $data['toss_elected'] ?? null,
+                'rcb_score' => $data['team_a_score'] . '-' . $data['team_a_wickets'],
+                'rcb_overs' => $data['team_a_overs'],
+                'opponent_score' => $data['team_b_score'] . '-' . $data['team_b_wickets'],
+                'opponent_overs' => $data['team_b_overs'],
+                'result_text' => $data['result_text'] ?? null,
+                'winner_team_id' => $data['winner_team_id'] ?? null,
+                'player_of_match_id' => $data['player_of_match_id'] ?? null,
+                'won' => ($rcbTeam && ! empty($data['winner_team_id']))
+                    ? ((int) $data['winner_team_id'] === (int) $rcbTeam->id)
+                    : null,
+            ]);
 
             return redirect()->route('admin.scoreboards.edit', ['match' => $match, 'team' => 'summary'])->with('success', __('site.admin.saved'));
         }
