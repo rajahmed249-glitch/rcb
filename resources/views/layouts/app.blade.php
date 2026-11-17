@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <meta name="description" content="Real Challenger Boys (RCB) - Official cricket team website. Play with passion, win with honor.">
     <meta name="keywords" content="cricket, rcb, real challenger boys, sports, dhaka cricket">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) ?: time() }}">
 </head>
 <body>
     <!-- ==================== Topbar ==================== -->
