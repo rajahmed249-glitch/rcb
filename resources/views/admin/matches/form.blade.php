@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', $match->exists ? __('site.admin.edit') . ' — Match ' . $match->match_number : __('site.admin.add_match'))
+@section('title', $match->exists ? __('site.admin.edit') . ' — ' . ($match->match_name ?: 'Match ' . $match->match_number) : __('site.admin.add_match'))
 
 @section('content')
 <div class="apl-head">
@@ -23,9 +23,20 @@
             <i class="fas fa-plus-circle"></i> {{ __('site.admin.add_match') }}
         </a>
     </div>
+    <a href="{{ route('admin.matches.create') }}" class="apl-addbtn">
+        <i class="fas fa-plus-circle"></i> {{ __('site.admin.add_match') }}
+    </a>
 </div>
 
-<form method="POST" enctype="multipart/form-data"
+@if (session('success'))
+    <div class="apl-alert-success">
+        <i class="fas fa-check-circle"></i>
+        <span>{{ session('success') }}</span>
+        <button type="button" onclick="this.closest('.apl-alert-success').remove()" class="apl-alert-close">&times;</button>
+    </div>
+@endif
+
+<form method="POST" id="matchForm"
       action="{{ $match->exists ? route('admin.matches.update', $match) : route('admin.matches.store') }}"
       class="apf-card">
     @csrf
@@ -33,172 +44,111 @@
         @method('PUT')
     @endif
 
-    <div class="apf-heading">{{ __('site.admin.match') }}</div>
+    <h3 class="apf-card-title"><i class="fas fa-info-circle apf-title-ico"></i> {{ __('site.admin.match_information') }}</h3>
 
     <div class="apf-row">
         <div class="apf-group">
-            <label>{{ __('site.admin.match_number') }} <span class="apf-required">*</span></label>
-            <input type="number" name="match_number" value="{{ old('match_number', $match->match_number) }}" required>
-        </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.tournaments') }}</label>
-            <select name="tournament_id">
-                <option value="">--</option>
+            <label>{{ __('site.admin.tournament') }}</label>
+            <select name="tournament_id" id="tournament_id">
+                <option value="">{{ __('site.admin.select_tournament') }}</option>
                 @foreach ($tournaments as $tournament)
                     <option value="{{ $tournament->id }}" @selected(old('tournament_id', $match->tournament_id) == $tournament->id)>{{ $tournament->display_name }}@if($tournament->season) ({{ $tournament->season }})@endif</option>
                 @endforeach
             </select>
         </div>
         <div class="apf-group">
-            <label>{{ __('site.admin.format') }}</label>
-            <input type="text" name="format" value="{{ old('format', $match->format) }}" placeholder="T10">
+            <label>{{ __('site.admin.match_name') }} <span class="apf-required">*</span></label>
+            <input type="text" name="match_name" id="match_name" value="{{ old('match_name', $match->match_name) }}" placeholder="e.g: RCB Champions Trophy - Final" required>
         </div>
     </div>
 
-    <div class="apf-heading">{{ __('site.admin.opponent_team') }}</div>
-
-    <div class="apf-row">
+    <div class="apf-row apf-row-3">
         <div class="apf-group">
-            <label>{{ __('site.admin.opponent_team') }}</label>
-            <select name="opponent_team_id">
-                <option value="">--</option>
-                @foreach ($teams as $team)
-                    @unless ($team->is_rcb)
-                        <option value="{{ $team->id }}" @selected(old('opponent_team_id', $match->opponent_team_id) == $team->id)>{{ $team->name }}@if($team->name_bn) / {{ $team->name_bn }}@endif</option>
-                    @endunless
-                @endforeach
-            </select>
+            <label>{{ __('site.admin.date') }} <span class="apf-required">*</span></label>
+            <input type="date" name="match_date" id="match_date" value="{{ old('match_date', $match->match_date?->format('Y-m-d')) }}" required>
         </div>
         <div class="apf-group">
-            <label>{{ __('site.admin.opponent_name') }} <span class="apf-required">*</span></label>
-            <input type="text" name="opponent_name" value="{{ old('opponent_name', $match->opponent_name) }}" required>
+            <label>{{ __('site.admin.time') }} <span class="apf-required">*</span></label>
+            <input type="time" name="match_time" id="match_time" value="{{ old('match_time', $match->match_time ?: $match->match_date?->format('H:i')) }}" required>
         </div>
         <div class="apf-group">
-            <label>{{ __('site.admin.opponent_name_bn') }}</label>
-            <input type="text" name="opponent_name_bn" value="{{ old('opponent_name_bn', $match->opponent_name_bn) }}">
+            <label>{{ __('site.admin.venue') }} <span class="apf-required">*</span></label>
+            <input type="text" name="venue" id="venue" value="{{ old('venue', $match->venue) }}" placeholder="e.g: Shyamoli Shishu Park Maath, Shamoli, Dhaka" required>
         </div>
     </div>
 
     <div class="apf-row">
         <div class="apf-group">
-            <label>{{ __('site.admin.opponent_short_name') }}</label>
-            <input type="text" name="opponent_short_name" value="{{ old('opponent_short_name', $match->opponent_short_name) }}">
-        </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.venue') }}</label>
-            <input type="text" name="venue" value="{{ old('venue', $match->venue) }}">
-        </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.opponent_logo') }}</label>
-            <div class="apf-upload">
-                <div class="apf-upload-btn-wrap">
-                    <div class="apf-upload-btn">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span>{{ __('site.admin.choose_image') }}</span>
-                    </div>
-                    <input type="file" name="opponent_logo" id="opponentLogo" accept="image/*" onchange="previewOpponentLogo(event)">
-                </div>
-                <div class="apf-preview-wrap">
-                    @if ($match->opponent_logo)
-                        <img id="opponentLogoPreview" src="{{ asset($match->opponent_logo) }}" alt="Preview" class="apf-preview">
-                    @else
-                        <img id="opponentLogoPreview" src="{{ asset('images/favicon.png') }}" alt="Preview" class="apf-preview">
-                    @endif
-                </div>
+            <label>{{ __('site.admin.teams') }} <span class="apf-required">*</span></label>
+            <div class="apf-team-select">
+                <select name="rcb_side" id="team_a_id" disabled>
+                    @foreach ($teams as $team)
+                        @if ($team->is_rcb)
+                            <option value="{{ $team->id }}" selected>{{ $team->name }}</option>
+                        @endif
+                    @endforeach
+                </select>
+                <span class="apf-vs-divider">VS</span>
+                <select name="opponent_team_id" id="team_b_id" required>
+                    <option value="">{{ __('site.admin.select_team_2') }}</option>
+                    @foreach ($teams as $team)
+                        @unless ($team->is_rcb)
+                            <option value="{{ $team->id }}" @selected(old('opponent_team_id', $match->opponent_team_id) == $team->id)>{{ $team->name }}@if($team->name_bn) / {{ $team->name_bn }}@endif</option>
+                        @endunless
+                    @endforeach
+                </select>
             </div>
-            <div class="apf-file-name" id="opponentLogoFileName"></div>
         </div>
     </div>
 
-    <div class="apf-heading">{{ __('site.admin.match_date') }} &amp; {{ __('site.admin.result_text') }}</div>
+    <div class="apf-row">
+        <div class="apf-group">
+            <label>{{ __('site.admin.match_info') }} / {{ __('site.admin.description') }}</label>
+            <textarea name="match_info" id="match_info" rows="6" placeholder="{{ __('site.admin.match_info') }}...">{{ old('match_info', $match->match_info) }}</textarea>
+        </div>
+    </div>
 
     <div class="apf-row">
         <div class="apf-group">
-            <label>{{ __('site.admin.match_date') }} <span class="apf-required">*</span></label>
-            <input type="date" name="match_date" value="{{ old('match_date', $match->match_date?->format('Y-m-d')) }}" required>
-        </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.status') }} <span class="apf-required">*</span></label>
-            <select name="status" required>
-                <option value="upcoming" @selected(old('status', $match->status) === 'upcoming')>{{ __('site.admin.upcoming') }}</option>
-                <option value="completed" @selected(old('status', $match->status) === 'completed')>{{ __('site.admin.completed') }}</option>
-            </select>
-        </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.won') }}</label>
-            <div class="admin-checks" style="margin-top:10px;">
-                <label>
-                    <input type="checkbox" name="won" value="1" {{ old('won', $match->won) ? 'checked' : '' }}>
-                    {{ __('site.admin.won') }}
+            <label>{{ __('site.admin.status') }}</label>
+            <div class="apf-radios">
+                <label class="apf-status-radio">
+                    <input type="radio" name="status" value="upcoming" {{ old('status', $match->status ?: 'upcoming') === 'upcoming' ? 'checked' : '' }}>
+                    <span>⚡ {{ __('site.admin.upcoming') }}</span>
+                </label>
+                <label class="apf-status-radio">
+                    <input type="radio" name="status" value="live" {{ old('status', $match->status) === 'live' ? 'checked' : '' }}>
+                    <span>🔥 {{ __('site.admin.live') }}</span>
+                </label>
+                <label class="apf-status-radio">
+                    <input type="radio" name="status" value="completed" {{ old('status', $match->status) === 'completed' ? 'checked' : '' }}>
+                    <span>🏆 {{ __('site.admin.completed') }}</span>
                 </label>
             </div>
         </div>
-    </div>
-
-    <div class="apf-row apf-row-4">
-        <div class="apf-group">
-            <label>{{ __('site.admin.rcb_score') }}</label>
-            <input type="text" name="rcb_score" value="{{ old('rcb_score', $match->rcb_score) }}" placeholder="202-8">
-        </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.rcb_overs') }}</label>
-            <input type="text" name="rcb_overs" value="{{ old('rcb_overs', $match->rcb_overs) }}" placeholder="15.0">
-        </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.opponent_score') }}</label>
-            <input type="text" name="opponent_score" value="{{ old('opponent_score', $match->opponent_score) }}" placeholder="178-9">
-        </div>
-        <div class="apf-group">
-            <label>{{ __('site.admin.opponent_overs') }}</label>
-            <input type="text" name="opponent_overs" value="{{ old('opponent_overs', $match->opponent_overs) }}" placeholder="15.0">
-        </div>
-    </div>
-
-    <div class="apf-group" style="margin-bottom:18px;">
-        <label>{{ __('site.admin.result_text') }}</label>
-        <input type="text" name="result_text" value="{{ old('result_text', $match->result_text) }}">
-    </div>
-
-    <div class="apf-heading">{{ __('site.admin.squad_select') }}</div>
-
-    <div class="apf-check-grid">
-        @foreach ($squadPlayers as $player)
-            <label class="apf-perm-item">
-                <input type="checkbox" name="squad[]" value="{{ $player->id }}" {{ in_array($player->id, old('squad', $match->squad->pluck('id')->all())) ? 'checked' : '' }}>
-                <span class="apf-perm-name">{{ $player->name }}</span>
-                @if ($player->team)
-                    <span class="apf-perm-slug">{{ $player->team->name }}</span>
-                @endif
-            </label>
-        @endforeach
     </div>
 
     <div class="apf-actions">
         <a href="{{ route('admin.matches.index') }}" class="apf-cancel">
             <i class="fas fa-arrow-left"></i> {{ __('site.admin.cancel') }}
         </a>
-        <button type="reset" class="apf-reset">
+        <button type="reset" class="apf-reset" onclick="return resetMatchForm()">
             <i class="fas fa-undo-alt"></i> {{ __('site.admin.reset') }}
         </button>
         <button type="submit" class="apf-submit">
-            <i class="fas fa-save"></i> {{ __('site.admin.save') }}
+            <i class="fas fa-save"></i> {{ __('site.admin.save_match') }}
         </button>
     </div>
 </form>
 
 <script>
-function previewOpponentLogo(event) {
-    var input = event.target;
-    var preview = document.getElementById('opponentLogoPreview');
-    var name = document.getElementById('opponentLogoFileName');
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            if (preview) preview.src = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-        if (name) name.textContent = input.files[0].name;
-    }
+function resetMatchForm() {
+    if (!confirm('Are you sure you want to reset all fields?')) return false;
+    var time = document.getElementById('match_time');
+    if (time) time.value = '07:00';
+    var upcoming = document.querySelector('input[name="status"][value="upcoming"]');
+    if (upcoming) upcoming.checked = true;
+    return true;
 }
 </script>
 @endsection

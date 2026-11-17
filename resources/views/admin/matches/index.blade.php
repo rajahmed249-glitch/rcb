@@ -85,7 +85,7 @@
                             <td>{{ $matches->firstItem() + $loop->index }}</td>
                             <td>{{ $match->match_number ?: '—' }}</td>
                             <td>
-                                <div class="apl-match-name">RCB vs {{ $match->display_opponent_name }}</div>
+                                <div class="apl-match-name">{{ $match->match_name ?: ('RCB vs ' . $match->display_opponent_name) }}</div>
                                 @if ($match->status === 'completed' && $match->result_text)
                                     <div class="apl-result-text">{{ $match->result_text }}</div>
                                 @endif

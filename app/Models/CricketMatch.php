@@ -11,6 +11,9 @@ class CricketMatch extends Model
 
     protected $fillable = [
         'match_number',
+        'match_name',
+        'match_time',
+        'match_info',
         'tournament_id',
         'opponent_team_id',
         'opponent_name',
