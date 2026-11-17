@@ -92,6 +92,7 @@
             <label>{{ __('site.admin.match_info') }} / {{ __('site.admin.description') }}</label>
             <div class="apf-quill-container">
                 <div id="quillEditor"></div>
+                <textarea id="quillSource" class="apf-quill-source" style="display:none;" spellcheck="false"></textarea>
             </div>
             <textarea name="match_info" id="match_info" style="display:none;">{{ old('match_info', $match->match_info) }}</textarea>
         </div>
@@ -134,6 +135,8 @@
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
 <script>
 var quill;
+var quillSourceMode = false;
+var quillSourceBox = null;
 
 @php
     $matchTeamsData = $tournamentTeams;
@@ -200,8 +203,35 @@ document.addEventListener('DOMContentLoaded', function () {
         quill.root.innerHTML = infoInput.value;
     }
 
+    quillSourceBox = document.getElementById('quillSource');
+    var toolbarEl = document.querySelector('.apf-quill-container .ql-toolbar');
+    if (toolbarEl && quillSourceBox) {
+        var fmt = document.createElement('span');
+        fmt.className = 'ql-formats';
+        var srcBtn = document.createElement('button');
+        srcBtn.type = 'button';
+        srcBtn.className = 'ql-custom-source';
+        srcBtn.title = 'Code View';
+        srcBtn.innerHTML = '&lt;/&gt;';
+        srcBtn.addEventListener('click', function () {
+            quillSourceMode = !quillSourceMode;
+            srcBtn.classList.toggle('ql-active', quillSourceMode);
+            if (quillSourceMode) {
+                quillSourceBox.value = quill.root.innerHTML;
+                quill.container.style.display = 'none';
+                quillSourceBox.style.display = 'block';
+            } else {
+                quill.root.innerHTML = quillSourceBox.value;
+                quill.container.style.display = '';
+                quillSourceBox.style.display = 'none';
+            }
+        });
+        fmt.appendChild(srcBtn);
+        toolbarEl.appendChild(fmt);
+    }
+
     document.getElementById('matchForm').addEventListener('submit', function () {
-        infoInput.value = quill.root.innerHTML;
+        infoInput.value = quillSourceMode && quillSourceBox ? quillSourceBox.value : quill.root.innerHTML;
     });
 });
 
@@ -211,7 +241,17 @@ function resetMatchForm() {
     if (time) time.value = '07:00';
     var upcoming = document.querySelector('input[name="status"][value="upcoming"]');
     if (upcoming) upcoming.checked = true;
-    if (quill) quill.deleteText(0, quill.getLength());
+    if (quill) {
+        if (quillSourceMode) {
+            quillSourceMode = false;
+            var btn = document.querySelector('.ql-custom-source');
+            if (btn) btn.classList.remove('ql-active');
+            quill.container.style.display = '';
+            if (quillSourceBox) quillSourceBox.style.display = 'none';
+        }
+        quill.deleteText(0, quill.getLength());
+    }
+    if (quillSourceBox) quillSourceBox.value = '';
     return true;
 }
 </script>

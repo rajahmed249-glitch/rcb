@@ -36,7 +36,8 @@ class MatchController extends Controller
             $query->where('tournament_id', $tournamentId);
         }
 
-        $matches = $query->orderByDesc('match_date')
+        $matches = $query->orderByDesc('match_number')
+            ->orderByDesc('match_date')
             ->paginate($limit)
             ->appends($request->query());
 

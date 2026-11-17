@@ -1999,3 +1999,9 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 .admin-flash i { flex-shrink: 0; }
 .admin-flash-close { margin-left: auto; cursor: pointer; color: inherit; opacity: .7; background: none; border: none; font-size: 18px; line-height: 1; padding: 0 2px; }
 .admin-flash-close:hover { opacity: 1; }
+
+
+.apf-quill-source { width: 100%; min-height: 200px; border: none; border-top: 1px solid #d1d5db; padding: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.6; resize: vertical; outline: none; border-radius: 0 0 8px 8px; box-sizing: border-box; }
+.ql-toolbar button.ql-custom-source { width: auto; padding: 4px 8px; font-size: 13px; font-weight: 700; color: #444; }
+.ql-toolbar button.ql-custom-source:hover { color: #0d9488; }
+.ql-toolbar button.ql-custom-source.ql-active { color: #0d9488; }
