@@ -240,6 +240,17 @@
                     if (!sidebar.contains(e.target) && !(burger && burger.contains(e.target))) closeSidebar();
                 }
             });
+            var profile = document.getElementById('adminProfile');
+            if (profile) {
+                profile.addEventListener('click', function (e) {
+                    if (e.target.closest('a') || e.target.closest('form')) return;
+                    e.stopPropagation();
+                    profile.classList.toggle('active');
+                });
+                document.addEventListener('click', function (e) {
+                    if (!profile.contains(e.target)) profile.classList.remove('active');
+                });
+            }
             window.addEventListener('resize', function () {
                 if (window.innerWidth <= 1024) {
                     shell.classList.remove('collapsed');

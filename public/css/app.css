@@ -1419,13 +1419,19 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
 }
 @media (max-width: 576px) {
     .admin-body { padding-top: 55px; }
-    .admin-topbar { padding: 0 10px; height: 55px; }
-    .admin-topbar-stats { gap: 5px; }
-    .stat-badge { padding: 3px 8px; font-size: 10px; gap: 4px; }
-    .stat-badge strong { font-size: 12px; }
-    .visit-btn { padding: 4px 10px; font-size: 11px; }
-    .admin-avatar { width: 28px; height: 28px; font-size: 12px; border-width: 1.5px; }
-    .admin-burger { width: 36px; height: 36px; padding: 8px 10px; }
+    .admin-topbar { padding: 0 10px; height: 55px; gap: 8px; overflow: hidden; }
+    .admin-topbar-left { gap: 10px; min-width: 0; }
+    .admin-topbar-right { gap: 8px; flex-shrink: 0; }
+    .admin-topbar-stats { gap: 6px; min-width: 0; }
+    .stat-badge { padding: 3px 7px; font-size: 10px; gap: 3px; }
+    .stat-badge .admin-ico { font-size: 11px; }
+    .stat-badge strong { font-size: 11px; margin-left: 1px; }
+    .visit-btn { padding: 5px 9px; font-size: 10px; gap: 4px; }
+    .visit-btn i { font-size: 10px; }
+    .admin-profile { gap: 5px; padding: 2px 0; }
+    .admin-avatar { width: 26px; height: 26px; font-size: 11px; border-width: 1.5px; }
+    .admin-burger { width: 32px; height: 32px; padding: 6px 8px; }
+    .admin-burger .burger-icon { width: 18px; height: 14px; }
     .admin-main { padding: 10px 10px; }
     .stat-cards { gap: .6rem; }
     .stat-card { padding: .8rem .75rem; }
@@ -1434,6 +1440,12 @@ a.player-bar-name:hover, a.pcard-name:hover { color: #0d9488; }
     .apl-card { padding: 16px 12px; }
     .apl-head { margin: 10px 0 14px; }
     .apl-title { font-size: 16px; }
+}
+@media (max-width: 400px) {
+    .visit-btn { display: none; }
+    .admin-topbar { padding: 0 8px; }
+    .admin-topbar-stats { gap: 4px; }
+    .stat-badge { padding: 3px 6px; }
 }
 @media (max-width: 480px) {
     .login-wrapper { padding: 10px; }
