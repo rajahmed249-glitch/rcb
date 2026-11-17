@@ -24,7 +24,7 @@
         @if ($videos->count())
             <div class="vgal-grid">
                 @foreach ($videos as $video)
-                    <div class="vgal-item" onclick="openVideoModal('{{ $video->video_code }}', @js($video->display_title))">
+                    <div class="vgal-item" data-code="{{ $video->video_code }}" data-title="{{ $video->display_title }}" onclick="openVideoModal(this)">
                         <div class="vgal-imgbox">
                             <img src="{{ $video->thumbnail_url }}" alt="{{ $video->display_title }}" loading="lazy">
                             <div class="vgal-shade">
@@ -84,9 +84,9 @@
         <button class="pgal-lb-btn close" onclick="closeVideoModal(event)">✕</button>
     </div>
     <script>
-        function openVideoModal(code, title) {
-            document.getElementById('videoIframe').src = 'https://www.youtube.com/embed/' + code + '?autoplay=1';
-            document.getElementById('videoTitle').innerText = title;
+        function openVideoModal(el) {
+            document.getElementById('videoIframe').src = 'https://www.youtube.com/embed/' + el.getAttribute('data-code') + '?autoplay=1';
+            document.getElementById('videoTitle').innerText = el.getAttribute('data-title');
             document.getElementById('videoModal').classList.add('open');
             document.body.style.overflow = 'hidden';
         }

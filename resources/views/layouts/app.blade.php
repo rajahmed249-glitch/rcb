@@ -102,7 +102,13 @@
             <nav class="nav">
                 <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">{{ __('site.nav.home') }}</a>
                 <a href="{{ route('pages.about') }}" class="nav-link {{ request()->routeIs('pages.about') ? 'active' : '' }}">{{ __('site.nav.about') }}</a>
-                <a href="{{ route('pages.gallery') }}" class="nav-link {{ request()->routeIs('pages.gallery') ? 'active' : '' }}">{{ __('site.nav.gallery') }}</a>
+                <div class="nav-dd {{ request()->routeIs('pages.gallery') || request()->routeIs('pages.gallery-videos') ? 'active' : '' }}">
+                    <a href="{{ route('pages.gallery') }}" class="nav-link">{{ __('site.nav.gallery') }}</a>
+                    <div class="nav-dd-menu">
+                        <a href="{{ route('pages.gallery') }}">{{ __('site.gallery.photo_gallery') }}</a>
+                        <a href="{{ route('pages.gallery-videos') }}">{{ __('site.gallery.video_gallery') }}</a>
+                    </div>
+                </div>
                 <a href="{{ route('news.index') }}" class="nav-link {{ request()->routeIs('news.*') ? 'active' : '' }}">{{ __('site.nav.news') }}</a>
                 <a href="{{ route('matches.index') }}" class="nav-link {{ request()->routeIs('matches.*') ? 'active' : '' }}">{{ __('site.nav.fixtures') }}</a>
                 <a href="{{ route('players.index') }}" class="nav-link {{ request()->routeIs('players.*') ? 'active' : '' }}">{{ __('site.nav.players') }}</a>

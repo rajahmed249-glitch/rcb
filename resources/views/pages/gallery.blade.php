@@ -76,6 +76,15 @@
 @endsection
 
 @push('scripts')
+    @php
+        $galleryDataJson = $photos->map(function ($p) {
+            return [
+                'image' => asset($p->image),
+                'title' => $p->display_title,
+                'date' => $p->display_date ?? '',
+            ];
+        })->toJson();
+    @endphp
     <div id="lightboxModal" class="pgal-lightbox" onclick="closeLightbox(event)">
         <div class="pgal-lightbox-inner" onclick="event.stopPropagation()">
             <img id="lightboxImage" src="" alt="">
@@ -89,11 +98,7 @@
         <button class="pgal-lb-btn next" onclick="stepLightbox(1, event)">❯</button>
     </div>
     <script>
-        var galleryData = @json($photos->map(fn ($p) => [
-            'image' => asset($p->image),
-            'title' => $p->display_title,
-            'date' => $p->display_date ?? '',
-        ]));
+        var galleryData = {{ $galleryDataJson }};
         var currentIndex = 0;
 
         function openLightbox(i) {

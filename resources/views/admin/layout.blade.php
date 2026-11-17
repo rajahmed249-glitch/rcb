@@ -14,7 +14,7 @@
         <aside class="admin-sidebar" id="adminSidebar">
             <div class="admin-brand">
                 <a href="{{ route('admin.dashboard') }}">
-                    <img src="{{ asset('images/logo.png') }}" alt="RCB">
+                    <img src="{{ asset('images/logo2.png') }}" alt="RCB">
                     <div>
                         <span class="admin-brand-name">RCB <span>{{ __('site.admin.dashboard') }}</span></span>
                         <span class="admin-brand-sub">{{ __('site.admin.panel') }}</span>

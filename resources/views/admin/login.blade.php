@@ -28,7 +28,7 @@
 
             <div class="login-header">
                 <div class="logo-wrapper">
-                    <img src="{{ asset('images/logo.png') }}" alt="RCB" class="logo-img">
+                    <img src="{{ asset('images/logo2.png') }}" alt="RCB" class="logo-img">
                 </div>
                 <h2>RCB<span>Admin</span></h2>
                 <p class="subtitle">Control Panel</p>
