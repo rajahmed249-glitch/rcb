@@ -19,7 +19,7 @@ class MatchController extends Controller
         } elseif ($status === 'upcoming') {
             $query->upcoming();
         } else {
-            $query->orderByDesc('match_date');
+            $query->orderByDesc('match_number')->orderByDesc('match_date');
         }
 
         return view('matches.index', [

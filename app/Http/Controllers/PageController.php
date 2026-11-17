@@ -97,6 +97,7 @@ class PageController extends Controller
             ->when($team['is_rcb'],
                 fn ($q) => $q->whereNotNull('opponent_name'),
                 fn ($q) => $q->where('opponent_name', $team['name']))
+            ->orderByDesc('match_number')
             ->orderByDesc('match_date')
             ->get();
 
@@ -114,9 +115,7 @@ class PageController extends Controller
         $rcbTeam = Team::where('is_rcb', true)->first();
         $rcbId = $rcbTeam?->id ?? 1;
 
-        $matches = CricketMatch::completed()
-            ->orderByDesc('match_date')
-            ->get();
+        $matches = CricketMatch::completed()->get();
 
         $opponentIds = $matches->pluck('opponent_team_id')->filter()->unique();
         $teams = Team::whereIn('id', $opponentIds)->get()->keyBy('id');

@@ -61,12 +61,12 @@ class CricketMatch extends Model
 
     public function scopeCompleted(Builder $query): Builder
     {
-        return $query->where('status', 'completed')->orderByDesc('match_date');
+        return $query->where('status', 'completed')->orderByDesc('match_number')->orderByDesc('match_date');
     }
 
     public function scopeUpcoming(Builder $query): Builder
     {
-        return $query->where('status', 'upcoming')->orderBy('match_date');
+        return $query->where('status', 'upcoming')->orderByDesc('match_number')->orderByDesc('match_date');
     }
 
     public function getDisplayOpponentNameAttribute(): string

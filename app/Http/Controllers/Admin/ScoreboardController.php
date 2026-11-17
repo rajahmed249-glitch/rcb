@@ -29,7 +29,8 @@ class ScoreboardController extends Controller
             $query->where('status', $status);
         }
 
-        $matches = $query->orderByDesc('match_date')
+        $matches = $query->orderByDesc('match_number')
+            ->orderByDesc('match_date')
             ->paginate($limit)
             ->appends($request->query());
 
