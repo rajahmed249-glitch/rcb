@@ -30,11 +30,14 @@
     } else {
         $dsKey = '';
     }
+    $batterSelect = $players->isNotEmpty() && ((string) $pid === '' || $players->contains('id', (int) $pid));
+    $fieldSelect = $fieldPlayers->isNotEmpty() && ((string) $flId === '' || $fieldPlayers->contains('id', (int) $flId));
+    $bowlerSelect = $fieldPlayers->isNotEmpty() && ((string) $bwId === '' || $fieldPlayers->contains('id', (int) $bwId));
 @endphp
 <tr>
     <td class="apf-st-player">
-        @if ($side === 'rcb')
-            <select name="stats[{{ $side }}][batting][{{ $i }}][player_id]">
+        @if ($batterSelect)
+            <select name="stats[{{ $side }}][batting][{{ $i }}][player_id]" class="scb-bat-select">
                 <option value="">-- {{ __('site.admin.select_batter') }} --</option>
                 @foreach ($players as $pl)
                     <option value="{{ $pl->id }}" @selected($pid == $pl->id)>{{ $pl->name }}</option>
@@ -63,10 +66,10 @@
         </select>
     </td>
     <td class="apf-st-player">
-        @if ($side === 'rcb')
+        @if ($fieldSelect)
             <select name="stats[{{ $side }}][batting][{{ $i }}][fielder_id]">
                 <option value="">-- {{ __('site.admin.select_one') }} --</option>
-                @foreach ($players as $pl)
+                @foreach ($fieldPlayers as $pl)
                     <option value="{{ $pl->id }}" @selected($flId == $pl->id)>{{ $pl->name }}</option>
                 @endforeach
             </select>
@@ -75,10 +78,10 @@
         @endif
     </td>
     <td class="apf-st-player">
-        @if ($side === 'rcb')
+        @if ($bowlerSelect)
             <select name="stats[{{ $side }}][batting][{{ $i }}][bowler_id]">
                 <option value="">-- {{ __('site.admin.select_one') }} --</option>
-                @foreach ($players as $pl)
+                @foreach ($fieldPlayers as $pl)
                     <option value="{{ $pl->id }}" @selected($bwId == $pl->id)>{{ $pl->name }}</option>
                 @endforeach
             </select>

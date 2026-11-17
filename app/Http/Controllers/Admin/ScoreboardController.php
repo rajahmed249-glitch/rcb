@@ -73,17 +73,36 @@ class ScoreboardController extends Controller
 
         $stats = $match->stats()->where('side', $side)->get()->groupBy(fn ($s) => $s->stat_type);
 
+        $rcbTeam = Team::where('is_rcb', 1)->first();
+        $opponentTeam = $match->opponentTeam;
+
+        $sideTeamId = $side === 'opponent' ? $opponentTeam?->id : $rcbTeam?->id;
+        $otherTeamId = $side === 'opponent' ? $rcbTeam?->id : $opponentTeam?->id;
+
+        $squad = $match->squad()->get()->sortBy('id')->values();
+
+        $sidePlayers = $squad->filter(fn ($p) => $sideTeamId && (int) $p->team_id === (int) $sideTeamId)->values();
+        if ($sidePlayers->isEmpty()) {
+            $sidePlayers = $sideTeamId
+                ? Player::where('team_id', $sideTeamId)->orderBy('id')->get()
+                : collect();
+        }
+
+        $otherPlayers = $squad->filter(fn ($p) => $otherTeamId && (int) $p->team_id === (int) $otherTeamId)->values();
+        if ($otherPlayers->isEmpty()) {
+            $otherPlayers = $otherTeamId
+                ? Player::where('team_id', $otherTeamId)->orderBy('id')->get()
+                : collect();
+        }
+
         return view('admin.scoreboards.form', [
             'match' => $match,
             'side' => $side,
-            'rcbTeam' => Team::where('is_rcb', 1)->first(),
-            'opponentTeam' => $match->opponentTeam,
-            'squadPlayers' => $match->squad()->get()->sortBy('id')->values(),
-            'players' => Player::whereNotNull('team_id')
-                ->orderByDesc('is_captain')
-                ->orderByDesc('is_vice_captain')
-                ->orderBy('id')
-                ->get(),
+            'rcbTeam' => $rcbTeam,
+            'opponentTeam' => $opponentTeam,
+            'squadPlayers' => $squad,
+            'players' => $sidePlayers,
+            'fieldPlayers' => $otherPlayers,
             'statRows' => [
                 'batting' => $stats->get('batting', collect())->sortBy('sort_order')->values(),
                 'bowling' => $stats->get('bowling', collect())->sortBy('sort_order')->values(),

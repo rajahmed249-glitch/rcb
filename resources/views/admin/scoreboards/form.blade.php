@@ -462,6 +462,7 @@ function toggleWinnerRequired(status) {
 (function () {
     var statusSel = document.getElementById('matchStatus');
     if (statusSel) toggleWinnerRequired(statusSel.value);
+    refreshAllPlayerSelects();
 })();
 
 function addStatRow(kind, side) {
@@ -475,12 +476,38 @@ function addStatRow(kind, side) {
     holder.innerHTML = html;
     var tr = holder.firstElementChild;
     if (tr) body.appendChild(tr);
+    refreshAllPlayerSelects();
 }
 
 function removeStatRow(btn) {
     var tr = btn.closest('tr');
     if (tr) tr.remove();
+    refreshAllPlayerSelects();
 }
+
+function refreshSelectGroup(cls) {
+    var selects = Array.prototype.slice.call(document.querySelectorAll('select.' + cls));
+    var chosen = {};
+    selects.forEach(function (s) { if (s.value) chosen[s.value] = true; });
+    selects.forEach(function (s) {
+        Array.prototype.forEach.call(s.options, function (opt) {
+            if (!opt.value) return;
+            opt.style.display = (chosen[opt.value] && s.value !== opt.value) ? 'none' : '';
+        });
+    });
+}
+
+function refreshAllPlayerSelects() {
+    refreshSelectGroup('scb-bat-select');
+    refreshSelectGroup('scb-bowl-select');
+}
+
+document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (!t || !t.classList) return;
+    if (t.classList.contains('scb-bat-select')) refreshSelectGroup('scb-bat-select');
+    if (t.classList.contains('scb-bowl-select')) refreshSelectGroup('scb-bowl-select');
+});
 
 (function () {
     var tabBtns = document.querySelectorAll('.scb-score-tab');
