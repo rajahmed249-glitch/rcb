@@ -47,6 +47,11 @@ class TeamController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'player_ids' => ['required', 'array', 'min:1'],
+            'player_ids.*' => ['integer', 'exists:players,id'],
+        ]);
+
         $data = $this->validated($request);
         $data['slug'] = Team::uniqueSlug($request->input('slug') ?: $request->input('name'));
         $data['logo'] = $this->upload($request);
@@ -67,6 +72,11 @@ class TeamController extends Controller
 
     public function update(Request $request, Team $team)
     {
+        $request->validate([
+            'player_ids' => ['required', 'array', 'min:1'],
+            'player_ids.*' => ['integer', 'exists:players,id'],
+        ]);
+
         $data = $this->validated($request);
         $data['logo'] = $this->upload($request) ?? $team->logo;
 
@@ -107,16 +117,18 @@ class TeamController extends Controller
 
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'name_bn' => ['nullable', 'string', 'max:255'],
+            'name_bn' => ['required', 'string', 'max:255'],
             'short_name' => ['nullable', 'string', 'max:20'],
+            'short_name_bn' => ['nullable', 'string', 'max:20'],
             'location' => ['nullable', 'string', 'max:255'],
-            'is_rcb' => ['nullable', 'boolean'],
             'sort_order' => ['nullable', 'integer'],
-        ]) + [
-            'is_rcb' => $request->boolean('is_rcb'),
-        ];
+        ]);
+
+        $data['status'] = $request->input('status') !== null ? $request->boolean('status') : true;
+
+        return $data;
     }
 
     private function upload(Request $request): ?string

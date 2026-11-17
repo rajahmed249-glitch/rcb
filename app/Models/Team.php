@@ -12,14 +12,17 @@ class Team extends Model
         'name_bn',
         'slug',
         'short_name',
+        'short_name_bn',
         'logo',
         'location',
         'is_rcb',
+        'status',
         'sort_order',
     ];
 
     protected $casts = [
         'is_rcb' => 'boolean',
+        'status' => 'boolean',
     ];
 
     public function getDisplayNameAttribute(): string

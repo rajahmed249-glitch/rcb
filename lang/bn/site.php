@@ -321,6 +321,13 @@ return [
     ],
 
     'admin' => [
+        'short_name_bn' => 'সংক্ষিপ্ত নাম (বাংলা)',
+        'optional' => 'ঐচ্ছিক',
+        'team_information' => 'টিম তথ্য',
+        'save_team' => 'টিম সেভ করুন',
+        'select_players' => 'প্লেয়ার নির্বাচন করুন...',
+        'search_players' => 'প্লেয়ার খুঁজুন',
+        'select_players_hint' => 'এই টিমের জন্য একাধিক প্লেয়ার নির্বাচন করুন',
         'panel' => 'আরসিবি অ্যাডমিন',
         'dashboard' => 'ড্যাশবোর্ড',
         'players' => 'প্লেয়ার',

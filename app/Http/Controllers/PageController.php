@@ -198,7 +198,7 @@ class PageController extends Controller
 
         $teams = [];
 
-        $dbTeams = Team::query()->orderBy('sort_order')->orderBy('id')->get();
+        $dbTeams = Team::query()->where('status', 1)->orderBy('sort_order')->orderBy('id')->get();
 
         if ($dbTeams->isNotEmpty()) {
             foreach ($dbTeams as $dbTeam) {
