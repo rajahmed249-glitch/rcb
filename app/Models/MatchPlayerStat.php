@@ -21,6 +21,7 @@ class MatchPlayerStat extends Model
         'sixes',
         'dismissal',
         'overs',
+        'balls',
         'maidens',
         'wickets',
         'wides',

@@ -1,15 +1,15 @@
 @extends('admin.layout')
 
-@section('title', __('site.admin.edit_score') . ' — Match ' . $match->match_number)
+@section('title', __('site.admin.edit_scoreboard'))
 
 @section('content')
 <div class="apl-head">
-    <h2 class="apl-title"><i class="fas fa-clipboard-list apl-title-ico"></i> {{ __('site.admin.edit_score') }} — Match {{ $match->match_number }}</h2>
+    <h2 class="apl-title"><i class="fas fa-edit apl-title-ico"></i> {{ __('site.admin.edit_scoreboard') }}</h2>
     <nav>
         <ol class="apl-crumb">
             <li><a class="apl-crumb-link" href="{{ route('admin.dashboard') }}">{{ __('site.admin.dashboard') }} /</a></li>
             <li><a class="apl-crumb-link" href="{{ route('admin.scoreboards.index') }}">{{ __('site.admin.scoreboard') }} /</a></li>
-            <li class="apl-crumb-current">{{ __('site.admin.edit_score') }}</li>
+            <li class="apl-crumb-current">{{ __('site.admin.edit') }}</li>
         </ol>
     </nav>
 </div>
@@ -19,9 +19,12 @@
         <a href="{{ route('admin.scoreboards.index') }}" class="apl-tab">
             <i class="fas fa-list"></i> {{ __('site.admin.manage_scoreboards') }}
         </a>
-        <a href="{{ route('matches.show', $match) }}" target="_blank" class="apl-tab">
-            <i class="fas fa-eye"></i> {{ __('site.admin.view_page') }}
+        <a href="{{ route('admin.scoreboards.create') }}" class="apl-tab">
+            <i class="fas fa-plus-circle"></i> {{ __('site.admin.add_scoreboard') }}
         </a>
+        <span class="apl-tab active">
+            <i class="fas fa-edit"></i> {{ __('site.admin.edit_scoreboard') }}
+        </span>
     </div>
 </div>
 
@@ -204,6 +207,7 @@
                         <tr>
                             <th class="apf-st-player">{{ __('site.admin.bowler') }}</th>
                             <th>{{ __('site.admin.overs_col') }}</th>
+                            <th>{{ __('site.admin.balls_short') }}</th>
                             <th>{{ __('site.admin.maidens_col') }}</th>
                             <th>{{ __('site.admin.runs_short') }}</th>
                             <th>{{ __('site.admin.wickets_col') }}</th>
@@ -225,11 +229,29 @@
         </div>
 
         <div id="scb-tab-extras" class="scb-tab-panel">
-            <div class="apf-row">
+            <div class="scb-extras-grid">
                 <div class="apf-group">
-                    <label>{{ __('site.admin.total_extras') }}</label>
-                    <input type="number" name="extras[{{ $side }}][total]" value="{{ old("extras.{$side}.total", $side === 'rcb' ? $match->rcb_extras : $match->opponent_extras) }}" min="0" placeholder="0">
+                    <label>{{ __('site.admin.byes') }}</label>
+                    <input type="number" id="scbByes" name="extras[byes]" min="0" placeholder="0" value="{{ old('extras.byes', $extrasRow->byes ?? 0) }}" oninput="calculateExtras()">
                 </div>
+                <div class="apf-group">
+                    <label>{{ __('site.admin.leg_byes') }}</label>
+                    <input type="number" id="scbLegByes" name="extras[leg_byes]" min="0" placeholder="0" value="{{ old('extras.leg_byes', $extrasRow->leg_byes ?? 0) }}" oninput="calculateExtras()">
+                </div>
+                <div class="apf-group">
+                    <label>{{ __('site.admin.wides_col') }}</label>
+                    <input type="number" id="scbWides" name="extras[wides]" min="0" placeholder="0" value="{{ old('extras.wides', $extrasRow->wides ?? 0) }}" oninput="calculateExtras()">
+                </div>
+                <div class="apf-group">
+                    <label>{{ __('site.admin.noballs_col') }}</label>
+                    <input type="number" id="scbNoBalls" name="extras[no_balls]" min="0" placeholder="0" value="{{ old('extras.no_balls', $extrasRow->no_balls ?? 0) }}" oninput="calculateExtras()">
+                </div>
+            </div>
+
+            <div class="scb-extras-total">
+                <label>{{ __('site.admin.total_extras') }}</label>
+                <span class="scb-extras-total-value" id="scbTotalExtras">0</span>
+                <input type="hidden" name="extras[total]" id="scbTotalExtrasInput" value="{{ old('extras.total', $extrasRow->total ?? ($side === 'rcb' ? $match->rcb_extras : $match->opponent_extras)) }}">
             </div>
         </div>
 
@@ -405,6 +427,24 @@ function validateOvers(input, errorId) {
     input.classList.remove('is-invalid');
     return true;
 }
+
+function calculateExtras() {
+    var ids = ['scbByes', 'scbLegByes', 'scbWides', 'scbNoBalls'];
+    var total = 0;
+    ids.forEach(function (id) {
+        var el = document.getElementById(id);
+        var v = parseInt(el && el.value, 10);
+        if (!isNaN(v) && v > 0) total += v;
+    });
+    var span = document.getElementById('scbTotalExtras');
+    var input = document.getElementById('scbTotalExtrasInput');
+    if (span) span.textContent = String(total);
+    if (input) input.value = String(total);
+}
+
+(function () {
+    if (document.getElementById('scbTotalExtras')) calculateExtras();
+})();
 
 function toggleWinnerRequired(status) {
     var req = document.getElementById('winnerRequired');

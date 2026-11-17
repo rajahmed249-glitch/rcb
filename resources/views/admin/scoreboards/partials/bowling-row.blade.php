@@ -2,6 +2,7 @@
     $pid = $row?->player_id ?? (is_array($row) ? ($row['player_id'] ?? '') : '');
     $nm = $row?->name ?? (is_array($row) ? ($row['name'] ?? '') : '');
     $ov = $row?->overs ?? (is_array($row) ? ($row['overs'] ?? '') : '');
+    $bl = $row?->balls ?? (is_array($row) ? ($row['balls'] ?? '') : '');
     $md = $row?->maidens ?? (is_array($row) ? ($row['maidens'] ?? '') : '');
     $rn = $row?->runs ?? (is_array($row) ? ($row['runs'] ?? '') : '');
     $wk = $row?->wickets ?? (is_array($row) ? ($row['wickets'] ?? '') : '');
@@ -22,6 +23,7 @@
         @endif
     </td>
     <td><input type="text" name="stats[{{ $side }}][bowling][{{ $i }}][overs]" value="{{ $ov }}" placeholder="3.2"></td>
+    <td><input type="number" name="stats[{{ $side }}][bowling][{{ $i }}][balls]" value="{{ $bl }}" min="0" placeholder="0"></td>
     <td><input type="number" name="stats[{{ $side }}][bowling][{{ $i }}][maidens]" value="{{ $md }}" min="0" placeholder="0"></td>
     <td><input type="number" name="stats[{{ $side }}][bowling][{{ $i }}][runs]" value="{{ $rn }}" min="0" placeholder="0"></td>
     <td><input type="number" name="stats[{{ $side }}][bowling][{{ $i }}][wickets]" value="{{ $wk }}" min="0" placeholder="0"></td>

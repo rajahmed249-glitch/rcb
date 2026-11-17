@@ -73,6 +73,11 @@ class CricketMatch extends Model
         return $this->hasMany(MatchCommentary::class, 'match_id')->orderBy('sort_order')->orderBy('id');
     }
 
+    public function matchExtras()
+    {
+        return $this->hasMany(MatchExtra::class, 'match_id');
+    }
+
     public function scopeCompleted(Builder $query): Builder
     {
         return $query->where('status', 'completed')->orderByDesc('match_number')->orderByDesc('match_date');

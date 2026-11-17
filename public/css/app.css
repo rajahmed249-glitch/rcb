@@ -2155,3 +2155,32 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
     border-color: #dc2626 !important;
     background: #fef2f2;
 }
+
+/* ===== Scoreboard extras breakdown ===== */
+.scb-extras-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
+}
+.scb-extras-total {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: #f0fdfa;
+    border-radius: 10px;
+    border: 1px solid #0d9488;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.scb-extras-total label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0d9488;
+}
+.scb-extras-total .scb-extras-total-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0d9488;
+}

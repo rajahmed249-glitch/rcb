@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CricketMatch;
 use App\Models\MatchCommentary;
+use App\Models\MatchExtra;
 use App\Models\MatchFallOfWicket;
 use App\Models\MatchPlayerStat;
 use App\Models\Player;
@@ -89,6 +90,7 @@ class ScoreboardController extends Controller
             ],
             'fowRows' => $match->fow()->where('side', $side)->get()->values(),
             'commentaryRows' => $match->commentary()->where('side', $side)->get()->values(),
+            'extrasRow' => MatchExtra::where('match_id', $match->id)->where('side', $side)->first(),
         ]);
     }
 
@@ -140,6 +142,7 @@ class ScoreboardController extends Controller
         $this->saveStats($request, $match, $side);
         $this->saveFow($request, $match, $side);
         $this->saveCommentary($request, $match, $side);
+        $this->saveExtras($request, $match, $side);
 
         return redirect()->route('admin.scoreboards.edit', ['match' => $match, 'team' => $side])->with('success', __('site.admin.saved'));
     }
@@ -228,6 +231,7 @@ class ScoreboardController extends Controller
                         'stat_type' => 'bowling',
                         'sort_order' => $index,
                         'overs' => $overs ?: null,
+                        'balls' => max(0, (int) ($row['balls'] ?? 0)),
                         'maidens' => max(0, (int) ($row['maidens'] ?? 0)),
                         'runs' => max(0, (int) ($row['runs'] ?? 0)),
                         'wickets' => max(0, (int) ($row['wickets'] ?? 0)),
@@ -242,11 +246,38 @@ class ScoreboardController extends Controller
             MatchPlayerStat::create($row);
         }
 
-        $extrasInput = $request->input('extras', [])[$side] ?? null;
+    }
 
-        if (is_array($extrasInput)) {
-            $match->update([$side === 'rcb' ? 'rcb_extras' : 'opponent_extras' => max(0, (int) ($extrasInput['total'] ?? 0))]);
+    private function saveExtras(Request $request, CricketMatch $match, string $side): void
+    {
+        $input = $request->input('extras', []);
+
+        if (! is_array($input)) {
+            return;
         }
+
+        $byes = max(0, (int) ($input['byes'] ?? 0));
+        $legByes = max(0, (int) ($input['leg_byes'] ?? 0));
+        $wides = max(0, (int) ($input['wides'] ?? 0));
+        $noBalls = max(0, (int) ($input['no_balls'] ?? 0));
+        $total = (int) ($input['total'] ?? 0);
+
+        if ($total <= 0) {
+            $total = $byes + $legByes + $wides + $noBalls;
+        }
+
+        MatchExtra::updateOrCreate(
+            ['match_id' => $match->id, 'side' => $side],
+            [
+                'byes' => $byes,
+                'leg_byes' => $legByes,
+                'wides' => $wides,
+                'no_balls' => $noBalls,
+                'total' => $total,
+            ]
+        );
+
+        $match->update([$side === 'rcb' ? 'rcb_extras' : 'opponent_extras' => $total]);
     }
 
     private function saveFow(Request $request, CricketMatch $match, string $side): void
