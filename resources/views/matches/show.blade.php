@@ -238,6 +238,7 @@
                     @endif
                 @endif
             </div>
+            @endif
 
             @if ($tabDefs[2][3])
             <div class="sb-tab-content{{ $activeTab === 'squad' ? ' active' : '' }}" id="sb-tab-squad">
