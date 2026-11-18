@@ -533,7 +533,7 @@ a.match-card:hover { text-decoration: none; }
 .sb-score { font-size: 1.5rem; font-weight: 700; color: #111827; }
 .sb-score-w { color: #4b5563; }
 .sb-overs { font-size: .75rem; color: #6b7280; margin-top: .15rem; min-height: 1rem; }
-.sb-result { text-align: center; min-width: 9rem; padding-top: 4.75rem; }
+.sb-result { text-align: center; min-width: 9rem; padding-top: 2rem; }
 .sb-result-label { font-size: .7rem; color: #9ca3af; text-transform: uppercase; margin-bottom: .15rem; }
 .sb-result-text { color: #0d9488; font-size: .85rem; font-weight: 600; }
 .sb-result-text.sb-result-lost { color: #dc2626; }

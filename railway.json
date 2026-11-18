@@ -4,7 +4,7 @@
         "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "[ -f .env ] || cp .env.example .env; php artisan key:generate --force; php artisan migrate --force; php artisan db:seed --force; php artisan serve --host=0.0.0.0 --port=$PORT",
+        "startCommand": "[ -f .env ] || cp .env.example .env; if [ -d /data ]; then mkdir -p /data/uploads; cp -rn public/uploads/. /data/uploads/ 2>/dev/null || true; [ -f /data/database.sqlite ] || { [ -f database/database.sqlite ] && cp database/database.sqlite /data/database.sqlite || true; }; [ -L public/uploads ] || { rm -rf public/uploads; ln -sfn /data/uploads public/uploads; }; export DB_DATABASE=/data/database.sqlite; fi; php artisan key:generate --force; php artisan migrate --force; php artisan db:seed --force; php artisan serve --host=0.0.0.0 --port=$PORT",
         "restartPolicyType": "ON_FAILURE",
         "restartPolicyMaxRetries": 10
     }
