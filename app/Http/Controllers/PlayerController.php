@@ -12,10 +12,14 @@ class PlayerController extends Controller
         $role = $request->query('role');
 
         $query = Player::query()
-            ->whereNotNull('team_id')
+            ->where('frontend_show', 1)
             ->orderByDesc('is_captain')
             ->orderByDesc('is_vice_captain')
             ->orderBy('id');
+
+        if (($rcbTeam = \App\Models\Team::where('is_rcb', 1)->first())) {
+            $query->where('team_id', $rcbTeam->id);
+        }
 
         if ($role) {
             $query->where('role', $role);

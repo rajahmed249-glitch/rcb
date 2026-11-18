@@ -32,7 +32,7 @@
                 </a>
             </div>
 
-            <div class="topbar-name">Real Challenger Boys</div>
+            <div class="topbar-name">REAL CHALLENGER BOYS (RCB)</div>
 
             <div class="topbar-right">
                 <div class="lang-switch">

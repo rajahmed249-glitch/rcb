@@ -50,7 +50,7 @@
                         <input type="file" name="photo" id="photo" accept="image/*" onchange="previewImage(event)">
                     </div>
                     <div class="apf-preview-wrap">
-                        <img id="imagePreview" src="{{ $player->photo ? asset($player->photo) : asset('images/favicon.png') }}" alt="Preview" class="apf-preview">
+                        <img id="imagePreview" src="{{ $player->photo ? asset($player->photo) : asset('images/user_profile.webp') }}" alt="Preview" class="apf-preview">
                     </div>
                 </div>
                 <div class="apf-file-name" id="photoFileName"></div>
@@ -172,7 +172,7 @@
                 <label>{{ __('site.admin.batting_style') }}</label>
                 @php
                     $battingOptions = ['Right Handed', 'Left Handed'];
-                    $currentBatting = old('batting_style', $player->batting_style);
+                    $currentBatting = old('batting_style', $player->exists ? $player->batting_style : 'Right Handed');
                 @endphp
                 <select name="batting_style">
                     <option value="">--</option>
@@ -237,6 +237,21 @@
                     </label>
                 </div>
             </div>
+            <div class="apf-group">
+                <label>Frontend Show <span class="apf-hint" style="display:inline;">(Not Show = will not appear on the website)</span></label>
+                <div class="apf-toggle">
+                    <label class="apf-toggle-option {{ old('frontend_show', $player->exists ? $player->frontend_show : false) ? 'active' : '' }}" id="frontendShowLabel">
+                        <input type="radio" name="frontend_show" value="1" @checked(old('frontend_show', $player->exists ? $player->frontend_show : false)) onchange="toggleFrontendShow(true)">
+                        <span class="apf-toggle-icon">👁️</span>
+                        <span>Frontend Show</span>
+                    </label>
+                    <label class="apf-toggle-option {{ old('frontend_show', $player->exists ? $player->frontend_show : false) ? '' : 'active' }}" id="frontendNotShowLabel">
+                        <input type="radio" name="frontend_show" value="0" @checked(! old('frontend_show', $player->exists ? $player->frontend_show : false)) onchange="toggleFrontendShow(false)">
+                        <span class="apf-toggle-icon">🚫</span>
+                        <span>Frontend Not Show</span>
+                    </label>
+                </div>
+            </div>
         </div>
 
         <div class="apf-actions">
@@ -279,6 +294,13 @@ function toggleStatus(active) {
     var i = document.getElementById('statusInactiveLabel');
     if (a) a.classList.toggle('active', active);
     if (i) i.classList.toggle('active', !active);
+}
+
+function toggleFrontendShow(show) {
+    var s = document.getElementById('frontendShowLabel');
+    var n = document.getElementById('frontendNotShowLabel');
+    if (s) s.classList.toggle('active', show);
+    if (n) n.classList.toggle('active', !show);
 }
 
 function previewImage(event) {

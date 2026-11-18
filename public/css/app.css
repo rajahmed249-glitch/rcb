@@ -2260,3 +2260,62 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 /* ===== Overs table column alignment (phase 48) ===== */
 .overs-content .bowl-table th:nth-child(1), .overs-content .bowl-table td:nth-child(1) { text-align: center; padding-left: .5rem; }
 .overs-content .bowl-table th:nth-child(3), .overs-content .bowl-table td:nth-child(3), .overs-content .bowl-table th:nth-child(4), .overs-content .bowl-table td:nth-child(4) { text-align: left; }
+
+/* ===== Phase 48 ===== */
+
+/* Match form: Quill editor tables + table insert button */
+.ql-custom-table { width: auto !important; font-size: 14px; }
+.apf-quill-container .ql-editor { overflow-x: auto; }
+.apf-quill-container .ql-editor table { border-collapse: collapse; max-width: 100%; margin: .4rem 0; }
+.apf-quill-container .ql-editor td, .apf-quill-container .ql-editor th { border: 1px solid #e5e7eb; padding: 8px 12px; min-width: 40px; font-size: 13px; }
+.apf-quill-container .ql-editor table td p, .apf-quill-container .ql-editor table th p { margin: 0; }
+
+/* Match Info tab (frontend) — smaller, cleaner */
+.sb-match-info-text { padding: 1rem 1.25rem; font-size: .875rem; line-height: 1.65; overflow-x: auto; }
+.sb-match-info-text table { max-width: 100%; margin: .5rem 0; border-collapse: collapse; font-size: .8125rem; }
+.sb-match-info-text table th { background: #f0fdfa; font-weight: 600; color: #0f766e; }
+.sb-match-info-text table td, .sb-match-info-text table th { border: 1px solid #e5e7eb; padding: .4rem .55rem; word-break: break-word; }
+.sb-match-info-text table img { max-width: 100%; height: auto; }
+
+/* Players page: heading left + role filters right, same line */
+.players-head { flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; text-align: left; }
+@media (max-width: 768px) { .players-head { flex-direction: column; align-items: center; } }
+
+/* Players page card image: white background + violet blur on hover */
+.players-page .pcard-img-wrap { background: #ffffff; }
+.players-page .pcard-img-wrap img { background: #ffffff; }
+.players-page .pcard-img-wrap::after { content: ''; position: absolute; inset: 0; background: rgba(139, 92, 246, .28); opacity: 0; transition: opacity .3s ease; z-index: 3; pointer-events: none; }
+.players-page .pcard:hover .pcard-img-wrap img { filter: blur(1.5px); }
+.players-page .pcard:hover .pcard-img-wrap::after { opacity: 1; }
+
+/* Player card role icon image */
+.pcard-icon-img { width: 24px; height: 24px; object-fit: contain; border-radius: 50%; }
+
+/* Team profile: smaller player cards + pager */
+.tp-player-grid { grid-template-columns: repeat(6, 1fr); gap: 1rem; }
+.tp-player-grid .pcard-img-wrap { height: 190px; }
+.tp-player-grid .pcard-bottom { padding: 8px 10px; gap: 8px; }
+.tp-player-grid .pcard-name { font-size: 12px; }
+.tp-player-grid .pcard-roleicon { width: 28px; height: 28px; border-radius: 50%; }
+.tp-player-grid .pcard-rolepill { display: none; }
+.tp-pager { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 1.5rem; flex-wrap: wrap; }
+.tp-page-btn { min-width: 34px; height: 34px; padding: 0 8px; border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; color: #374151; font-size: .8rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+.tp-page-btn:hover { border-color: #14b8a6; color: #0d9488; }
+.tp-page-btn.active { background: linear-gradient(135deg, #14b8a6, #0d9488); color: #fff; border-color: #0d9488; box-shadow: 0 2px 8px rgba(20,184,166,.3); }
+@media (max-width: 1024px) { .tp-player-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 640px) { .tp-player-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* Team profile: Statistics section beautify */
+.tprof-statcol { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem 1.25rem; }
+.tprof-statcol h3 { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #14b8a6, #0d9488); color: #fff; font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding: .6rem 1rem; border-radius: 8px; margin: 0 0 .75rem; }
+.tprof-statcol:first-child h3::after { content: '\1F3C6'; font-size: 1rem; }
+.tprof-statcol:last-child h3::after { content: '\1F3AF'; font-size: 1rem; }
+.tprof-statlist li { padding: .6rem .4rem; border-radius: 8px; transition: background .2s; }
+.tprof-statlist li:hover { background: #f0fdfa; }
+.tprof-statlist li::before { content: attr(data-rank); display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: .6rem; border-radius: 50%; background: #ccfbf1; color: #0f766e; font-size: .7rem; font-weight: 700; }
+
+/* Topbar + header middle height reduced */
+.topbar-inner { padding: .28rem 0; }
+.topbar-name { font-size: .88rem; }
+.header-main { padding: .45rem 0; gap: 1.25rem; }
+.brand-logo-img { height: 38px; }

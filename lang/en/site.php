@@ -391,7 +391,7 @@ return [
         'name' => 'Name (English)',
         'name_bn' => 'Name (Bangla)',
         'name_en' => 'Name (EN)',
-        'dob' => 'DOB',
+        'dob' => 'Date of Birth',
         'first_name_en' => 'First Name (EN)',
         'first_name_bn' => 'First Name (BAN)',
         'district' => 'District',

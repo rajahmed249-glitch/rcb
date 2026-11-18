@@ -76,11 +76,13 @@ class PageController extends Controller
         if ($team['is_rcb']) {
             $players = $dbTeam
                 ? Player::where('team_id', $dbTeam->id)
+                    ->where('frontend_show', 1)
                     ->orderByDesc('is_captain')
                     ->orderByDesc('is_vice_captain')
                     ->orderBy('id')
                     ->get()
-                : Player::orderByDesc('is_captain')
+                : Player::where('frontend_show', 1)
+                    ->orderByDesc('is_captain')
                     ->orderByDesc('is_vice_captain')
                     ->orderBy('id')
                     ->get();
@@ -88,6 +90,7 @@ class PageController extends Controller
             $topWickets = Player::orderByDesc('wickets')->take(5)->get();
         } elseif ($dbTeam) {
             $players = Player::where('team_id', $dbTeam->id)
+                ->where('frontend_show', 1)
                 ->orderByDesc('is_captain')
                 ->orderBy('id')
                 ->get();

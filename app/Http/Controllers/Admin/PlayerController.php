@@ -53,8 +53,8 @@ class PlayerController extends Controller
             'player' => new Player(),
             'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
             'roleIcons' => RoleIcon::orderBy('sort_order')->orderBy('id')->get(),
-            'districts' => Location::where('type', 'district')->orderBy('sort_order')->orderBy('name')->get(),
-            'thanas' => Location::where('type', 'thana')->orderBy('sort_order')->orderBy('name')->get(),
+            'districts' => Location::where('type', 'district')->orderBy('name')->get(),
+            'thanas' => Location::where('type', 'thana')->orderBy('name')->get(),
         ]);
     }
 
@@ -74,8 +74,8 @@ class PlayerController extends Controller
             'player' => $player,
             'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
             'roleIcons' => RoleIcon::orderBy('sort_order')->orderBy('id')->get(),
-            'districts' => Location::where('type', 'district')->orderBy('sort_order')->orderBy('name')->get(),
-            'thanas' => Location::where('type', 'thana')->orderBy('sort_order')->orderBy('name')->get(),
+            'districts' => Location::where('type', 'district')->orderBy('name')->get(),
+            'thanas' => Location::where('type', 'thana')->orderBy('name')->get(),
         ]);
     }
 
@@ -122,6 +122,7 @@ class PlayerController extends Controller
             'bio_bn' => ['nullable', 'string'],
         ]) + [
             'status' => $request->boolean('status'),
+            'frontend_show' => $request->boolean('frontend_show'),
         ];
     }
 

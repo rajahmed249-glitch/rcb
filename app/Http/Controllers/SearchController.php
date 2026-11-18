@@ -18,6 +18,7 @@ class SearchController extends Controller
         }
 
         $players = Player::where('name', 'like', "%{$query}%")
+            ->where('frontend_show', 1)
             ->orderBy('name')
             ->take(5)
             ->get();
@@ -60,7 +61,7 @@ class SearchController extends Controller
         $players = $matches = $news = collect();
 
         if ($query !== '') {
-            $players = Player::where('name', 'like', "%{$query}%")->take(10)->get();
+            $players = Player::where('name', 'like', "%{$query}%")->where('frontend_show', 1)->take(10)->get();
             $matches = CricketMatch::where('opponent_name', 'like', "%{$query}%")
                 ->orWhere('venue', 'like', "%{$query}%")
                 ->orderByDesc('match_date')

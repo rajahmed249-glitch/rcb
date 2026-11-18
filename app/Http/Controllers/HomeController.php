@@ -16,6 +16,7 @@ class HomeController extends Controller
             'upcomingMatches' => CricketMatch::upcoming()->take(3)->get(),
             'latestNews' => NewsPost::orderByDesc('published_at')->take(3)->get(),
             'players' => Player::whereNotNull('team_id')
+                ->where('frontend_show', 1)
                 ->orderByDesc('is_captain')
                 ->orderByDesc('is_vice_captain')
                 ->orderBy('id')

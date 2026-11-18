@@ -137,6 +137,8 @@
 var quill;
 var quillSourceMode = false;
 var quillSourceBox = null;
+var quillRawBackup = null;
+var quillDirty = false;
 
 @php
     $matchTeamsData = $tournamentTeams;
@@ -222,6 +224,8 @@ document.addEventListener('DOMContentLoaded', function () {
         quill.root.innerHTML = infoInput.value;
     }
 
+    quill.on('text-change', function () { quillDirty = true; });
+
     quillSourceBox = document.getElementById('quillSource');
     var toolbarEl = document.querySelector('.apf-quill-container .ql-toolbar');
     if (toolbarEl && quillSourceBox) {
@@ -237,20 +241,83 @@ document.addEventListener('DOMContentLoaded', function () {
             srcBtn.classList.toggle('ql-active', quillSourceMode);
             if (quillSourceMode) {
                 quillSourceBox.value = quill.root.innerHTML;
+                quillRawBackup = quillSourceBox.value;
                 quill.container.style.display = 'none';
                 quillSourceBox.style.display = 'block';
             } else {
-                quill.root.innerHTML = quillSourceBox.value;
+                var rawVal = quillSourceBox.value;
+                quill.root.innerHTML = rawVal;
+                quillRawBackup = rawVal;
+                quillDirty = false;
                 quill.container.style.display = '';
                 quillSourceBox.style.display = 'none';
             }
         });
         fmt.appendChild(srcBtn);
+
+        var fmt2 = document.createElement('span');
+        fmt2.className = 'ql-formats';
+        var tblBtn = document.createElement('button');
+        tblBtn.type = 'button';
+        tblBtn.className = 'ql-custom-table';
+        tblBtn.title = 'Insert Table';
+        tblBtn.innerHTML = '▩';
+        tblBtn.addEventListener('click', function () {
+            var rows = parseInt(prompt('Number of rows:', '3'), 10);
+            if (!rows) return;
+            var cols = parseInt(prompt('Number of columns:', '3'), 10);
+            if (!cols) return;
+            var width = parseInt(prompt('Table width (%):', '100'), 10);
+            if (!width || width <= 0 || width > 100) width = 100;
+            rows = Math.max(1, Math.min(rows, 50));
+            cols = Math.max(1, Math.min(cols, 20));
+            var html = '<table style="width:' + width + '%; border-collapse: collapse;" border="1"><tbody>';
+            for (var r = 0; r < rows; r++) {
+                html += '<tr>';
+                for (var c = 0; c < cols; c++) {
+                    html += '<td style="border:1px solid #e5e7eb; padding:8px 12px;">&nbsp;</td>';
+                }
+                html += '</tr>';
+            }
+            html += '</tbody></table><p><br></p>';
+            if (quillSourceMode && quillSourceBox) {
+                var sp = quillSourceBox.selectionStart;
+                if (sp === null || isNaN(sp)) sp = quillSourceBox.value.length;
+                var cur = quillSourceBox.value;
+                quillSourceBox.value = cur.slice(0, sp) + html + cur.slice(sp);
+                quillSourceBox.focus();
+                var np = sp + html.length;
+                quillSourceBox.setSelectionRange(np, np);
+            } else {
+                var range = quill.getSelection(true);
+                var idx = range ? range.index : quill.getLength();
+                var leaf = quill.getLeaf(idx);
+                var node = (leaf && leaf[0] && leaf[0].domNode) ? leaf[0].domNode : null;
+                var holder = document.createElement('div');
+                holder.innerHTML = html;
+                var tblEl = holder.firstElementChild;
+                if (node && node.parentNode && quill.root.contains(node)) {
+                    node.parentNode.insertBefore(tblEl, node);
+                } else {
+                    quill.root.appendChild(tblEl);
+                }
+                quillDirty = false;
+                quillRawBackup = quill.root.innerHTML;
+            }
+        });
+        fmt2.appendChild(tblBtn);
         toolbarEl.appendChild(fmt);
+        toolbarEl.appendChild(fmt2);
     }
 
     document.getElementById('matchForm').addEventListener('submit', function () {
-        infoInput.value = quillSourceMode && quillSourceBox ? quillSourceBox.value : quill.root.innerHTML;
+        if (quillSourceMode && quillSourceBox) {
+            infoInput.value = quillSourceBox.value;
+        } else if (quillRawBackup !== null && !quillDirty) {
+            infoInput.value = quillRawBackup;
+        } else {
+            infoInput.value = quill.root.innerHTML;
+        }
     });
 });
 
@@ -271,6 +338,8 @@ function resetMatchForm() {
         quill.deleteText(0, quill.getLength());
     }
     if (quillSourceBox) quillSourceBox.value = '';
+    quillRawBackup = null;
+    quillDirty = false;
     return true;
 }
 </script>

@@ -12,8 +12,8 @@ class PlayerApplicationController extends Controller
     public function create()
     {
         return view('be-a-player.create', [
-            'districts' => Location::where('type', 'district')->where('status', 1)->orderBy('sort_order')->orderBy('name')->get(),
-            'thanas' => Location::where('type', 'thana')->where('status', 1)->orderBy('sort_order')->orderBy('name')->get(),
+            'districts' => Location::where('type', 'district')->where('status', 1)->orderBy('name')->get(),
+            'thanas' => Location::where('type', 'thana')->where('status', 1)->orderBy('name')->get(),
         ]);
     }
 

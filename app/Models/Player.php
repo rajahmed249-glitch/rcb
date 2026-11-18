@@ -23,6 +23,7 @@ class Player extends Model
         'debut',
         'player_tag',
         'status',
+        'frontend_show',
         'jersey_number',
         'photo',
         'is_captain',
@@ -43,7 +44,34 @@ class Player extends Model
         'date_of_birth' => 'date',
         'debut' => 'date',
         'status' => 'boolean',
+        'frontend_show' => 'boolean',
     ];
+
+    public function getRoleIconPathAttribute(): ?string
+    {
+        if ($this->roleIcon && $this->roleIcon->is_image) {
+            return asset($this->roleIcon->icon);
+        }
+
+        $map = [
+            'batsman' => 'images/role-icons/batsman.webp',
+            'batting' => 'images/role-icons/batsman.webp',
+            'bowler' => 'images/role-icons/bowler.webp',
+            'bowling' => 'images/role-icons/bowler.webp',
+            'all-rounder' => 'images/role-icons/allrounder.webp',
+            'allrounder' => 'images/role-icons/allrounder.webp',
+            'alrounder' => 'images/role-icons/allrounder.webp',
+            'wicketkeeper' => 'images/role-icons/wicket-keeper.webp',
+            'wicket-keeper' => 'images/role-icons/wicket-keeper.webp',
+            'wicket keeper' => 'images/role-icons/wicket-keeper.webp',
+        ];
+
+        $key = strtolower(trim((string) $this->role));
+
+        $path = $map[$key] ?? null;
+
+        return $path ? asset($path) : null;
+    }
 
     public function team()
     {

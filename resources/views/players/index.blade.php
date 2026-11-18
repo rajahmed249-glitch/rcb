@@ -3,7 +3,7 @@
 @section('title', 'Players')
 
 @section('content')
-    <div class="container">
+    <div class="container players-page">
         <div class="players-head">
             <h1 class="players-title">{{ __('site.players') }}</h1>
             <div class="player-filters">
@@ -41,7 +41,13 @@
                         </div>
                     </div>
                     <div class="pcard-bottom">
-                        <div class="pcard-roleicon">{{ $player->role === 'Bowler' ? '&#127919;' : ($player->role === 'Wicketkeeper' ? '&#129524;' : ($player->role === 'All-rounder' ? '&#9889;' : '&#127951;')) }}</div>
+                        <div class="pcard-roleicon">
+                            @if ($player->role_icon_path)
+                                <img src="{{ $player->role_icon_path }}" alt="" class="pcard-icon-img">
+                            @else
+                                {{ $player->role === 'Bowler' ? '&#127919;' : ($player->role === 'Wicketkeeper' ? '&#129524;' : ($player->role === 'All-rounder' ? '&#9889;' : '&#127951;')) }}
+                            @endif
+                        </div>
                         <div class="pcard-name">{{ $player->display_name }}@if ($player->badge === 'c') <span class="pcard-star">&#11088;</span>@endif</div>
                         <span class="pcard-rolepill">{{ $player->display_role }}</span>
                     </div>

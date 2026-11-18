@@ -59,7 +59,7 @@
 
         @if ($team['is_rcb'])
             <div class="tprof-panel" id="tp-tab-players">
-                <div class="pcard-grid">
+                <div class="pcard-grid tp-player-grid" id="tpPlayerGrid">
                     @foreach ($players as $player)
                         <div class="pcard">
                             <div class="pcard-img-wrap">
@@ -82,13 +82,20 @@
                                 </div>
                             </div>
                             <div class="pcard-bottom">
-                                <div class="pcard-roleicon">{{ $player->role === 'Bowler' ? '&#127919;' : ($player->role === 'Wicketkeeper' ? '&#129524;' : ($player->role === 'All-rounder' ? '&#9889;' : '&#127951;')) }}</div>
+                                <div class="pcard-roleicon">
+                                    @if ($player->role_icon_path)
+                                        <img src="{{ $player->role_icon_path }}" alt="" class="pcard-icon-img">
+                                    @else
+                                        {{ $player->role === 'Bowler' ? '&#127919;' : ($player->role === 'Wicketkeeper' ? '&#129524;' : ($player->role === 'All-rounder' ? '&#9889;' : '&#127951;')) }}
+                                    @endif
+                                </div>
                                 <a href="{{ route('players.show', $player) }}" class="pcard-name">{{ $player->display_name }}@if ($player->badge === 'c') <span class="pcard-star">&#11088;</span>@endif</a>
                                 <span class="pcard-rolepill">{{ $player->display_role }}</span>
                             </div>
                         </div>
                     @endforeach
                 </div>
+                <div class="tp-pager" id="tpPlayerPager"></div>
             </div>
 
             <div class="tprof-panel" id="tp-tab-stats">
@@ -97,7 +104,7 @@
                         <h3>{{ __('site.team_profile.most_runs') }}</h3>
                         <ul class="tprof-statlist">
                             @forelse ($topRuns as $p)
-                                <li><a href="{{ route('players.show', $p) }}">{{ $p->display_name }}</a><span>{{ $p->runs }}</span></li>
+                                <li data-rank="{{ $loop->iteration }}"><a href="{{ route('players.show', $p) }}">{{ $p->display_name }}</a><span>{{ $p->runs }}</span></li>
                             @empty
                                 <li class="muted">{{ __('site.no_data') }}</li>
                             @endforelse
@@ -107,7 +114,7 @@
                         <h3>{{ __('site.team_profile.most_wickets') }}</h3>
                         <ul class="tprof-statlist">
                             @forelse ($topWickets as $p)
-                                <li><a href="{{ route('players.show', $p) }}">{{ $p->display_name }}</a><span>{{ $p->wickets }}</span></li>
+                                <li data-rank="{{ $loop->iteration }}"><a href="{{ route('players.show', $p) }}">{{ $p->display_name }}</a><span>{{ $p->wickets }}</span></li>
                             @empty
                                 <li class="muted">{{ __('site.no_data') }}</li>
                             @endforelse
@@ -138,4 +145,41 @@
             <a href="{{ route('pages.teams') }}" class="btn btn-outline">{{ __('site.back_to_teams') }}</a>
         </p>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var grid = document.getElementById('tpPlayerGrid');
+        var pager = document.getElementById('tpPlayerPager');
+        if (!grid || !pager) return;
+
+        var cards = Array.prototype.slice.call(grid.querySelectorAll('.pcard'));
+        var perPage = 12;
+        var totalPages = Math.max(1, Math.ceil(cards.length / perPage));
+        var current = 1;
+
+        if (cards.length <= perPage) { pager.style.display = 'none'; }
+
+        function render() {
+            cards.forEach(function (card, i) {
+                var page = Math.floor(i / perPage) + 1;
+                card.style.display = page === current ? '' : 'none';
+            });
+            var html = '';
+            for (var p = 1; p <= totalPages; p++) {
+                html += '<button type="button" class="tp-page-btn' + (p === current ? ' active' : '') + '" data-page="' + p + '">' + p + '</button>';
+            }
+            pager.innerHTML = html;
+        }
+
+        pager.addEventListener('click', function (e) {
+            var btn = e.target.closest('.tp-page-btn');
+            if (!btn) return;
+            current = parseInt(btn.getAttribute('data-page'), 10);
+            render();
+            grid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+
+        render();
+    });
+    </script>
 @endsection
