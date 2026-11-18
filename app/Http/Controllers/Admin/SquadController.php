@@ -88,22 +88,50 @@ class SquadController extends Controller
 
     public function edit(CricketMatch $match)
     {
-        return view('admin.squads.form', [
-            'match' => $match,
-            'players' => Player::whereNotNull('team_id')
-                ->with('team')
+        $rcbTeam = Team::where('is_rcb', 1)->first();
+        $opponentTeam = $match->opponentTeam ?? ($match->opponent_team_id ? Team::find($match->opponent_team_id) : null);
+
+        $squadIds = array_map('intval', $match->squad()->pluck('players.id')->all());
+
+        $teamPanels = [];
+
+        foreach ([['key' => 'rcb', 'team' => $rcbTeam], ['key' => 'opponent', 'team' => $opponentTeam]] as $entry) {
+            if (!$entry['team']) {
+                continue;
+            }
+
+            $players = Player::where('team_id', $entry['team']->id)
                 ->orderByDesc('is_captain')
                 ->orderByDesc('is_vice_captain')
                 ->orderBy('id')
-                ->get(),
+                ->get()
+                ->map(fn ($p) => ['id' => $p->id, 'name' => $p->name, 'role' => $p->role])
+                ->values()
+                ->all();
+
+            $teamPanels[] = [
+                'key' => $entry['key'],
+                'id' => $entry['team']->id,
+                'name' => $entry['team']->display_name,
+                'players' => $players,
+                'selected' => array_values(array_intersect(array_column($players, 'id'), $squadIds)),
+            ];
+        }
+
+        return view('admin.squads.form', [
+            'match' => $match,
+            'teamPanels' => $teamPanels,
+            'squadIds' => $squadIds,
         ]);
     }
 
     public function update(Request $request, CricketMatch $match)
     {
         $ids = collect($request->input('squad', []))
-            ->map(fn ($id) => (int) $id)
+            ->flatMap(fn ($group) => array_map('intval', (array) $group))
             ->filter()
+            ->unique()
+            ->values()
             ->all();
 
         $match->squad()->sync($ids);

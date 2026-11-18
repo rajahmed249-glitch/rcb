@@ -14,6 +14,53 @@
         return [$parts[0], $parts[1] ?? null];
     }
 
+    function sbBallChips(?string $seq): string
+    {
+        $seq = trim((string) $seq);
+
+        if ($seq === '') {
+            return '';
+        }
+
+        $out = [];
+
+        foreach (preg_split('/\s+/', $seq) as $token) {
+            $spans = [];
+
+            foreach (explode('+', $token) as $chunk) {
+                $c = strtolower($chunk);
+
+                if (str_contains($c, 'wd')) {
+                    $cls = 'bb-wd';
+                } elseif ($c === 'n' || str_contains($c, 'nb')) {
+                    $cls = 'bb-nb';
+                } elseif (str_contains($c, 'lb')) {
+                    $cls = 'bb-lb';
+                } elseif ($c === 'l' || str_ends_with($c, 'l')) {
+                    $cls = 'bb-lb';
+                } elseif ($c === 'b' || str_ends_with($c, 'b')) {
+                    $cls = 'bb-b';
+                } elseif (str_contains($c, 'w')) {
+                    $cls = 'bb-w';
+                } elseif ($c === '0') {
+                    $cls = 'bb-dot';
+                } elseif ($c === '4') {
+                    $cls = 'bb-r4';
+                } elseif ($c === '6') {
+                    $cls = 'bb-r6';
+                } else {
+                    $cls = 'bb-r';
+                }
+
+                $spans[] = '<span class="bb-chip bb-' . $cls . '">' . e($chunk) . '</span>';
+            }
+
+            $out[] = implode('', $spans);
+        }
+
+        return implode('', $out);
+    }
+
     [$rcbRuns, $rcbWickets] = sbSplitScore($match->rcb_score);
     [$oppRuns, $oppWickets] = sbSplitScore($match->opponent_score);
 
@@ -415,7 +462,7 @@
                                         <tr>
                                             <td>{{ $cm['over'] }}</td>
                                             <td>{{ $cm['score'] }}</td>
-                                            <td>{{ $cm['runs'] }}</td>
+                                            <td class="overs-runs-cell">{!! sbBallChips($cm['runs']) !!}</td>
                                             <td>{{ $cm['description'] }}</td>
                                         </tr>
                                     @endforeach
@@ -442,7 +489,7 @@
                                         <tr>
                                             <td>{{ $cm['over'] }}</td>
                                             <td>{{ $cm['score'] }}</td>
-                                            <td>{{ $cm['runs'] }}</td>
+                                            <td class="overs-runs-cell">{!! sbBallChips($cm['runs']) !!}</td>
                                             <td>{{ $cm['description'] }}</td>
                                         </tr>
                                     @endforeach
