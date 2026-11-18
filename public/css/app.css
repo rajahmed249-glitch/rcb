@@ -2219,3 +2219,8 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 /* Overs subtabs (per-team commentary panels) */
 .overs-content { display: none; }
 .overs-content.active { display: block; }
+
+.rm-actions { display: flex; align-items: center; gap: .375rem; justify-content: flex-end; }
+.rm-actions .rm-act { width: 30px; height: 30px; border-radius: 8px; border: 1px solid #e5e7eb; background: #f9fafb; color: #374151; display: flex; align-items: center; justify-content: center; font-size: .8rem; text-decoration: none; transition: all .2s ease; }
+.rm-actions .rm-act:hover { background: #14b8a6; border-color: #14b8a6; color: #fff; }
+.rm-actions .rm-act-score:hover { background: #f59e0b; border-color: #f59e0b; }

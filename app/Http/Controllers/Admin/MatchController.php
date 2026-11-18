@@ -75,12 +75,34 @@ class MatchController extends Controller
 
     public function edit(CricketMatch $match)
     {
+        $rcbTeam = Team::where('is_rcb', 1)->first();
+        $tournamentTeams = $this->tournamentTeams();
+
+        if ($match->tournament_id) {
+            $list = $tournamentTeams[$match->tournament_id] ?? [];
+
+            if ($match->opponent_team_id && ! in_array((int) $match->opponent_team_id, array_column($list, 'id'))) {
+                $opponent = $match->opponentTeam ?: Team::find($match->opponent_team_id);
+
+                if ($opponent) {
+                    $tournamentTeams[$match->tournament_id][] = ['id' => $opponent->id, 'name' => $opponent->name];
+                }
+            }
+        }
+
+        $allTeams = Team::orderBy('sort_order')->orderBy('id')->get()
+            ->filter(fn ($team) => ! ($rcbTeam && (int) $team->id === (int) $rcbTeam->id))
+            ->map(fn ($team) => ['id' => $team->id, 'name' => $team->name])
+            ->values()
+            ->all();
+
         return view('admin.matches.form', [
             'match' => $match,
             'teams' => Team::orderBy('sort_order')->orderBy('id')->get(),
+            'allTeams' => $allTeams,
             'tournaments' => Tournament::orderBy('sort_order')->orderBy('id')->get(),
-            'tournamentTeams' => $this->tournamentTeams(),
-            'rcbTeam' => Team::where('is_rcb', 1)->first(),
+            'tournamentTeams' => $tournamentTeams,
+            'rcbTeam' => $rcbTeam,
         ]);
     }
 

@@ -145,10 +145,17 @@ var quillSourceBox = null;
 
 var tournamentTeams = @js($matchTeamsData);
 var rcbTeam = @js($rcbData);
+var allTeams = @js($allTeams);
+var matchIsEdit = {{ $match->exists ? 'true' : 'false' }};
+var savedOpponent = @js($match->opponent_team_id ? ['id' => $match->opponent_team_id, 'name' => $match->display_opponent_name] : null);
 
 function apfPopulateTeams(tournamentId) {
     var selectB = document.getElementById('team_b_id');
-    var teams = tournamentTeams[tournamentId] || [];
+    var teams = matchIsEdit ? allTeams : [];
+
+    if (tournamentId && tournamentTeams[tournamentId] && tournamentTeams[tournamentId].length) {
+        teams = tournamentTeams[tournamentId];
+    }
 
     selectB.innerHTML = '';
 
@@ -165,7 +172,22 @@ function apfPopulateTeams(tournamentId) {
         selectB.appendChild(opt);
     });
 
-    selectB.disabled = !tournamentId;
+    selectB.disabled = (!tournamentId && !matchIsEdit) || !teams.length;
+}
+
+function apfRestoreSavedOpponent() {
+    if (!savedOpponent) return;
+    var selectB = document.getElementById('team_b_id');
+    var exists = Array.prototype.some.call(selectB.options, function (o) {
+        return String(o.value) === String(savedOpponent.id);
+    });
+    if (!exists) {
+        var opt = document.createElement('option');
+        opt.value = savedOpponent.id;
+        opt.textContent = savedOpponent.name;
+        selectB.appendChild(opt);
+    }
+    selectB.value = savedOpponent.id;
 }
 
 document.getElementById('tournament_id').addEventListener('change', function () {
@@ -174,11 +196,8 @@ document.getElementById('tournament_id').addEventListener('change', function () 
 
 document.addEventListener('DOMContentLoaded', function () {
     var initialTournament = document.getElementById('tournament_id').value;
-    if (initialTournament) {
-        apfPopulateTeams(initialTournament);
-        var savedB = '{{ old('opponent_team_id', $match->opponent_team_id) }}';
-        if (savedB) document.getElementById('team_b_id').value = savedB;
-    }
+    apfPopulateTeams(initialTournament);
+    apfRestoreSavedOpponent();
 
     var infoInput = document.getElementById('match_info');
     quill = new Quill('#quillEditor', {

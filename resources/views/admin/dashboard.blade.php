@@ -164,6 +164,14 @@
                                 <span class="rm-result" title="{{ $match->result_text }}">{{ Str::limit($match->result_text, 25) }}</span>
                             @endif
                         </div>
+                        <div class="rm-actions">
+                            <a href="{{ route('admin.matches.edit', $match) }}" class="rm-act" title="{{ __('site.admin.edit') }}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{{ route('admin.scoreboards.edit', ['match' => $match]) }}?team=summary" class="rm-act rm-act-score" title="{{ __('site.admin.match_result') }}">
+                                <i class="fas fa-chart-line"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             @endforeach
