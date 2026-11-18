@@ -52,7 +52,7 @@
                     $cls = 'bb-r';
                 }
 
-                $spans[] = '<span class="bb-chip bb-' . $cls . '">' . e($chunk) . '</span>';
+                $spans[] = '<span class="bb-chip ' . $cls . '">' . e($chunk) . '</span>';
             }
 
             $out[] = implode('', $spans);
