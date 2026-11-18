@@ -2193,3 +2193,19 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 .scb-cell-off input {
     display: none;
 }
+
+/* Match Info rich text on frontend scoreboard */
+.sb-match-info-text {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(20, 184, 166, 0.15);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #1f2937;
+}
+
+.sb-match-info-text p { margin: 0 0 0.6rem; }
+.sb-match-info-text p:last-child { margin-bottom: 0; }
+.sb-match-info-text img { max-width: 100%; height: auto; }
+.sb-match-info-text ul, .sb-match-info-text ol { padding-left: 1.4rem; margin: 0 0 0.6rem; }
+.sb-match-info-text table { width: 100%; border-collapse: collapse; }
+.sb-match-info-text table td, .sb-match-info-text table th { border: 1px solid #e5e7eb; padding: 0.4rem 0.6rem; }

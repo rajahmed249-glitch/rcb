@@ -17,13 +17,29 @@
     [$rcbRuns, $rcbWickets] = sbSplitScore($match->rcb_score);
     [$oppRuns, $oppWickets] = sbSplitScore($match->opponent_score);
 
-    $hasScorecard = $match->status === 'completed' && !empty($scorecard['rcb']);
+    $flags = $scorecard['flags'];
+
+    $rcbInnings = !empty($scorecard['rcb']) ? $scorecard['rcb'] : null;
+    $oppInnings = !empty($scorecard['opponent']) ? $scorecard['opponent'] : null;
+    $hasSummaryCards = $rcbInnings !== null && $oppInnings !== null;
+
+    $tabDefs = [
+        ['summary', '&#128202;', __('site.tabs.summary'), $flags['result']],
+        ['scorecard', '&#128203;', __('site.tabs.scorecard'), $rcbInnings !== null || $oppInnings !== null],
+        ['squad', '&#128101;', __('site.tabs.squad'), $flags['squad'] || !empty($scorecard['squads']['rcb']) || !empty($scorecard['squads']['opponent'])],
+        ['matchinfo', '&#8505;&#65039;', __('site.tabs.match_info'), $flags['info']],
+        ['commentary', '&#127951;', __('site.tabs.commentary'), $flags['commentary']],
+    ];
+
+    $tabs = array_values(array_filter($tabDefs, fn ($t) => $t[3]));
+
+    $activeTab = $tabs[0][0] ?? null;
 
     $rcbTeamSlug = 'real-challenger-boys';
     $oppTeamSlug = \Illuminate\Support\Str::slug($match->opponent_name);
 
     $summaryCards = [];
-    if ($hasScorecard) {
+    if ($hasSummaryCards) {
         $summaryTeams = [
             ['key' => 'rcb', 'name' => 'Real Challenger Boys'],
             ['key' => 'opponent', 'name' => $match->display_opponent_name],
@@ -119,17 +135,16 @@
 
         <div class="sb-tabs-card">
             <div class="sb-tabs">
-                <button class="sb-tab-btn active" data-tab="summary">&#128202; {{ __('site.tabs.summary') }}</button>
-                <button class="sb-tab-btn" data-tab="scorecard">&#128203; {{ __('site.tabs.scorecard') }}</button>
-                <button class="sb-tab-btn" data-tab="squad">&#128101; {{ __('site.tabs.squad') }}</button>
-                <button class="sb-tab-btn" data-tab="matchinfo">&#8505;&#65039; {{ __('site.tabs.match_info') }}</button>
-                <button class="sb-tab-btn" data-tab="commentary">&#127951; {{ __('site.tabs.commentary') }}</button>
+                @foreach ($tabs as $tab)
+                    <button class="sb-tab-btn{{ $tab[0] === $activeTab ? ' active' : '' }}" data-tab="{{ $tab[0] }}">{{ $tab[1] }} {{ $tab[2] }}</button>
+                @endforeach
             </div>
         </div>
 
         <div class="sb-content-card">
-            <div class="sb-tab-content active" id="sb-tab-summary">
-                @if ($hasScorecard)
+            @if ($flags['result'])
+            <div class="sb-tab-content{{ $activeTab === 'summary' ? ' active' : '' }}" id="sb-tab-summary">
+                @if ($hasSummaryCards)
                     @foreach ($summaryCards as $card)
                         <div class="sum-card">
                             <div class="sum-head">
@@ -188,50 +203,60 @@
                     </div>
                 @endif
             </div>
+            @endif
 
-            <div class="sb-tab-content" id="sb-tab-scorecard">
-                @if ($hasScorecard)
+            @if ($tabDefs[1][3])
+            <div class="sb-tab-content{{ $activeTab === 'scorecard' ? ' active' : '' }}" id="sb-tab-scorecard">
+                @if ($rcbInnings || $oppInnings)
+                    @if ($rcbInnings && $oppInnings)
                     <div class="score-subtabs">
                         <div class="subtab-pair">
                             <button class="score-subtab-btn active" data-innings="rcb">Real Challenger Boys</button>
                             <button class="score-subtab-btn" data-innings="opp">{{ $match->display_opponent_name }}</button>
                         </div>
                     </div>
+                    @endif
 
-                    <div class="scorecard-innings active" id="innings-rcb">
+                    @if ($rcbInnings)
+                    <div class="scorecard-innings{{ $oppInnings ? ' active' : '' }}" id="innings-rcb">
                         @include('matches.innings', [
-                            'innings' => $scorecard['rcb'],
+                            'innings' => $rcbInnings,
                             'teamName' => 'Real Challenger Boys',
                             'teamSlug' => $rcbTeamSlug,
                         ])
                     </div>
+                    @endif
 
-                    <div class="scorecard-innings" id="innings-opp">
+                    @if ($oppInnings)
+                    <div class="scorecard-innings{{ $rcbInnings ? '' : ' active' }}" id="innings-opp">
                         @include('matches.innings', [
-                            'innings' => $scorecard['opponent'],
+                            'innings' => $oppInnings,
                             'teamName' => $match->display_opponent_name,
                             'teamSlug' => $oppTeamSlug,
                         ])
                     </div>
-                @else
-                    <div class="sb-coming">
-                        <div class="sb-coming-icon">&#128203;</div>
-                        <h3>{{ __('site.coming.scorecard_title') }}</h3>
-                        <p>{{ __('site.coming.scorecard_text') }}</p>
-                    </div>
+                    @endif
                 @endif
             </div>
 
-            <div class="sb-tab-content" id="sb-tab-squad">
-                @if ($hasScorecard)
+            @if ($tabDefs[2][3])
+            <div class="sb-tab-content{{ $activeTab === 'squad' ? ' active' : '' }}" id="sb-tab-squad">
+                @php
+                    $rcbSquad = $scorecard['squads']['rcb'] ?? [];
+                    $oppSquad = $scorecard['squads']['opponent'] ?? [];
+                @endphp
+                @if ($rcbSquad || $oppSquad)
+                    @if ($rcbSquad && $oppSquad)
                     <div class="squad-subtabs">
                         <div class="subtab-pair">
                             <button class="squad-subtab-btn active" data-squad="rcb">Real Challenger Boys</button>
                             <button class="squad-subtab-btn" data-squad="opp">{{ $match->display_opponent_name }}</button>
                         </div>
                     </div>
+                    @endif
 
-                    <div class="squad-content active" id="squad-rcb">
+                    @if ($rcbSquad)
+                    <div class="squad-content{{ $oppSquad ? ' active' : '' }}" id="squad-rcb">
                         <div class="table-scroll">
                             <table class="squad-table">
                                 <thead>
@@ -282,8 +307,10 @@
                             </table>
                         </div>
                     </div>
+                    @endif
 
-                    <div class="squad-content" id="squad-opp">
+                    @if ($oppSquad)
+                    <div class="squad-content{{ $rcbSquad ? '' : ' active' }}" id="squad-opp">
                         <div class="table-scroll">
                             <table class="squad-table">
                                 <thead>
@@ -302,12 +329,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($scorecard['squads']['opponent'] as $p)
+                                    @foreach ($oppSquad as $p)
                                         <tr>
                                             <td>
                                                 <div class="squad-player-cell">
-                                                    <span class="squad-photo squad-photo-fallback">{{ mb_strtoupper(mb_substr($p['name'], 0, 1)) }}</span>
-                                                    <span class="player-name-link">{{ $p['name'] }}</span>
+                                                    @if ($p['photo'])
+                                                        <img src="{{ $p['photo'] }}" alt="{{ $p['name'] }}" class="squad-photo">
+                                                    @else
+                                                        <span class="squad-photo squad-photo-fallback">{{ mb_strtoupper(mb_substr($p['name'], 0, 1)) }}</span>
+                                                    @endif
+                                                    @if ($p['id'])
+                                                        <a href="{{ route('players.show', $p['id']) }}" class="player-name-link">{{ $p['name'] }}</a>
+                                                    @else
+                                                        <span class="player-name-link">{{ $p['name'] }}</span>
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td>{{ $p['matches'] }}</td>
@@ -326,16 +361,16 @@
                             </table>
                         </div>
                     </div>
-                @else
-                    <div class="sb-coming">
-                        <div class="sb-coming-icon">&#128101;</div>
-                        <h3>{{ __('site.coming.squad_title') }}</h3>
-                        <p>{{ __('site.coming.squad_text') }}</p>
-                    </div>
+                    @endif
                 @endif
             </div>
+            @endif
 
-            <div class="sb-tab-content" id="sb-tab-matchinfo">
+            @if ($tabDefs[3][3])
+            <div class="sb-tab-content{{ $activeTab === 'matchinfo' ? ' active' : '' }}" id="sb-tab-matchinfo">
+                @if (trim((string) $match->match_info) !== '')
+                    <div class="sb-match-info-text">{!! $match->match_info !!}</div>
+                @endif
                 <div class="sb-info">
                     <div class="sb-info-row">
                         <div class="sb-info-label">{{ __('site.match') }}</div>
@@ -361,14 +396,36 @@
                     @endif
                 </div>
             </div>
+            @endif
 
-            <div class="sb-tab-content" id="sb-tab-commentary">
-                <div class="sb-coming">
-                    <div class="sb-coming-icon">&#128483;&#65039;</div>
-                    <h3>{{ __('site.coming.commentary_title') }}</h3>
-                    <p>{{ __('site.coming.commentary_text') }}</p>
+            @if ($tabDefs[4][3])
+            <div class="sb-tab-content{{ $activeTab === 'commentary' ? ' active' : '' }}" id="sb-tab-commentary">
+                <div class="table-scroll">
+                    <table class="bowl-table">
+                        <thead>
+                            <tr>
+                                <th>{{ __('site.admin.end_of_over') }}</th>
+                                <th>{{ __('site.admin.score_at') }}</th>
+                                <th>{{ __('site.admin.ball_number') }}</th>
+                                <th>{{ __('site.admin.ball_per_run') }}</th>
+                                <th>{{ __('site.admin.description') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($scorecard['commentary'] as $cm)
+                                <tr>
+                                    <td>{{ $cm['over'] }}</td>
+                                    <td>{{ $cm['score'] }}</td>
+                                    <td>{{ $cm['ball'] }}</td>
+                                    <td>{{ $cm['runs'] }}</td>
+                                    <td>{{ $cm['description'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
+            @endif
         </div>
 
         <p style="margin-top: 2rem; text-align: center;">

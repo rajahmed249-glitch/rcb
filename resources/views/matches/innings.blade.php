@@ -1,14 +1,23 @@
 @php
-    $exB = $innings['extras'] > 4 ? 2 : 0;
-    $exLb = $innings['extras'] > 6 ? 2 : 0;
-    $exW = max(0, $innings['extras'] - $exB - $exLb);
-    $exNb = 0;
+    $eb = $innings['extras_breakdown'] ?? null;
+    if ($eb) {
+        $exB = (int) ($eb['byes'] ?? 0);
+        $exLb = (int) ($eb['leg_byes'] ?? 0);
+        $exW = (int) ($eb['wides'] ?? 0);
+        $exNb = (int) ($eb['no_balls'] ?? 0);
+    } else {
+        $exB = $innings['extras'] > 4 ? 2 : 0;
+        $exLb = $innings['extras'] > 6 ? 2 : 0;
+        $exW = max(0, $innings['extras'] - $exB - $exLb);
+        $exNb = 0;
+    }
+    $inningsOvers = $innings['overs'] ?: '0.0';
 @endphp
 
 <div class="bat-card">
     <div class="bat-head">
         <a class="bat-team" href="{{ $teamSlug ? route('pages.team-profile', $teamSlug) : '#' }}">{{ $teamName }}</a>
-        <span class="bat-score">{{ $innings['total'] }}-{{ $innings['wickets'] }} <span>({{ $innings['overs'] }} overs)</span></span>
+        <span class="bat-score">{{ $innings['total'] }}-{{ $innings['wickets'] }} <span>({{ $inningsOvers }} overs)</span></span>
     </div>
 
     <div class="bat-scroll">
@@ -48,7 +57,7 @@
 
         <div class="bat-totalrow">
             <span class="t-bold">{{ __('site.scorecard.total') }}</span>
-            <span class="t-muted"><strong>{{ $innings['total'] }}</strong> ({{ $innings['wickets'] }} {{ __('site.scorecard.wickets') }}, {{ $innings['overs'] }} {{ __('site.scorecard.overs_short') }})</span>
+            <span class="t-muted"><strong>{{ $innings['total'] }}</strong> ({{ $innings['wickets'] }} {{ __('site.scorecard.wickets') }}, {{ $inningsOvers }} {{ __('site.scorecard.overs_short') }})</span>
         </div>
     </div>
 
