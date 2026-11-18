@@ -73,6 +73,11 @@ class CricketMatch extends Model
         return $this->hasMany(MatchCommentary::class, 'match_id')->orderBy('sort_order')->orderBy('id');
     }
 
+    public function tossWinner()
+    {
+        return $this->belongsTo(Team::class, 'toss_winner_id');
+    }
+
     public function matchExtras()
     {
         return $this->hasMany(MatchExtra::class, 'match_id');

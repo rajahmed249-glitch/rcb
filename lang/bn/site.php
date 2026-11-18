@@ -126,6 +126,9 @@ return [
         'status' => 'স্ট্যাটাস',
         'match' => 'ম্যাচ',
         'tournament' => 'টুর্নামেন্ট',
+        'toss_line' => 'টস: :team টস জিতে :opted বেছে নিয়েছে',
+        'bat' => 'ব্যাটিং',
+        'bowl' => 'বোলিং',
     ],
 
     'team_profile' => [

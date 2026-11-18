@@ -75,10 +75,12 @@
 @section('content')
     <div class="container">
         <div class="sb-card">
-            <div class="sb-topline"><span class="sb-matchname">Match {{ $match->match_number }}</span></div>
+            <div class="sb-topline"><span class="sb-matchname">{{ $match->match_name ?: 'Match ' . $match->match_number }}</span></div>
             <div class="sb-topline"><span class="sb-date">{{ $match->match_date->translatedFormat('M d, Y') }} &bull; {{ $match->match_date->translatedFormat('h:i A') }}</span></div>
             <div class="sb-topline"><span class="sb-venue">{{ $match->venue ?: __('site.match_info.venue_not_set') }}</span></div>
-            <div class="sb-topline"><span class="sb-toss">{{ $match->format }} &bull; {{ ucfirst($match->status) }}</span></div>
+            @if ($match->status === 'completed' && $match->toss_winner_id)
+                <div class="sb-topline"><span class="sb-toss">{{ __('site.match_info.toss_line', ['team' => $match->tossWinner?->display_name ?? '-', 'opted' => $match->toss_elected === 'bowl' ? __('site.match_info.bowl') : __('site.match_info.bat')]) }}</span></div>
+            @endif
 
             <div class="sb-names">
                 <a href="{{ route('pages.team-profile', $rcbTeamSlug) }}" class="sb-name sb-name-right">REAL CHALLENGER BOYS</a>
@@ -369,33 +371,7 @@
 
             @if ($tabDefs[3][3])
             <div class="sb-tab-content{{ $activeTab === 'matchinfo' ? ' active' : '' }}" id="sb-tab-matchinfo">
-                @if (trim((string) $match->match_info) !== '')
-                    <div class="sb-match-info-text">{!! $match->match_info !!}</div>
-                @endif
-                <div class="sb-info">
-                    <div class="sb-info-row">
-                        <div class="sb-info-label">{{ __('site.match') }}</div>
-                        <div class="sb-info-value">Match {{ $match->match_number }} &bull; {{ $match->format }}</div>
-                    </div>
-                    <div class="sb-info-row">
-                        <div class="sb-info-label">{{ __('site.match_info.date') }}</div>
-                        <div class="sb-info-value">{{ $match->match_date->translatedFormat('l, M d, Y') }} &bull; {{ $match->match_date->translatedFormat('h:i A') }}</div>
-                    </div>
-                    <div class="sb-info-row">
-                        <div class="sb-info-label">{{ __('site.match_info.venue') }}</div>
-                        <div class="sb-info-value">{{ $match->venue ?: __('site.match_info.venue_not_set') }}</div>
-                    </div>
-                    <div class="sb-info-row">
-                        <div class="sb-info-label">{{ __('site.match_info.status') }}</div>
-                        <div class="sb-info-value">{{ ucfirst($match->status) }}</div>
-                    </div>
-                    @if ($match->result_text)
-                        <div class="sb-info-row">
-                            <div class="sb-info-label">{{ __('site.match_info.result') }}</div>
-                            <div class="sb-info-value">{{ $match->result_text }}</div>
-                        </div>
-                    @endif
-                </div>
+                <div class="sb-match-info-text">{!! $match->match_info !!}</div>
             </div>
             @endif
 

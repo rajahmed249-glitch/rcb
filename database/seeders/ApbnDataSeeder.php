@@ -84,7 +84,7 @@ class ApbnDataSeeder extends Seeder
             ]
         );
 
-        if ($rcbTeam) {
+        if ($rcbTeam && $match->wasRecentlyCreated) {
             $rcbNames = [
                 'Raj Ahmed',
                 'Fazle Rabbi Nayan',

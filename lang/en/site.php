@@ -126,6 +126,9 @@ return [
         'status' => 'Status',
         'match' => 'Match',
         'tournament' => 'Tournament',
+        'toss_line' => 'Toss: :team won the toss and opted to :opted first',
+        'bat' => 'bat',
+        'bowl' => 'bowl',
     ],
 
     'team_profile' => [
