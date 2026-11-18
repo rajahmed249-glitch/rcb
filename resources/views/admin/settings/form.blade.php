@@ -66,4 +66,15 @@
         <a href="{{ route('admin.dashboard') }}" class="admin-btn ghost">{{ __('site.admin.cancel') }}</a>
     </div>
 </form>
+
+<div class="admin-card" style="max-width:860px;margin:1.5rem auto;">
+    <h3 style="margin:0 0 .5rem;display:flex;align-items:center;gap:.5rem;">
+        <i class="fas fa-database"></i> {{ __('site.admin.database_backup') }}
+    </h3>
+    <p style="margin:0 0 1rem;color:#64748b;font-size:.85rem;">{{ __('site.admin.database_backup_hint') }}</p>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <a href="{{ route('admin.database.export', ['format' => 'sql']) }}" class="admin-btn">{{ __('site.admin.download_sql') }}</a>
+        <a href="{{ route('admin.database.export', ['format' => 'sqlite']) }}" class="admin-btn ghost">{{ __('site.admin.download_sqlite') }}</a>
+    </div>
+</div>
 @endsection

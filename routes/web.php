@@ -95,6 +95,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
 
+        Route::get('database-export', [\App\Http\Controllers\Admin\DatabaseController::class, 'export'])->name('database.export');
+
         Route::get('applications', [ApplicationController::class, 'index'])->name('applications.index');
         Route::delete('applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
     });
