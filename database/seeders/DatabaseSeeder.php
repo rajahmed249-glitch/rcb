@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             PermissionSeeder::class,
             ApbnDataSeeder::class,
+            StumpsOpenMatchSeeder::class,
         ]);
     }
 }
