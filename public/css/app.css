@@ -535,7 +535,7 @@ a.match-card:hover { text-decoration: none; }
 .sb-overs { font-size: .75rem; color: #6b7280; margin-top: .15rem; min-height: 1rem; }
 .sb-result { text-align: center; min-width: 9rem; padding-top: 2rem; }
 .sb-result-label { font-size: .7rem; color: #9ca3af; text-transform: uppercase; margin-bottom: .15rem; }
-.sb-result-text { color: #0d9488; font-size: .85rem; font-weight: 600; }
+.sb-result-text { color: #0d9488; font-size: 0.875rem; font-weight: 600; }
 .sb-result-text.sb-result-lost { color: #dc2626; }
 .sb-result-text.sb-result-pending { color: #9ca3af; }
 .sb-divider { border-top: 1px solid #e5e7eb; margin: .5rem 0; }
@@ -2212,9 +2212,9 @@ a.pgal-page-num:hover { background: #f0fdfa; color: var(--teal-dark); }
 .sb-match-info-text table td, .sb-match-info-text table th { border: 1px solid #e5e7eb; padding: 0.4rem 0.6rem; }
 
 /* Player of the Match on scoreboard result column */
-.sb-pom { margin-top: .35rem; font-size: .72rem; }
+.sb-pom { margin-top: .35rem; font-size: 0.875rem; }
 .sb-pom-label { display: block; color: #6b7280; font-weight: 600; }
-.sb-pom-link { color: #0d9488; font-weight: 600; text-decoration: none; }
+.sb-pom-link { color: #0d9488; font-weight: 600; text-decoration: none; font-size: 0.875rem; }
 .sb-pom-link:hover { text-decoration: underline; }
 
 /* Overs subtabs (per-team commentary panels) */
