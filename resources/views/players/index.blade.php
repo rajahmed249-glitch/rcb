@@ -22,9 +22,7 @@
             @forelse ($players as $player)
                 <div class="pcard">
                     <div class="pcard-img-wrap">
-                        @if ($player->badge)
-                            <span class="pcard-tag">{{ $player->badge === 'c' ? __('site.captain') : __('site.vice_captain') }}</span>
-                        @endif
+
                         @if ($player->photo_url)
                             <img src="{{ $player->photo_url }}" alt="{{ $player->name }}" loading="lazy">
                         @else
