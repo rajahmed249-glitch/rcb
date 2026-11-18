@@ -20,10 +20,6 @@
     $flags = $scorecard['flags'];
 
     $matchFull = $match->match_name ?: ('Match ' . $match->match_number);
-    if ($match->display_opponent_name) {
-        $matchFull .= ', v/s ' . $match->display_opponent_name;
-    }
-    $matchFull .= ', ' . $match->match_date->translatedFormat('F-Y') . ' (M-' . $match->match_number . ')';
 
     $rcbInnings = !empty($scorecard['rcb']) ? $scorecard['rcb'] : null;
     $oppInnings = !empty($scorecard['opponent']) ? $scorecard['opponent'] : null;

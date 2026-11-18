@@ -76,7 +76,7 @@ img { max-width: 100%; display: block; }
 .social-yt { color: var(--red); }
 
 /* ================= Header main ================= */
-.header-row { border-bottom: 1px solid var(--border); background: rgba(255,255,255,.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+.header-row { border-bottom: 1px solid var(--border); background: rgba(255,255,255,.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); position: relative; z-index: 60; }
 .header-main { display: flex; align-items: center; gap: 1.5rem; padding: .75rem 0; }
 .brand { display: flex; align-items: center; }
 .brand-logo-img { height: 44px; width: auto; object-fit: contain; transition: transform .3s; }
@@ -511,7 +511,7 @@ a.match-card:hover { text-decoration: none; }
 }
 
 /* ===== Match Detail / Scoreboard ===== */
-.sb-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 1rem; box-shadow: 0 10px 25px rgba(15,23,42,.08); padding: 1.5rem; max-width: 980px; margin: 0 auto; }
+.sb-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 1rem; box-shadow: 0 10px 25px rgba(15,23,42,.08); padding: 1.5rem; max-width: 1152px; margin: 0 auto; }
 .sb-topline { text-align: center; line-height: 1; margin-top: .35rem; }
 .sb-topline:first-child { margin-top: 0; }
 .sb-matchname { font-size: .75rem; color: #dc2626; font-weight: 600; }
@@ -533,7 +533,7 @@ a.match-card:hover { text-decoration: none; }
 .sb-score { font-size: 1.5rem; font-weight: 700; color: #111827; }
 .sb-score-w { color: #4b5563; }
 .sb-overs { font-size: .75rem; color: #6b7280; margin-top: .15rem; min-height: 1rem; }
-.sb-result { text-align: center; min-width: 9rem; padding-top: .25rem; }
+.sb-result { text-align: center; min-width: 9rem; padding-top: 4.75rem; }
 .sb-result-label { font-size: .7rem; color: #9ca3af; text-transform: uppercase; margin-bottom: .15rem; }
 .sb-result-text { color: #0d9488; font-size: .85rem; font-weight: 600; }
 .sb-result-text.sb-result-lost { color: #dc2626; }
@@ -542,7 +542,7 @@ a.match-card:hover { text-decoration: none; }
 .sb-extra { margin-top: .5rem; display: flex; align-items: center; justify-content: center; gap: .35rem; }
 .sb-extra-icon { font-size: 1rem; }
 .sb-extra-text { font-size: .8rem; font-weight: 600; color: #0d9488; }
-.sb-tabs-card { background: #fff; border: 1px solid #e5e7eb; border-bottom: 0; border-radius: 1rem 1rem 0 0; box-shadow: 0 10px 25px rgba(15,23,42,.08); padding: .6rem; max-width: 980px; margin: 1rem auto 0; }
+.sb-tabs-card { background: #fff; border: 1px solid #e5e7eb; border-bottom: 0; border-radius: 1rem 1rem 0 0; box-shadow: 0 10px 25px rgba(15,23,42,.08); padding: .6rem; max-width: 1152px; margin: 1rem auto 0; }
 .sb-tabs { display: flex; justify-content: flex-start; gap: .25rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .sb-tabs::-webkit-scrollbar { display: none; }
 @media (min-width: 769px) {
@@ -551,7 +551,7 @@ a.match-card:hover { text-decoration: none; }
 .sb-tab-btn { flex-shrink: 0; padding: .6rem 1.25rem; font-size: .85rem; font-weight: 600; border: 0; background: transparent; color: #4b5563; border-radius: .5rem; cursor: pointer; transition: all .2s ease; }
 .sb-tab-btn:hover { background: #f0fdfa; color: #0d9488; }
 .sb-tab-btn.active { background: #14b8a6; color: #fff; box-shadow: 0 2px 8px rgba(20,184,166,.35); }
-.sb-content-card { background: #fff; border: 1px solid #e5e7eb; border-top: 0; border-radius: 0 0 1rem 1rem; box-shadow: 0 10px 25px rgba(15,23,42,.08); padding: 1.5rem; max-width: 980px; margin: 0 auto; }
+.sb-content-card { background: #fff; border: 1px solid #e5e7eb; border-top: 0; border-radius: 0 0 1rem 1rem; box-shadow: 0 10px 25px rgba(15,23,42,.08); padding: 1.5rem; max-width: 1152px; margin: 0 auto; }
 .sb-tab-content { display: none; }
 .sb-tab-content.active { display: block; }
 .sb-coming { text-align: center; padding: 2.5rem 1rem; }
@@ -567,6 +567,7 @@ a.match-card:hover { text-decoration: none; }
 @media (max-width: 760px) {
     .sb-card { padding: .75rem; }
     .sb-columns { flex-direction: column; align-items: center; gap: 1.5rem; }
+    .sb-result { padding-top: 0; }
     .sb-names { margin: 1rem auto 1.25rem; padding: 0 .25rem; gap: .5rem; }
     .sb-name { font-size: 1rem; }
     .sb-vs { margin: 0 .25rem; width: 2.25rem; height: 2.25rem; }
