@@ -272,3 +272,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    var overBtns = document.querySelectorAll('.overs-subtab-btn');
+    if (overBtns.length) {
+        overBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                overBtns.forEach(function (b) { b.classList.remove('active'); });
+                document.querySelectorAll('.overs-content').forEach(function (p) { p.classList.remove('active'); });
+                btn.classList.add('active');
+                var panel = document.getElementById('overs-' + btn.dataset.over);
+                if (panel) { panel.classList.add('active'); }
+            });
+        });
+    }
+});

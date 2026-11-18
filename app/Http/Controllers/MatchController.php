@@ -89,6 +89,7 @@ class MatchController extends Controller
             'opponent' => $innings['opponent'],
             'squads' => $squads,
             'commentary' => $match->commentary->sortBy('sort_order')->values()->map(fn ($c) => [
+                'side' => $c->side === 'opponent' ? 'opponent' : 'rcb',
                 'over' => (string) $c->over_number,
                 'score' => (string) $c->score_at,
                 'ball' => (string) $c->ball_number,

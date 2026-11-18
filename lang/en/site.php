@@ -74,6 +74,7 @@ return [
         'scorecard' => 'Scorecard',
         'squad' => 'Squad',
         'match_info' => 'Match Info',
+        'overs' => 'Overs',
         'commentary' => 'Commentary',
     ],
 
@@ -129,6 +130,7 @@ return [
         'toss_line' => 'Toss: :team won the toss and opted to :opted first',
         'bat' => 'bat',
         'bowl' => 'bowl',
+        'player_of_match' => 'Player of the Match',
     ],
 
     'team_profile' => [

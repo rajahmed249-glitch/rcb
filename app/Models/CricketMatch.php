@@ -78,6 +78,11 @@ class CricketMatch extends Model
         return $this->belongsTo(Team::class, 'toss_winner_id');
     }
 
+    public function playerOfMatch()
+    {
+        return $this->belongsTo(Player::class, 'player_of_match_id');
+    }
+
     public function matchExtras()
     {
         return $this->hasMany(MatchExtra::class, 'match_id');

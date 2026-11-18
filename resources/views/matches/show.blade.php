@@ -19,6 +19,12 @@
 
     $flags = $scorecard['flags'];
 
+    $matchFull = $match->match_name ?: ('Match ' . $match->match_number);
+    if ($match->display_opponent_name) {
+        $matchFull .= ', v/s ' . $match->display_opponent_name;
+    }
+    $matchFull .= ', ' . $match->match_date->translatedFormat('F-Y') . ' (M-' . $match->match_number . ')';
+
     $rcbInnings = !empty($scorecard['rcb']) ? $scorecard['rcb'] : null;
     $oppInnings = !empty($scorecard['opponent']) ? $scorecard['opponent'] : null;
     $hasSummaryCards = $rcbInnings !== null && $oppInnings !== null;
@@ -28,7 +34,7 @@
         ['scorecard', '&#128203;', __('site.tabs.scorecard'), $rcbInnings !== null || $oppInnings !== null],
         ['squad', '&#128101;', __('site.tabs.squad'), $flags['squad'] || !empty($scorecard['squads']['rcb']) || !empty($scorecard['squads']['opponent'])],
         ['matchinfo', '&#8505;&#65039;', __('site.tabs.match_info'), $flags['info']],
-        ['commentary', '&#127951;', __('site.tabs.commentary'), $flags['commentary']],
+        ['commentary', '&#127951;', __('site.tabs.overs'), $flags['commentary']],
     ];
 
     $tabs = array_values(array_filter($tabDefs, fn ($t) => $t[3]));
@@ -75,7 +81,7 @@
 @section('content')
     <div class="container">
         <div class="sb-card">
-            <div class="sb-topline"><span class="sb-matchname">{{ $match->match_name ?: 'Match ' . $match->match_number }}</span></div>
+            <div class="sb-topline"><span class="sb-matchname">{{ $matchFull }}</span></div>
             <div class="sb-topline"><span class="sb-date">{{ $match->match_date->translatedFormat('M d, Y') }} &bull; {{ $match->match_date->translatedFormat('h:i A') }}</span></div>
             <div class="sb-topline"><span class="sb-venue">{{ $match->venue ?: __('site.match_info.venue_not_set') }}</span></div>
             @if ($match->status === 'completed' && $match->toss_winner_id)
@@ -111,6 +117,12 @@
                     @else
                         <div class="sb-result-text sb-result-pending">-</div>
                     @endif
+                    @if ($match->status === 'completed' && $match->playerOfMatch)
+                        <div class="sb-pom">
+                            <span class="sb-pom-label">&#127942; {{ __('site.match_info.player_of_match') }}</span>
+                            <a href="{{ route('players.show', $match->playerOfMatch->id) }}" class="sb-pom-link">{{ $match->playerOfMatch->display_name }}</a>
+                        </div>
+                    @endif
                     <div class="sb-divider"></div>
                 </div>
 
@@ -138,7 +150,7 @@
         <div class="sb-tabs-card">
             <div class="sb-tabs">
                 @foreach ($tabs as $tab)
-                    <button class="sb-tab-btn{{ $tab[0] === $activeTab ? ' active' : '' }}" data-tab="{{ $tab[0] }}">{{ $tab[1] }} {{ $tab[2] }}</button>
+                    <button class="sb-tab-btn{{ $tab[0] === $activeTab ? ' active' : '' }}" data-tab="{{ $tab[0] }}">{!! $tab[1] !!} {{ $tab[2] }}</button>
                 @endforeach
             </div>
         </div>
@@ -377,30 +389,72 @@
 
             @if ($tabDefs[4][3])
             <div class="sb-tab-content{{ $activeTab === 'commentary' ? ' active' : '' }}" id="sb-tab-commentary">
-                <div class="table-scroll">
-                    <table class="bowl-table">
-                        <thead>
-                            <tr>
-                                <th>{{ __('site.admin.end_of_over') }}</th>
-                                <th>{{ __('site.admin.score_at') }}</th>
-                                <th>{{ __('site.admin.ball_number') }}</th>
-                                <th>{{ __('site.admin.ball_per_run') }}</th>
-                                <th>{{ __('site.admin.description') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($scorecard['commentary'] as $cm)
-                                <tr>
-                                    <td>{{ $cm['over'] }}</td>
-                                    <td>{{ $cm['score'] }}</td>
-                                    <td>{{ $cm['ball'] }}</td>
-                                    <td>{{ $cm['runs'] }}</td>
-                                    <td>{{ $cm['description'] }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                @php
+                    $cmRcb = array_values(array_filter($scorecard['commentary'], fn ($c) => $c['side'] === 'rcb'));
+                    $cmOpp = array_values(array_filter($scorecard['commentary'], fn ($c) => $c['side'] === 'opponent'));
+                @endphp
+                @if ($cmRcb && $cmOpp)
+                    <div class="score-subtabs">
+                        <div class="subtab-pair">
+                            <button class="overs-subtab-btn active" data-over="rcb">Real Challenger Boys</button>
+                            <button class="overs-subtab-btn" data-over="opp">{{ $match->display_opponent_name }}</button>
+                        </div>
+                    </div>
+                @endif
+
+                @if ($cmRcb)
+                    <div class="overs-content{{ $cmOpp ? ' active' : '' }}" id="overs-rcb">
+                        <div class="table-scroll">
+                            <table class="bowl-table">
+                                <thead>
+                                    <tr>
+                                        <th>{{ __('site.admin.end_of_over') }}</th>
+                                        <th>{{ __('site.admin.score_at') }}</th>
+                                        <th>{{ __('site.admin.ball_per_run') }}</th>
+                                        <th>{{ __('site.admin.description') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($cmRcb as $cm)
+                                        <tr>
+                                            <td>{{ $cm['over'] }}</td>
+                                            <td>{{ $cm['score'] }}</td>
+                                            <td>{{ $cm['runs'] }}</td>
+                                            <td>{{ $cm['description'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
+
+                @if ($cmOpp)
+                    <div class="overs-content{{ $cmRcb ? '' : ' active' }}" id="overs-opp">
+                        <div class="table-scroll">
+                            <table class="bowl-table">
+                                <thead>
+                                    <tr>
+                                        <th>{{ __('site.admin.end_of_over') }}</th>
+                                        <th>{{ __('site.admin.score_at') }}</th>
+                                        <th>{{ __('site.admin.ball_per_run') }}</th>
+                                        <th>{{ __('site.admin.description') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($cmOpp as $cm)
+                                        <tr>
+                                            <td>{{ $cm['over'] }}</td>
+                                            <td>{{ $cm['score'] }}</td>
+                                            <td>{{ $cm['runs'] }}</td>
+                                            <td>{{ $cm['description'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
             </div>
             @endif
         </div>

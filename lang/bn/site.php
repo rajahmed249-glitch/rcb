@@ -74,6 +74,7 @@ return [
         'scorecard' => 'স্কোরকার্ড',
         'squad' => 'স্কোয়াড',
         'match_info' => 'ম্যাচ তথ্য',
+        'overs' => 'ওভার',
         'commentary' => 'ধারাভাষ্য',
     ],
 
@@ -129,6 +130,7 @@ return [
         'toss_line' => 'টস: :team টস জিতে :opted বেছে নিয়েছে',
         'bat' => 'ব্যাটিং',
         'bowl' => 'বোলিং',
+        'player_of_match' => 'ম্যাচ সেরা',
     ],
 
     'team_profile' => [
