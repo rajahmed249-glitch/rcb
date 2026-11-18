@@ -50,7 +50,7 @@ return [
     'clear' => 'মুছুন',
     'select' => '— নির্বাচন করুন —',
     'fixtures_subtitle' => 'রিয়েল চ্যালেঞ্জার বয়েজের সব ফিক্সচার ও ফলাফল।',
-    'back_to_matches' => '&larr; ম্যাচে ফিরুন',
+    'back_to_matches' => 'ম্যাচে ফিরুন',
     'back_to_players' => '&larr; প্লেয়ারে ফিরুন',
     'back_to_teams' => '&larr; সব টিমে ফিরুন',
     'back_to_news' => '&larr; নিউজে ফিরুন',

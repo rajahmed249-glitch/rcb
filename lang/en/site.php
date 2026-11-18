@@ -50,7 +50,7 @@ return [
     'clear' => 'Clear',
     'select' => '— Select —',
     'fixtures_subtitle' => 'All fixtures and results of REAL CHALLENGER BOYS.',
-    'back_to_matches' => '&larr; Back to Matches',
+    'back_to_matches' => 'Back to Matches',
     'back_to_players' => '&larr; Back to Players',
     'back_to_teams' => '&larr; Back to All Teams',
     'back_to_news' => '&larr; Back to News',

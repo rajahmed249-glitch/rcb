@@ -117,13 +117,13 @@
                     @else
                         <div class="sb-result-text sb-result-pending">-</div>
                     @endif
+                    <div class="sb-divider"></div>
                     @if ($match->status === 'completed' && $match->playerOfMatch)
                         <div class="sb-pom">
                             <span class="sb-pom-label">&#127942; {{ __('site.match_info.player_of_match') }}</span>
                             <a href="{{ route('players.show', $match->playerOfMatch->id) }}" class="sb-pom-link">{{ $match->playerOfMatch->display_name }}</a>
                         </div>
                     @endif
-                    <div class="sb-divider"></div>
                 </div>
 
                 <div class="sb-team">

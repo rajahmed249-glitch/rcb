@@ -759,11 +759,11 @@ img.team-logo.opponent { background: #fff; }
     .score-subtabs, .squad-subtabs { justify-content: center; }
 }
 .subtab-pair { display: flex; }
-.score-subtab-btn, .squad-subtab-btn { flex-shrink: 0; padding: .625rem 2rem; font-size: .875rem; font-weight: 600; border: 1px solid #e5e7eb; background: #f3f4f6; color: #374151; cursor: pointer; transition: all .2s ease; white-space: nowrap; }
-.score-subtab-btn:first-child, .squad-subtab-btn:first-child { border-radius: 999px 0 0 999px; }
-.score-subtab-btn:last-child, .squad-subtab-btn:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
-.score-subtab-btn:hover, .squad-subtab-btn:hover { background: #e5e7eb; }
-.score-subtab-btn.active, .squad-subtab-btn.active { background: #14b8a6; border-color: #14b8a6; color: #fff; }
+.score-subtab-btn, .squad-subtab-btn, .overs-subtab-btn { flex-shrink: 0; padding: .625rem 2rem; font-size: .875rem; font-weight: 600; border: 1px solid #e5e7eb; background: #f3f4f6; color: #374151; cursor: pointer; transition: all .2s ease; white-space: nowrap; }
+.score-subtab-btn:first-child, .squad-subtab-btn:first-child, .overs-subtab-btn:first-child { border-radius: 999px 0 0 999px; }
+.score-subtab-btn:last-child, .squad-subtab-btn:last-child, .overs-subtab-btn:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
+.score-subtab-btn:hover, .squad-subtab-btn:hover, .overs-subtab-btn:hover { background: #e5e7eb; }
+.score-subtab-btn.active, .squad-subtab-btn.active, .overs-subtab-btn.active { background: #14b8a6; border-color: #14b8a6; color: #fff; }
 .scorecard-innings { display: none; }
 .scorecard-innings.active { display: block; }
 .squad-content { display: none; }
@@ -854,7 +854,7 @@ a.player-name-link:hover { text-decoration: underline; }
 /* ===== Scorecard mobile ===== */
 @media (max-width: 768px) {
     .sb-tab-btn { padding: 8px 12px; font-size: 12px; }
-    .score-subtab-btn, .squad-subtab-btn { padding: 6px 14px; font-size: 12px; }
+    .score-subtab-btn, .squad-subtab-btn, .overs-subtab-btn { padding: 6px 14px; font-size: 12px; }
     .sum-body { gap: 1rem 2rem; padding: .75rem; }
     .sum-row { margin-bottom: .4rem; }
     .sum-name { font-size: .8rem; max-width: 9ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
