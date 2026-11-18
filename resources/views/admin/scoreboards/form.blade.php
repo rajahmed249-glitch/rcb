@@ -330,6 +330,8 @@
 <template id="tpl-commentary-opponent">@include('admin.scoreboards.partials.commentary-row', ['side' => 'opponent', 'i' => '__IDX__', 'row' => null])</template>
 
 <script>
+var SCB_SHOW_FIELDER = ['caught', 'runout', 'stumped', 'c&b', 'hitwicket'];
+var SCB_SHOW_BOWLER = ['bowled', 'caught', 'lbw', 'stumped', 'c&b', 'hitwicket'];
 function toggleWon(yes) {
     var y = document.getElementById('wonYesLabel');
     var n = document.getElementById('wonNoLabel');
@@ -503,9 +505,6 @@ function refreshAllPlayerSelects() {
     refreshSelectGroup('scb-bat-select');
     refreshSelectGroup('scb-bowl-select');
 }
-
-var SCB_SHOW_FIELDER = ['caught', 'runout', 'stumped', 'c&b', 'hitwicket'];
-var SCB_SHOW_BOWLER = ['bowled', 'caught', 'lbw', 'stumped', 'c&b', 'hitwicket'];
 
 function applyDismissalCell(td, show) {
     if (!td) return;
